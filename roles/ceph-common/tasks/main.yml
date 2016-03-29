@@ -37,6 +37,11 @@
   tags:
     - package-install
 
+- include: ./installs/install_on_clear.yml
+  when: ansible_os_family == 'Clear linux software for intel architecture'
+  tags:
+    - package-install
+
 - include: ./installs/install_rgw_on_redhat.yml
   when:
     ansible_os_family == 'RedHat' and
@@ -124,12 +129,16 @@
   changed_when: false
   become: false
   run_once: true
+  when:
+    cephx or
+    generate_fsid
 
 - name: generate cluster uuid
   local_action: shell python -c 'import uuid; print str(uuid.uuid4())' | tee {{ fetch_directory }}/ceph_cluster_uuid.conf
     creates="{{ fetch_directory }}/ceph_cluster_uuid.conf"
   register: cluster_uuid
   become: false
+  when: generate_fsid
 
 - name: read cluster uuid if it already exists
   local_action: command cat {{ fetch_directory }}/ceph_cluster_uuid.conf
@@ -137,23 +146,24 @@
   changed_when: false
   register: cluster_uuid
   become: false
+  when: generate_fsid
 
 - name: create ceph conf directory
   file:
     path: /etc/ceph
     state: directory
-    owner: "{{ conf_directory_owner }}"
-    group: "{{ conf_directory_group }}"
-    mode: "{{ conf_directory_mode }}"
+    owner: "{{ dir_owner }}"
+    group: "{{ dir_group }}"
+    mode: "{{ dir_mode }}"
 
 - name: generate ceph configuration file
   action: config_template
   args:
     src: ceph.conf.j2
     dest: /etc/ceph/ceph.conf
-    owner: "{{ conf_file_owner }}"
-    group: "{{ conf_file_group }}"
-    mode: "{{ conf_file_mode }}"
+    owner: "{{ dir_owner }}"
+    group: "{{ dir_group }}"
+    mode: "{{ activate_file_mode }}"
     config_overrides: "{{ ceph_conf_overrides }}"
     config_type: ini
   notify:

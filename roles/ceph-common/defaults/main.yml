@@ -7,20 +7,6 @@
 
 fetch_directory: fetch/
 
-###############
-# PERMISSIONS #
-###############
-
-# Permissions for /etc/ceph configuration directory
-conf_directory_owner: root
-conf_directory_group: root
-conf_directory_mode: 644
-
-# Permissions for /etc/ceph/ceph.conf configuration file
-conf_file_owner: root
-conf_file_group: root
-conf_file_mode: 644
-
 ###########
 # INSTALL #
 ###########
@@ -146,7 +132,15 @@ ceph_dev_redhat_distro: centos7
 
 ## Ceph options
 #
+# Each cluster requires a unique, consistent filesystem ID. By
+# default, the playbook generates one for you and stores it in a file
+# in `fetch_directory`. If you want to customize how the fsid is
+# generated, you may find it useful to disable fsid generation to
+# avoid cluttering up your ansible repo. If you set `generate_fsid` to
+# false, you *must* generate `fsid` in another way.
 fsid: "{{ cluster_uuid.stdout }}"
+generate_fsid: true
+
 cephx: true
 cephx_require_signatures: true # Kernel RBD does NOT support signatures for Kernels < 3.18!
 cephx_cluster_require_signatures: true
@@ -211,6 +205,13 @@ osd_crush_update_on_start: "true"
 
 # Object backend
 osd_objectstore: filestore
+
+# xattrs. by default, 'filestore xattr use omap' is set to 'true' if
+# 'osd_mkfs_type' is set to 'ext4'; otherwise it isn't set. This can
+# be set to 'true' or 'false' to explicitly override those
+# defaults. Leave it 'null' to use the default for your chosen mkfs
+# type.
+filestore_xattr_use_omap: null
 
 # Performance tuning
 filestore_merge_threshold: 40
