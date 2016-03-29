@@ -1,0 +1,11 @@
+[DEFAULT]
+{% if neutron_deployment_scenario == 'linuxbridge' %}
+interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver
+external_network_bridge =
+{% elif neutron_deployment_scenario == 'openvswitch' %}
+l3_agent_manager = neutron.agent.l3_agent.L3NATAgentWithStateReport
+external_network_bridge = br-ex
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+ovs_use_veth = False
+use_namespaces = True
+{% endif %}

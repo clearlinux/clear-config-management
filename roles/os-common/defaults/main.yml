@@ -1,0 +1,44 @@
+---
+# Copyright (c) 2016 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Optional arguments for swupd
+swupd_args: ""
+
+# Set to True to enable debug log level on all services
+log_debug: False
+
+# Root user for the database
+database_root_user: root
+# database_root_password: <password>
+
+# Default user for rabbitmq
+rabbitmq_username: openstack
+# rabbitmq_password: <password>
+
+# Password for 'admin' user
+# keystone_admin_password: <password>
+
+# Password for 'nova' user
+# nova_user_password: <password>
+
+# password for 'neutron' user
+# neutron_user_password: <password>
+
+# metadata proxy shared secret
+# metadata_proxy_shared_secret: <secret>
+
+# Choose the networking deployment scenario
+# either linuxbridge or openvswitch
+neutron_deployment_scenario: linuxbridge

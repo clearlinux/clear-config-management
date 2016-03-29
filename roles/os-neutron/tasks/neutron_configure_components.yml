@@ -1,0 +1,58 @@
+---
+# Copyright (c) 2016 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+  - name: Create /etc/neutron directory
+    file: path=/etc/neutron state=directory group=neutron mode=770
+
+  - name: Configuring the Networking server component /etc/neutron/neutron.conf
+    template: dest=/etc/neutron/neutron.conf
+              src=neutron.conf.j2 group=neutron mode=640
+    notify:
+      - restart neutron
+      - restart linuxbridge agent
+      - restart openvswitch agent
+
+  - name: Create /etc/neutron/plugins/ml2 directory
+    file: path=/etc/neutron/plugins/ml2 state=directory group=neutron mode=770
+
+  - name: Configuring the Modular Layer 2 /etc/neutron/plugins/ml2/ml2_conf.ini
+    template: dest=/etc/neutron/plugins/ml2/ml2_conf.ini
+              src=ml2_conf.ini.j2 group=neutron mode=640
+    notify: restart neutron
+
+  - include: scenarios/linuxbridge.yml
+    when: neutron_deployment_scenario == 'linuxbridge'
+
+  - include: scenarios/openvswitch.yml
+    when: neutron_deployment_scenario == 'openvswitch'
+
+  - name: Configure the layer-3 agent /etc/neutron/l3_agent.ini
+    template: dest=/etc/neutron/l3_agent.ini
+              src=l3_agent.ini.j2 group=neutron mode=640
+    notify: restart l3 agent
+
+  - name: Configure the DHCP agent /etc/neutron/dhcp_agent.ini
+    template: dest=/etc/neutron/dhcp_agent.ini
+              src=dhcp_agent.ini.j2 group=neutron mode=640
+    notify: restart dhcp agent
+
+  - name: Configure the metadata agent /etc/neutron/metadata_agent.ini
+    template: dest=/etc/neutron/metadata_agent.ini
+              src=metadata_agent.ini.j2 group=neutron mode=640
+    notify: restart metadata agent
+
+  - name: Create /etc/neutron/plugin.ini link
+    file: dest=/etc/neutron/plugin.ini
+          src=/etc/neutron/plugins/ml2/ml2_conf.ini state=link group=neutron

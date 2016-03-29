@@ -1,0 +1,10 @@
+[DEFAULT]
+admin_token = {{ keystone_admin_token }}
+
+{% if log_debug %}
+debug = True
+verbose = True
+{% endif %}
+
+[database]
+connection = mysql://keystone:{{ keystone_database_password }}@{{ groups['dbservers'][0] }}/keystone
