@@ -13,12 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Password for 'keystone' databse
-# keystone_database_password: <password>
-
-# used to create demo environment in identity, if True, you will need to define
-# the keystone_demo_password
-demo_env: False
-
-# password for demo user in identity
-# keystone_demo_password: <password>
+  - name: bootstrap keystone
+    command: |
+      keystone-manage bootstrap
+      --bootstrap-username admin
+      --bootstrap-password {{ keystone_admin_password }}
+      --bootstrap-project-name admin
+      --bootstrap-role-name admin
+      --bootstrap-service-name keystone
+      --bootstrap-admin-url "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      --bootstrap-public-url "http://{{ groups['openstack_identity'][0] }}:5000/v3"
+      --bootstrap-internal-url "http://{{ groups['openstack_identity'][0] }}:5000/v3"
+    become: yes
+    become_user: keystone

@@ -18,3 +18,4 @@
     with_items:
       - uwsgi@keystone-admin.service
       - uwsgi@keystone-public.service
+      - memcached
