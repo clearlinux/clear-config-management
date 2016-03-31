@@ -7,7 +7,7 @@ verbose = True
 {% endif %}
 
 [database]
-connection = mysql://keystone:{{ keystone_database_password }}@{{ groups['dbservers'][0] }}/keystone
+connection = mysql+pymysql://keystone:{{ keystone_database_password }}@{{ groups['dbservers'][0] }}/keystone
 
 [cache]
 enabled = True
