@@ -24,7 +24,7 @@
       value: "{{ item.value }}"
       state: present
       ignoreerrors: yes
-    with_items: os_tuning_params
+    with_items: "{{ os_tuning_params }}"
 
   - name: Ensure openvswitch agent is running
     service: name={{ item }} enabled=yes state=started
