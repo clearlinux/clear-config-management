@@ -1,4 +1,6 @@
 [DEFAULT]
+rpc_backend = rabbit
+image_cache_dir = /var/lib/glance/cache/
 {% if log_debug %}
 debug = True
 verbose = True
@@ -14,5 +16,13 @@ auth_type = password
 project_domain_id = default
 user_domain_id = default
 project_name = service
-user-name = glance
+username = glance
 password = "{{ glance_user_password }}"
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ groups['messaging_servers'][0] }}
+rabbit_userid = {{ rabbitmq_username }}
+rabbit_password = {{ rabbitmq_password }}
+
+[paste_deploy]
+flavor = keystone+cachemanagement
