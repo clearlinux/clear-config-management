@@ -30,6 +30,7 @@
     with_items:
       - libvirtd.service
       - nova-compute.service
+      - uwsgi@nova-metadata.socket
       - uwsgi@nova-metadata.service
     when: inventory_hostname in groups['openstack_compute']
 
