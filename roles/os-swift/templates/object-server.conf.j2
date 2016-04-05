@@ -1,0 +1,30 @@
+[DEFAULT]
+
+bind_ip = {{ hostvars[inventory_hostname]['ansible_' + swift_public_interface_name ]['ipv4']['address'] }}
+bind_port = 6000
+user = swift
+swift_dir = /etc/swift
+devices = /srv/node
+mount_check = True
+
+[pipeline:main]
+pipeline = healthcheck recon object-server
+
+[filter:recon]
+use = egg:swift#recon
+recon_cache_path = /var/cache/swift
+recon_lock_path = /var/lock
+
+[app:object-server]
+use = egg:swift#object
+
+[object-replicator]
+
+[object-auditor]
+
+[object-reconstructor]
+
+[object-updater]
+
+[filter:healthcheck]
+use = egg:swift#healthcheck

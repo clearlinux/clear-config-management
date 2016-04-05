@@ -22,3 +22,9 @@
 
 [openstack_orchestration]
 192.168.50.19
+
+[openstack_object_storage_controller]
+192.168.50.20
+
+[openstack_object_storage]
+192.168.50.21

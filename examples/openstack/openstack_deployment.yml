@@ -27,3 +27,7 @@
 - hosts: openstack_orchestration
   roles:
     - os-heat
+
+- hosts: openstack_object_storage_controller:openstack_object_storage
+  roles:
+    - os-swift
