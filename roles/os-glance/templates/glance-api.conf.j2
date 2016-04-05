@@ -7,17 +7,17 @@ verbose = True
 {% endif %}
 
 [database]
-connection = "mysql+pymysql://glance:{{ glance_database_password }}@{{ groups['dbservers'][0] }}/glance"
+connection = mysql+pymysql://glance:{{ glance_database_password }}@{{ groups['dbservers'][0] }}/glance
 
 [keystone_authtoken]
-auth_uri ="http://{{ groups['openstack_identity'][0] }}:5000"
-auth_url = "http://{{ groups['openstack_identity'][0] }}:35357"
+auth_uri = http://{{ groups['openstack_identity'][0] }}:5000
+auth_url = http://{{ groups['openstack_identity'][0] }}:35357
 auth_type = password
 project_domain_id = default
 user_domain_id = default
 project_name = service
 username = glance
-password = "{{ glance_user_password }}"
+password = {{ glance_user_password }}
 
 [oslo_messaging_rabbit]
 rabbit_host = {{ groups['messaging_servers'][0] }}
