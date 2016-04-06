@@ -1,7 +1,6 @@
 [DEFAULT]
 {% if log_debug %}
 debug = True
-verbose = True
 {% endif %}
 rpc_backend = rabbit
 heat_metadata_server_url = "http://{{ groups['openstack_orchestration'][0] }}:8000"
