@@ -1,20 +1,16 @@
 [DEFAULT]
 {% if log_debug %}
 debug = True
-verbose = True
 {% endif %}
+enabled_apis = osapi_compute,metadata
+use_neutron = True
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
 rpc_backend = rabbit
 auth_strategy = keystone
+novncproxy_host = 0.0.0.0
 my_ip = {{ hostvars[inventory_hostname]['ansible_' + nova_public_interface_name ]['ipv4']['address'] }}
-# networking service
-network_api_class = nova.network.neutronv2.api.API
-security_group_api = neutron
-firewall_driver = nova.virt.firewall.NoopFirewallDriver
-{% if neutron_deployment_scenario == 'linuxbridge' %}
-linuxnet_interface_driver = nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
-{% elif neutron_deployment_scenario == 'openvswitch' %}
-linuxnet_interface_driver =
-{% endif %}
+force_dhcp_release = True
+allow_resize_to_same_host = True
 
 [database]
 connection = mysql+pymysql://nova:{{ nova_database_password }}@{{ groups['dbservers'][0] }}/nova
@@ -28,8 +24,8 @@ rabbit_userid = {{ rabbitmq_username }}
 rabbit_password = {{ rabbitmq_password }}
 
 [keystone_authtoken]
-auth_uri ="http://{{ groups['openstack_identity'][0] }}:5000"
-auth_url = "http://{{ groups['openstack_identity'][0] }}:35357"
+auth_uri = http://{{ groups['openstack_identity'][0] }}:5000
+auth_url = http://{{ groups['openstack_identity'][0] }}:35357
 auth_type = password
 project_domain_id = default
 user_domain_id = default
@@ -38,29 +34,29 @@ username = nova
 password = {{ nova_user_password }}
 
 [vnc]
-vncserver_proxyclient_address = $my_ip
 vncserver_listen = 0.0.0.0
+vncserver_proxyclient_address = $my_ip
 {% if inventory_hostname in groups['openstack_compute'] %}
-vnc_enabled = True
+enabled = True
 novncproxy_base_url = http://{{ groups['openstack_compute_controller'][0] }}:6080/vnc_auto.html
 {% endif %}
 
 [glance]
-host = {{ groups['openstack_image'][0] }}
+api_servers = http://{{ groups['openstack_image'][0] }}:9292
 
 [neutron]
-url = "http://{{ groups['openstack_networking'][0] }}:9696"
-auth_url = "http://{{ groups['openstack_identity'][0] }}:35357"
+url = http://{{ groups['openstack_networking'][0] }}:9696
+auth_url = http://{{ groups['openstack_identity'][0] }}:35357/v3
 auth_type = password
-project_domain_id = default
-user_domain_id = default
+auth_strategy = keystone
+project_domain_name = Default
+user_domain_name = Default
 region_name = RegionOne
 project_name = service
-user-name = neutron
-password = "{{ neutron_user_password }}"
-
+username = neutron
+password = {{ neutron_user_password }}
 service_metadata_proxy = True
-metadata_proxy_shared_secret = "{{ metadata_proxy_shared_secret }}"
+metadata_proxy_shared_secret = {{ metadata_proxy_shared_secret }}
 
 {% if inventory_hostname in groups['openstack_compute'] %}
 [libvirt]
