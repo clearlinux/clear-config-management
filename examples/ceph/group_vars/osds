@@ -1,0 +1,32 @@
+---
+# Enable only one scenario
+
+# First Scenario: Journal and osd_data on the same device
+#   This will collocate both journal and data on the same disk
+#   creating a partition at the beginning of the device
+# journal_collocation: true
+# devices:
+#   - /dev/sdb
+#   - /dev/sdc
+#   - /dev/sdd
+
+# Second Scenario: N journal devices for N OSDs
+#  In this example: sdb will be used for journaling of sdc and sdd
+#                   sdf will be used for journaling of sde
+# raw_multi_journal: true
+# devices:
+#   - /dev/sdc
+#   - /dev/sdd
+#   - /dev/sde
+# raw_journal_devices:
+#   - /dev/sdb
+#   - /dev/sdb
+#   - /dev/sdf
+
+# Third Scenario: Use a directory instead of a disk for OSDs
+# osd_directory: true
+# osd_directories:
+#   - /var/lib/ceph/osd/mydir1
+#   - /var/lib/ceph/osd/mydir2
+#   - /var/lib/ceph/osd/mydir3
+

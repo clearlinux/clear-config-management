@@ -1,0 +1,9 @@
+---
+- hosts: mons
+  roles:
+     - ceph-mon
+
+- hosts: osds
+  roles:
+    - ceph-osd
+
