@@ -1,4 +1,0 @@
----
-- hosts: messaging_servers
-  roles:
-    - rabbitmq
