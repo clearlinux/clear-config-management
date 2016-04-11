@@ -1,7 +1,7 @@
 ---
 # For a complete reference of variables, please go to roles/<role>/defaults/
 
-swupd_args: "-F staging -u http://clearlinux-sandbox.jf.intel.com/update/"
+swupd_args: ""
 
 database_root_password: secret
 rabbitmq_password: secret
@@ -15,11 +15,9 @@ glance_database_password: secret
 
 nova_user_password: secret
 nova_database_password: secret
-nova_public_interface_name: enp0s8
 
 neutron_database_password: secret
 neutron_user_password: secret
-neutron_public_interface_name: enp0s8
 metadata_proxy_shared_secret: secret
 
 heat_domain_admin_password: secret
