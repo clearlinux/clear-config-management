@@ -20,7 +20,9 @@
       domain_name: Default
       description: "Demo Project"
       endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      token: "{{ keystone_admin_token }}"
+      login_user: admin
+      login_password: "{{ keystone_admin_password }}"
+      login_project_name: "admin"
 
   - name: Create demo user
     keystone:
@@ -31,14 +33,18 @@
       domain_name: "Default"
       email: "demo@example.com"
       endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      token: "{{ keystone_admin_token }}"
+      login_user: admin
+      login_password: "{{ keystone_admin_password }}"
+      login_project_name: "admin"
 
   - name: Create demo role
     keystone:
       command: "ensure_role"
       role_name: "demo"
       endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      token: "{{ keystone_admin_token }}"
+      login_user: admin
+      login_password: "{{ keystone_admin_password }}"
+      login_project_name: "admin"
 
   - name: Add demo user to demo role
     keystone:
@@ -47,4 +53,6 @@
       project_name: "demo"
       role_name: "demo"
       endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      token: "{{ keystone_admin_token }}"
+      login_user: admin
+      login_password: "{{ keystone_admin_password }}"
+      login_project_name: "admin"

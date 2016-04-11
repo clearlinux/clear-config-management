@@ -17,12 +17,7 @@
   - include: keystone_db_setup.yml
   - include: keystone_configure_components.yml
   - include: keystone_db_sync.yml
+  - include: keystone_bootstrap.yml
   - include: keystone_service_entities.yml
   - include: keystone_project_access.yml
-
-  - name: Remove admin token
-    ini_file: dest=/etc/keystone/keystone.conf section=DEFAULT option=admin_token state=absent
-    notify:
-      - restart keystone
-
   - include: keystone_openrc.yml

@@ -1,10 +1,24 @@
 [DEFAULT]
-admin_token = {{ keystone_admin_token }}
+rpc_backend = rabbit
 
 {% if log_debug %}
 debug = True
-verbose = True
 {% endif %}
 
 [database]
-connection = mysql://keystone:{{ keystone_database_password }}@{{ groups['dbservers'][0] }}/keystone
+connection = mysql+pymysql://keystone:{{ keystone_database_password }}@{{ groups['dbservers'][0] }}/keystone
+
+[cache]
+enabled = True
+backend = oslo_cache.memcache_pool
+
+[catalog]
+caching = False
+
+[assignment]
+driver = sql
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ groups['messaging_servers'][0] }}
+rabbit_userid = {{ rabbitmq_username }}
+rabbit_password = {{ rabbitmq_password }}

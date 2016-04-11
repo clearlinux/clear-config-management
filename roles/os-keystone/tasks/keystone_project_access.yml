@@ -20,44 +20,22 @@
       domain_name: Default
       description: "{{ item.desc }}"
       endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      token: "{{ keystone_admin_token }}"
+      login_user: admin
+      login_password: "{{ keystone_admin_password }}"
+      login_project_name: "admin"
     with_items:
-      - { name: "admin", desc: "Admin Project" }
       - { name: "service", desc: "Service Project" }
-
-  - name: Create users
-    keystone:
-      command: "ensure_user"
-      user_name: "{{item.name}}"
-      project_name: "{{item.project}}"
-      password: "{{ keystone_admin_password  }}"
-      domain_name: "Default"
-      email: "{{item.name}}@example.com"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      token: "{{ keystone_admin_token }}"
-    with_items:
-      - { name: "admin", project: "admin" }
 
   - name: Create roles
     keystone:
       command: "ensure_role"
       role_name: "{{item}}"
       endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      token: "{{ keystone_admin_token }}"
+      login_user: admin
+      login_password: "{{ keystone_admin_password }}"
+      login_project_name: "admin"
     with_items:
-      - admin
       - user
-
-  - name: Add users to roles
-    keystone:
-      command: "ensure_user_role"
-      user_name: "{{item.user}}"
-      project_name: "{{item.project}}"
-      role_name: "{{item.role}}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      token: "{{ keystone_admin_token }}"
-    with_items:
-      - { user: "admin", project: "admin", role: "admin"}
 
   - include: keystone_demo_access.yml
     when: demo_env

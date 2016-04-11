@@ -17,3 +17,8 @@
     command: "nova-manage db sync"
     become: yes
     become_user: nova
+
+  - name: Perform a Nova API DB sync
+    command: "nova-manage api_db sync"
+    become: yes
+    become_user: nova

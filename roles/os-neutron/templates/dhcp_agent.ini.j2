@@ -3,9 +3,6 @@
 interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver
 {% elif neutron_deployment_scenario == 'openvswitch' %}
 dhcp_agent_manager = neutron.agent.dhcp_agent.DhcpAgentWithStateReport
-interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+interface_driver = openvswitch
 ovs_use_veth = False
-use_namespaces = True
 {% endif %}
-dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
-enable_isolated_metadata = True

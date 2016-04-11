@@ -16,5 +16,6 @@
   - name: restart glance
     service: name={{ item }} enabled=yes state=restarted
     with_items:
+      - memcached.service
       - glance-registry.service
       - glance-api.service

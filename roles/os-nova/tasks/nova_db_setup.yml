@@ -21,6 +21,14 @@
       name: nova
       state: present
 
+  - name: Create mysql nova_api database
+    delegate_to: "{{ groups['dbservers'][0] }}"
+    mysql_db:
+      login_user: "{{ database_root_user }}"
+      login_password: "{{ database_root_password }}"
+      name: nova_api
+      state: present
+
   - name: Create mysql nova user
     delegate_to: "{{ groups['dbservers'][0] }}"
     mysql_user:
@@ -28,6 +36,16 @@
       password: "{{ nova_database_password }}"
       priv: nova.*:ALL
       state: present
+      host: '%'
+      login_user: "{{ database_root_user }}"
+      login_password: "{{ database_root_password }}"
+
+  - name: Add privileges for nova_api database to nova user
+    delegate_to: "{{ groups['dbservers'][0] }}"
+    mysql_user:
+      name: nova
+      append_privs: yes
+      priv: nova_api.*:ALL
       host: '%'
       login_user: "{{ database_root_user }}"
       login_password: "{{ database_root_password }}"
