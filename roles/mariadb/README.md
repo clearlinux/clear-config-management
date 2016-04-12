@@ -1,6 +1,6 @@
 # Ansible role: MariaDB
 
-This role installs the database-mariadb-dev
+This role installs the database-mariadb
 bundle and starts the database service
 
 # Requirements

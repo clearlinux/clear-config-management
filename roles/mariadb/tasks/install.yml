@@ -14,9 +14,9 @@
 # limitations under the License.
 
 - name: Install mariadb bundle
-  command: "swupd bundle-add database-mariadb-dev {{ swupd_args }}"
+  command: "swupd bundle-add database-mariadb {{ swupd_args }}"
   args:
-    creates: /usr/share/clear/bundles/database-mariadb-dev
+    creates: /usr/share/clear/bundles/database-mariadb
 
 - name: Run swupd verify
   command: "swupd verify -f {{ swupd_args }}"
