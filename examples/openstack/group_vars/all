@@ -6,7 +6,6 @@ rabbitmq_password: secret
 
 keystone_database_password: secret
 keystone_admin_password: secret
-keystone_admin_token: secret
 
 glance_user_password: secret
 glance_database_password: secret

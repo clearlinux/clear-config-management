@@ -9,7 +9,6 @@ All variables of this role are defined in `defaults/main.yml`
 
 ## Mandatory variables
 * `keystone_database_password`
-* `keystone_admin_token`
 
 ## Handlers
 
