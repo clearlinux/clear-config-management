@@ -1,0 +1,19 @@
+server {
+       listen {{keystone_admin_port}};
+       server_name localhost;
+       location / {
+               include uwsgi_params;
+               uwsgi_pass unix:/run/uwsgi/keystone/admin.sock;
+               uwsgi_param SCRIPT_NAME '';
+       }
+}
+
+server {
+       listen {{keystone_public_port}};
+       server_name localhost;
+       location / {
+               include uwsgi_params;
+               uwsgi_pass unix:/run/uwsgi/keystone/public.sock;
+               uwsgi_param SCRIPT_NAME '';
+       }
+}

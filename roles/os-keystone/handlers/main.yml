@@ -19,3 +19,6 @@
       - uwsgi@keystone-admin.service
       - uwsgi@keystone-public.service
       - memcached
+
+  - name: restart nginx
+    service: name=nginx enabled=yes state=restarted
