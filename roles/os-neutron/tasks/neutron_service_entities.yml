@@ -23,7 +23,7 @@
       service_name: "neutron"
       service_type: "network"
       description: "OpenStack Networking"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
 
   - name: Create neutron endpoints
     delegate_to: "{{ groups['openstack_identity'][0] }}"
@@ -42,4 +42,4 @@
           interface: "internal"
         - url: "http://{{ groups['openstack_networking'][0] }}:9696"
           interface: "admin"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"

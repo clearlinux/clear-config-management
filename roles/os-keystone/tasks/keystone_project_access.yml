@@ -19,7 +19,7 @@
       project_name: "{{ item.name }}"
       domain_name: Default
       description: "{{ item.desc }}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -30,7 +30,7 @@
     keystone:
       command: "ensure_role"
       role_name: "{{item}}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
