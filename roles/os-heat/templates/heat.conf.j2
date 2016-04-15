@@ -3,14 +3,14 @@
 debug = True
 {% endif %}
 rpc_backend = rabbit
-heat_metadata_server_url = "http://{{ groups['openstack_orchestration'][0] }}:8000"
-heat_waitcondition_server_url = "http://{{ groups['openstack_orchestration'][0] }}:8000/v1/waitcondition"
-stack_domain_admin = "{{ heat_domain_admin }}"
-stack_domain_admin_password = "{{ heat_domain_admin_password }}"
-stack_user_domain_name = "{{ heat_domain }}"
+heat_metadata_server_url = http://{{ groups['openstack_orchestration'][0] }}:8000
+heat_waitcondition_server_url = http://{{ groups['openstack_orchestration'][0] }}:8000/v1/waitcondition
+stack_domain_admin = {{ heat_domain_admin }}
+stack_domain_admin_password = {{ heat_domain_admin_password }}
+stack_user_domain_name = {{ heat_domain }}
 
 [database]
-connection = "mysql+pymysql://heat:{{ heat_database_password }}@{{ groups['dbservers'][0] }}/heat"
+connection = mysql+pymysql://heat:{{ heat_database_password }}@{{ groups['dbservers'][0] }}/heat
 
 [oslo_messaging_rabbit]
 rabbit_host = {{ groups['messaging_servers'][0] }}
@@ -18,8 +18,8 @@ rabbit_userid = {{ rabbitmq_username }}
 rabbit_password = {{ rabbitmq_password }}
 
 [keystone_authtoken]
-auth_uri = http://{{ groups['openstack_identity'][0] }}:5000
-auth_url = http://{{ groups['openstack_identity'][0] }}:35357
+auth_uri = http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
+auth_url = http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
 auth_type = password
 project_domain_id = default
 user_domain_id = default
@@ -28,18 +28,14 @@ username = heat
 password = {{ heat_user_password }}
 
 [trustee]
-auth_uri = http://{{ groups['openstack_identity'][0] }}:5000
-auth_url = http://{{ groups['openstack_identity'][0] }}:35357
+auth_url = http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
 auth_type = password
-project_domain_id = default
-user_domain_id = default
-project_name = service
 username = heat
+user_domain_id = default
 password = {{ heat_user_password }}
-rpc_backend = rabbit
 
 [clients_keystone]
-auth_uri = http://{{ groups['openstack_identity'][0] }}:5000
+auth_uri = http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
 
 [ec2authtoken]
-auth_uri = http://{{ groups['openstack_identity'][0] }}:5000
+auth_uri = http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}

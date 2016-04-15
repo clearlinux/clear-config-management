@@ -25,7 +25,7 @@
       password: "{{ neutron_user_password  }}"
       domain_name: "Default"
       email: "{{item.name}}@example.com"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
     with_items:
       - { name: "neutron", project: "admin" }
 
@@ -39,6 +39,6 @@
       user_name: "{{item.user}}"
       project_name: "{{item.project}}"
       role_name: "{{item.role}}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
     with_items:
       - { user: "neutron", project: "service", role: "admin"}
