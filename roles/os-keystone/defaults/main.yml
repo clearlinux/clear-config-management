@@ -16,9 +16,27 @@
 # Password for 'keystone' databse
 # keystone_database_password: <password>
 
-# used to create demo environment in identity, if True, you will need to define
-# the keystone_demo_password
-demo_env: False
+### The folllowing variables can be used to specify ###
+### Custom services, projects, users and roles.     ###
+# keystone_services:
+#   - service_name: "nova"
+#     service_type: "compute"
+#     description: "OpenStack Compute Service"
 
-# password for demo user in identity
-# keystone_demo_password: <password>
+# keystone_projects:
+#   - project_name: "demo"
+#     description: "Demo Project"
+
+# keystone_users:
+#   - user_name: "demo"
+#     password: "secret"
+#     project_name: "demo"
+#     email: "demo@example.com"
+
+# keystone_roles:
+#   - demo
+
+# keystone_user_roles:
+#   - user_name: demo
+#     project_name: demo
+#     role_name: demo

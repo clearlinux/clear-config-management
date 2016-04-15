@@ -24,6 +24,19 @@
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
 
+  - name: Create custom services
+    keystone:
+      command: "ensure_service"
+      service_name: "{{item.service_name}}"
+      service_type: "{{item.service_type}}"
+      description: "{{item.description | default('')}}"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      login_user: admin
+      login_password: "{{ keystone_admin_password }}"
+      login_project_name: "admin"
+    with_items: "{{ keystone_services }}"
+    when: keystone_services is defined
+
   - name: Create keystone endpoints
     keystone:
       command: "ensure_endpoint"
