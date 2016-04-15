@@ -21,8 +21,8 @@
       --bootstrap-project-name admin
       --bootstrap-role-name admin
       --bootstrap-service-name keystone
-      --bootstrap-admin-url "http://{{ groups['openstack_identity'][0] }}:35357/v3"
-      --bootstrap-public-url "http://{{ groups['openstack_identity'][0] }}:5000/v3"
-      --bootstrap-internal-url "http://{{ groups['openstack_identity'][0] }}:5000/v3"
+      --bootstrap-admin-url "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      --bootstrap-public-url "http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}/v3"
+      --bootstrap-internal-url "http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}/v3"
     become: yes
     become_user: keystone

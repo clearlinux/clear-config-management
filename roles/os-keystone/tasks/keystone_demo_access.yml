@@ -19,7 +19,7 @@
       project_name: "demo"
       domain_name: Default
       description: "Demo Project"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -32,7 +32,7 @@
       password: "{{ keystone_demo_password  }}"
       domain_name: "Default"
       email: "demo@example.com"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -41,7 +41,7 @@
     keystone:
       command: "ensure_role"
       role_name: "demo"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -52,7 +52,7 @@
       user_name: "demo"
       project_name: "demo"
       role_name: "demo"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"

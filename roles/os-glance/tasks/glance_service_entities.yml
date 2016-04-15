@@ -23,7 +23,7 @@
       service_name: "glance"
       service_type: "image"
       description: "Glance Image Service"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
 
   - name: Create glance endpoints
     delegate_to: "{{ groups['openstack_identity'][0] }}"
@@ -42,4 +42,4 @@
           interface: "internal"
         - url: "http://{{ groups['openstack_image'][0] }}:9292"
           interface: "admin"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:35357/v3"
+      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
