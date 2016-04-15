@@ -75,6 +75,7 @@
       login_project_name: "admin"
     with_items: "{{ keystone_users }}"
     when: keystone_users is defined
+    no_log: true
 
   - name: Map users and roles
     keystone:

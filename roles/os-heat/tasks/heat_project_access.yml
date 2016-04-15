@@ -45,6 +45,7 @@
         project: "admin"
         password: "{{ heat_domain_admin_password }}"
         domain: "{{ heat_domain }}"
+    no_log: true
 
   - name: Create heat roles
     delegate_to: "{{ groups['openstack_identity'][0] }}"
