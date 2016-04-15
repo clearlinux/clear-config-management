@@ -23,8 +23,8 @@ rabbit_userid = {{ rabbitmq_username }}
 rabbit_password = {{ rabbitmq_password }}
 
 [keystone_authtoken]
-auth_uri = http://{{ groups['openstack_identity'][0] }}:5000
-auth_url = http://{{ groups['openstack_identity'][0] }}:35357
+auth_uri = http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
+auth_url = http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
 auth_type = password
 project_domain_id = default
 user_domain_id = default
@@ -46,7 +46,7 @@ api_servers = http://{{ groups['openstack_image'][0] }}:9292
 
 [neutron]
 url = http://{{ groups['openstack_networking'][0] }}:9696
-auth_url = http://{{ groups['openstack_identity'][0] }}:35357/v3
+auth_url = http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3
 auth_type = password
 auth_strategy = keystone
 project_domain_name = Default

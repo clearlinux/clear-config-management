@@ -30,6 +30,10 @@ rabbitmq_username: openstack
 # Password for 'admin' user
 # keystone_admin_password: <password>
 
+# Default ports
+keystone_admin_port: 35357
+keystone_public_port: 5000
+
 # Password for 'nova' user
 # nova_user_password: <password>
 
