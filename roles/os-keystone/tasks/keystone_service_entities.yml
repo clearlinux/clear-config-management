@@ -19,10 +19,11 @@
       service_name: "keystone"
       service_type: "identity"
       description: "OpenStack Identity"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
+      insecure: yes
 
   - name: Create custom services
     keystone:
@@ -30,12 +31,12 @@
       service_name: "{{item.service_name}}"
       service_type: "{{item.service_type}}"
       description: "{{item.description | default('')}}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
-      login_user: admin
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      login_user: "admin"
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
-    with_items: "{{ keystone_services }}"
-    when: keystone_services is defined
+      insecure: yes
+    with_items: "{{ keystone_services | default([]) }}"
 
   - name: Create keystone endpoints
     keystone:
@@ -44,13 +45,14 @@
       service_name: "keystone"
       service_type: "identity"
       endpoint_list:
-        - url: "http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}/v3"
+        - url: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}/v3"
           interface: "public"
-        - url: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+        - url: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
           interface: "admin"
-        - url: "http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}/v3"
+        - url: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}/v3"
           interface: "internal"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
-      login_user: admin
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      login_user: "admin"
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
+      insecure: yes

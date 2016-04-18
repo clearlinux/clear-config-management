@@ -16,6 +16,9 @@
   - name: Create /etc/nginx directory
     file: path=/etc/nginx state=directory
 
+  - include: keystone_certificates.yml
+    when: keystone_ssl
+
   - name: Create keystone configuration for nginx
     template: dest=/etc/nginx/keystone.conf src=nginx-keystone.conf.j2
     notify: restart nginx

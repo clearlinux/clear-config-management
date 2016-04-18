@@ -16,6 +16,15 @@
 # Password for 'keystone' databse
 # keystone_database_password: <password>
 
+# You can tune the following variables when keystone_ssl is set yo yes
+keystone_ssl: False
+keystone_fqdn: "{{ ansible_fqdn }}"
+keystone_root_domain: "example.com"
+keystone_p12password: "secret"
+keystone_hostname: "{{ keystone_fqdn.split('.')|first }}"
+keystone_subject: "/DC={{keystone_fqdn.split('.')[1:]|reverse|join('/DC=')}}/CN={{keystone_fqdn}}/"
+keystone_subj: "/DC={{keystone_root_domain.split('.')|reverse|join('/DC=')}}/CN=CA/"
+
 ### The folllowing variables can be used to specify ###
 ### Custom services, projects, users and roles.     ###
 # keystone_services:

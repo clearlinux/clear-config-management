@@ -19,10 +19,11 @@
       project_name: "{{ item.name }}"
       domain_name: Default
       description: "{{ item.desc }}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
+      insecure: yes
     with_items:
       - { name: "service", desc: "Service Project" }
 
@@ -32,34 +33,33 @@
       project_name: "{{ item.project_name }}"
       domain_name: Default
       description: "{{ item.description | default('') }}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
-    with_items: "{{ keystone_projects }}"
-    when: keystone_projects is defined
+      insecure: yes
+    with_items: "{{ keystone_projects | default([]) }}"
 
   - name: Create roles
     keystone:
       command: "ensure_role"
-      role_name: "{{item}}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      role_name: "user"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
-    with_items:
-      - user
+      insecure: yes
 
   - name: Create custom roles
     keystone:
       command: "ensure_role"
       role_name: "{{ item }}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
-    with_items: "{{ keystone_roles }}"
-    when: keystone_roles is defined
+      insecure: yes
+    with_items: "{{ keystone_roles | default([]) }}"
 
   - name: Create custom users
     keystone:
@@ -69,12 +69,12 @@
       password: "{{ item.password }}"
       email: "{{ item.email | default('') }}"
       domain_name: "Default"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
-    with_items: "{{ keystone_users }}"
-    when: keystone_users is defined
+      insecure: yes
+    with_items: "{{ keystone_users | default([]) }}"
     no_log: true
 
   - name: Map users and roles
@@ -83,9 +83,9 @@
       user_name: "{{ item.user_name }}"
       project_name: "{{ item.project_name }}"
       role_name: "{{ item.role_name }}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
-      login_user: admin
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      login_user: "admin"
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
-    with_items: "{{ keystone_user_roles }}"
-    when: keystone_user_roles is defined
+      insecure: yes
+    with_items: "{{ keystone_user_roles | default([]) }}"
