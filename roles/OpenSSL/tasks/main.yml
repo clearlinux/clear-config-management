@@ -1,0 +1,6 @@
+---
+  - name: Create /etc/ssl directory
+    file: path=/etc/ssl state=directory
+
+  - name: Create /etc/ssl/openssl.cnf if does not exists already
+    copy: src=openssl.cnf dest=/etc/ssl/openssl.cnf force=no
