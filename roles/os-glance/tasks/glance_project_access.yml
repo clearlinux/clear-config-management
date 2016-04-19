@@ -25,7 +25,8 @@
       password: "{{ glance_user_password  }}"
       domain_name: "Default"
       email: "{{item.name}}@example.com"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      insecure: yes
     with_items:
       - { name: "glance", project: "admin" }
 
@@ -39,6 +40,7 @@
       user_name: "{{item.user}}"
       project_name: "{{item.project}}"
       role_name: "{{item.role}}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      insecure: yes
     with_items:
       - { user: "glance", project: "service", role: "admin"}

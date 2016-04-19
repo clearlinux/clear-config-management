@@ -23,7 +23,8 @@
       service_name: "nova"
       service_type: "compute"
       description: "Nova Compute Service"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      insecure: yes
 
   - name: Create nova endpoints
     delegate_to: "{{ groups['openstack_identity'][0] }}"
@@ -42,4 +43,5 @@
           interface: "internal"
         - url: "http://{{ groups['openstack_compute_controller'][0] }}:8774/v2/%(tenant_id)s"
           interface: "admin"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      insecure: yes

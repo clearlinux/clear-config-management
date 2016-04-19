@@ -23,14 +23,17 @@ rabbit_userid = {{ rabbitmq_username }}
 rabbit_password = {{ rabbitmq_password }}
 
 [keystone_authtoken]
-auth_uri = http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
-auth_url = http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
+auth_uri = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
+auth_url = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
 auth_type = password
 project_domain_id = default
 user_domain_id = default
 project_name = service
 username = nova
 password = {{ nova_user_password }}
+{% if keystone_ssl %}
+insecure = True
+{% endif %}
 
 [vnc]
 novncproxy_host = 0.0.0.0
@@ -46,7 +49,7 @@ api_servers = http://{{ groups['openstack_image'][0] }}:9292
 
 [neutron]
 url = http://{{ groups['openstack_networking'][0] }}:9696
-auth_url = http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3
+auth_url = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3
 auth_type = password
 auth_strategy = keystone
 project_domain_name = Default
@@ -55,6 +58,9 @@ region_name = RegionOne
 project_name = service
 username = neutron
 password = {{ neutron_user_password }}
+{% if keystone_ssl %}
+insecure = True
+{% endif %}
 service_metadata_proxy = True
 metadata_proxy_shared_secret = {{ metadata_proxy_shared_secret }}
 

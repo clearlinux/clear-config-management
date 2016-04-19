@@ -9,14 +9,17 @@ debug = True
 connection = mysql+pymysql://glance:{{ glance_database_password }}@{{ groups['dbservers'][0] }}/glance
 
 [keystone_authtoken]
-auth_uri = http://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
-auth_url = http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
+auth_uri = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
+auth_url = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
 auth_type = password
 project_domain_id = default
 user_domain_id = default
 project_name = service
 username = glance
 password = {{ glance_user_password }}
+{% if keystone_ssl %}
+insecure = True
+{% endif %}
 
 [oslo_messaging_rabbit]
 rabbit_host = {{ groups['messaging_servers'][0] }}

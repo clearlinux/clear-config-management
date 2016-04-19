@@ -19,9 +19,10 @@
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       command: "ensure_domain"
       domain_name: "{{ heat_domain }}"
+      insecure: yes
 
   - name: Create users
     delegate_to: "{{ groups['openstack_identity'][0] }}"
@@ -35,7 +36,8 @@
       password: "{{ item.password }}"
       domain_name: "{{ item.domain }}"
       email: "{{item.name}}@example.com"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      insecure: yes
     with_items:
       - name: "heat"
         project: "admin"
@@ -52,10 +54,11 @@
     keystone:
       command: "ensure_role"
       role_name: "{{item}}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
+      insecure: yes
     with_items:
       - heat_stack_owner
       - heat_stack_user
@@ -70,6 +73,7 @@
       user_name: "{{ item.user }}"
       project_name: "{{ item.project }}"
       role_name: "{{ item.role }}"
-      endpoint: "http://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      insecure: yes
     with_items:
       - { user: "heat", project: "service", role: "admin"}
