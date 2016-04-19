@@ -15,3 +15,6 @@
 
   - name: restart nginx
     service: name=nginx enabled=yes state=restarted
+
+  - name: restart horizon
+    service: name=uwsgi@horizon enabled=yes state=restarted

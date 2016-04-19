@@ -13,12 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: install.yml
+  - name: Create configuration files directory
+    file: path=/etc/horizon/local_settings.d state=directory owner=httpd mode=550
 
-  - include: configure_horizon.yml
-
-  - name: Start horizon
-    service: name={{ item }} enabled=yes state=started
-    with_items:
-      - nginx
-      - uwsgi@horizon.socket
+  - name: Create configuration file
+    template: src=10_host.py.j2 dest=/etc/horizon/local_settings.d/10_host.py owner=httpd mode=550
+    notify: restart horizon
