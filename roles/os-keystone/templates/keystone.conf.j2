@@ -1,6 +1,4 @@
 [DEFAULT]
-rpc_backend = rabbit
-
 {% if log_debug %}
 debug = True
 {% endif %}
@@ -17,8 +15,3 @@ caching = False
 
 [assignment]
 driver = sql
-
-[oslo_messaging_rabbit]
-rabbit_host = {{ groups['messaging_servers'][0] }}
-rabbit_userid = {{ rabbitmq_username }}
-rabbit_password = {{ rabbitmq_password }}

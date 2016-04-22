@@ -1,5 +1,4 @@
 [DEFAULT]
-rpc_backend = rabbit
 image_cache_dir = /var/lib/glance/cache/
 {% if log_debug %}
 debug = True
@@ -20,11 +19,6 @@ password = {{ glance_user_password }}
 {% if keystone_ssl %}
 insecure = True
 {% endif %}
-
-[oslo_messaging_rabbit]
-rabbit_host = {{ groups['messaging_servers'][0] }}
-rabbit_userid = {{ rabbitmq_username }}
-rabbit_password = {{ rabbitmq_password }}
 
 [paste_deploy]
 flavor = keystone+cachemanagement
