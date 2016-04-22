@@ -15,7 +15,9 @@ auth service required = none
 auth client required = none
 auth supported = none
 {% endif %}
+{% if not mon_containerized_deployment_with_kv %}
 fsid = {{ fsid }}
+{% endif %}
 max open files = {{ max_open_files }}
 osd pool default pg num = {{ pool_default_pg_num }}
 osd pool default pgp num = {{ pool_default_pgp_num }}
@@ -88,13 +90,23 @@ debug mon = {{ debug_mon_level }}
 debug paxos = {{ debug_mon_level }}
 debug auth = {{ debug_mon_level }}
 {% endif %}
+{% if not mon_containerized_deployment_with_kv %}
 {% for host in groups[mon_group_name] %}
-{% if hostvars[host]['ansible_hostname'] is defined %}
+{% if hostvars[host]['ansible_fqdn'] is defined and mon_use_fqdn %}
+[mon.{{ hostvars[host]['ansible_fqdn'] }}]
+host = {{ hostvars[host]['ansible_fqdn'] }}
+{% elif hostvars[host]['ansible_hostname'] is defined %}
 [mon.{{ hostvars[host]['ansible_hostname'] }}]
 host = {{ hostvars[host]['ansible_hostname'] }}
-mon addr = {{ hostvars[host]['ansible_' + (hostvars[host]['monitor_interface'] if hostvars[host]['monitor_interface'] is defined else monitor_interface) ]['ipv4']['address'] }}
+{% endif %}
+# we need to check if monitor_interface is defined in the inventory per host or if it's set in a group_vars file
+{% if (hostvars[host]['monitor_interface'] is defined and hostvars[host]['monitor_interface'] != "interface") or monitor_interface != "interface" %}
+{% include 'mon_addr_interface.j2' %}
+{% else %}
+{% include 'mon_addr_address.j2' %}
 {% endif %}
 {% endfor %}
+{% endif %}
 
 [osd]
 osd mkfs type = {{ osd_mkfs_type }}
@@ -148,17 +160,20 @@ osd deep scrub stride = {{ osd_deep_scrub_stride }}
 
 {% if groups[mds_group_name] is defined %}
 {% for host in groups[mds_group_name] %}
-{% if hostvars[host]['ansible_hostname'] is defined %}
+{% if hostvars[host]['ansible_fqdn'] is defined and mds_use_fqdn %}
+[mds.{{ hostvars[host]['ansible_fqdn'] }}]
+host = {{ hostvars[host]['ansible_fqdn'] }}
+{% elif hostvars[host]['ansible_hostname'] is defined %}
 [mds.{{ hostvars[host]['ansible_hostname'] }}]
 host = {{ hostvars[host]['ansible_hostname'] }}
 {% endif %}
 {% endfor %}
+{% endif %}
 {% if enable_debug_mds %}
 debug mds = {{ debug_mds_level }}
 debug mds balancer = {{ debug_mds_level }}
 debug mds log = {{ debug_mds_level }}
 debug mds migrator = {{ debug_mds_level }}
-{% endif %}
 {% endif %}
 
 {% if groups[rgw_group_name] is defined %}
@@ -169,12 +184,12 @@ debug mds migrator = {{ debug_mds_level }}
 rgw dns name = {{ radosgw_dns_name }}
 {% endif %}
 host = {{ hostvars[host]['ansible_hostname'] }}
-keyring = /var/lib/ceph/radosgw/ceph-rgw.{{ hostvars[host]['ansible_hostname'] }}/keyring
+keyring = /var/lib/ceph/radosgw/{{ cluster }}-rgw.{{ hostvars[host]['ansible_hostname'] }}/keyring
 rgw socket path = /tmp/radosgw-{{ hostvars[host]['ansible_hostname'] }}.sock
-log file = /var/log/ceph/radosgw-{{ hostvars[host]['ansible_hostname'] }}.log
-rgw data = /var/lib/ceph/radosgw/ceph-rgw.{{ hostvars[host]['ansible_hostname'] }}
+log file = /var/log/ceph/{{ cluster }}-rgw-{{ hostvars[host]['ansible_hostname'] }}.log
+rgw data = /var/lib/ceph/radosgw/{{ cluster }}-rgw.{{ hostvars[host]['ansible_hostname'] }}
 {% if radosgw_frontend  == 'civetweb' %}
-rgw frontends = civetweb port={{ radosgw_civetweb_port }}
+rgw frontends = civetweb port={{ radosgw_civetweb_bind_ip }}:{{ radosgw_civetweb_port }}
 {% endif %}
 {% if radosgw_keystone %}
 rgw keystone url = {{ radosgw_keystone_url }}
@@ -191,7 +206,11 @@ nss db path = {{ radosgw_nss_db_path }}
 
 {% if groups[restapi_group_name] is defined %}
 [client.restapi]
-public addr = {{ hostvars[inventory_hostname]['ansible_' + restapi_interface]['ipv4']['address'] }}:{{ restapi_port }}
+{% if restapi_interface != "interface" %}
+{% include 'client_restapi_interface.j2' %}
+{% else %}
+{% include 'client_restapi_address.j2' %}
+{% endif %}
 restapi base url = {{ restapi_base_url }}
 restapi log level = {{ restapi_log_level }}
 keyring = /var/lib/ceph/restapi/ceph-restapi/keyring

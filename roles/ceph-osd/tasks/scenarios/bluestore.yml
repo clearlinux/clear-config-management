@@ -1,5 +1,6 @@
+
 ---
-## SCENARIO 1: JOURNAL AND OSD_DATA ON THE SAME DEVICE
+## SCENARIO 4: BLUESTORE
 
 - include: ../check_devices.yml
 
@@ -10,7 +11,7 @@
 # NOTE (alahouze): if the device is a partition, the parted command below has
 # failed, this is why we check if the device is a partition too.
 - name: automatic prepare osd disk(s) without partitions
-  command: ceph-disk prepare --cluster "{{ cluster }}" "/dev/{{ item.key }}"
+  command: ceph-disk prepare --bluestore --cluster "{{ cluster }}" "/dev/{{ item.key }}"
   ignore_errors: true
   register: prepared_osds
   with_dict: ansible_devices
@@ -18,11 +19,11 @@
     ansible_devices is defined and
     item.value.removable == "0" and
     item.value.partitions|count == 0 and
-    journal_collocation and
+    bluestore and
     osd_auto_discovery
 
 - name: manually prepare osd disk(s)
-  command: "ceph-disk prepare --cluster {{ cluster }} {{ item.2 }}"
+  command: ceph-disk prepare --bluestore --cluster "{{ cluster }}" "{{ item.2 }}"
   ignore_errors: true
   with_together:
     - combined_parted_results.results
@@ -33,7 +34,7 @@
     not item.1.get("skipped") and
     item.0.get("rc", 0) != 0 and
     item.1.get("rc", 0) != 0 and
-    journal_collocation and not
+    bluestore and not
     osd_auto_discovery
 
 - include: ../activate_osds.yml

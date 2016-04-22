@@ -6,6 +6,7 @@
 ###########
 
 fetch_directory: fetch/
+cluster: ceph # cluster name
 
 ###########
 # INSTALL #
@@ -16,12 +17,13 @@ osd_group_name: osds
 rgw_group_name: rgws
 mds_group_name: mdss
 restapi_group_name: restapis
+rbdmirror_group_name: rbdmirrors
 
 # If check_firewall is true, then ansible will try to determine if the
 # Ceph ports are blocked by a firewall. If the machine running ansible
 # cannot reach the Ceph ports for some other reason, you may need or
 # want to set this to False to skip those checks.
-check_firewall: True
+check_firewall: False
 
 # This variable determines if ceph packages can be updated.  If False, the
 # package resources will use "state=present".  If True, they will use
@@ -35,17 +37,27 @@ debian_package_dependencies:
   - hdparm
   - ntp
 
-redhat_package_dependencies:
+centos_package_dependencies:
   - python-pycurl
   - hdparm
   - yum-plugin-priorities.noarch
   - epel-release
   - ntp
   - python-setuptools
+  - libselinux-python
+
+redhat_package_dependencies:
+  - python-pycurl
+  - hdparm
+  - ntp
+  - python-setuptools
+
+# Whether or not to install the ceph-test package.
+ceph_test: False
 
 ## Configure package origin
 #
-ceph_origin: 'upstream' # or 'distro'
+ceph_origin: 'distro' # or 'upstream'
 # 'distro' means that no separate repo file will be added
 # you will get whatever version of Ceph is included in your Linux distro.
 #
@@ -56,7 +68,7 @@ ceph_use_distro_backports: false # DEBIAN ONLY
 ########
 
 # COMMUNITY VERSION
-ceph_stable: false # use ceph stable branch
+ceph_stable: True # use ceph stable branch
 ceph_stable_key: https://download.ceph.com/keys/release.asc
 ceph_stable_release: infernalis # ceph stable release
 ceph_stable_repo: "http://ceph.com/debian-{{ ceph_stable_release }}"
@@ -70,6 +82,7 @@ ceph_stable_releases:
   - firefly
   - giant
   - hammer
+  - infernalis
 
 # Use the option below to specify your applicable package tree, eg. when using non-LTS Ubuntu versions
 # # for a list of available Debian distributions, visit http://ceph.com/debian-{{ ceph_stable_release }}/dists/
@@ -163,17 +176,53 @@ debug_mds_level: 20
 rbd_cache: "true"
 rbd_cache_writethrough_until_flush: "true"
 rbd_concurrent_management_ops: 20
-rbd_client_directories: false # this will create rbd_client_log_path and rbd_client_admin_socket_path directories with proper permissions, this WON'T work if libvirt and kvm are installed
-rbd_client_log_file: /var/log/rbd-clients/qemu-guest-$pid.log # must be writable by QEMU and allowed by SELinux or AppArmor
-rbd_client_log_path: /var/log/rbd-clients/
-rbd_client_admin_socket_path: /var/run/ceph/rbd-clients # must be writable by QEMU and allowed by SELinux or AppArmor
+
+rbd_client_directories: true # this will create rbd_client_log_path and rbd_client_admin_socket_path directories with proper permissions
+
+# Permissions for the rbd_client_log_path and
+# rbd_client_admin_socket_path. Depending on your use case for Ceph
+# you may want to change these values. The default, which is used if
+# any of the variables are unset or set to a false value (like `null`
+# or `false`) is to automatically determine what is appropriate for
+# the Ceph version with non-OpenStack workloads -- ceph:ceph and 0770
+# for infernalis releases, and root:root and 1777 for pre-infernalis
+# releases.
+#
+# For other use cases, including running Ceph with OpenStack, you'll
+# want to set these differently:
+#
+# For OpenStack on RHEL, you'll want:
+#   rbd_client_directory_owner: "qemu"
+#   rbd_client_directory_group: "libvirtd" (or "libvirt", depending on your version of libvirt)
+#   rbd_client_directory_mode: "0755"
+#
+# For OpenStack on Ubuntu or Debian, set:
+#    rbd_client_directory_owner: "libvirt-qemu"
+#    rbd_client_directory_group: "kvm"
+#    rbd_client_directory_mode: "0755"
+#
+# If you set rbd_client_directory_mode, you must use a string (e.g.,
+# 'rbd_client_directory_mode: "0755"', *not*
+# 'rbd_client_directory_mode: 0755', or Ansible will complain: mode
+# must be in octal or symbolic form
+rbd_client_directory_owner: null
+rbd_client_directory_group: null
+rbd_client_directory_mode: null
+
+rbd_client_log_path: /var/log/ceph
+rbd_client_log_file: "{{ rbd_client_log_path }}/qemu-guest-$pid.log" # must be writable by QEMU and allowed by SELinux or AppArmor
+rbd_client_admin_socket_path: /var/run/ceph # must be writable by QEMU and allowed by SELinux or AppArmor
 rbd_default_features: 3
 rbd_default_map_options: rw
 rbd_default_format: 2
 
 ## Monitor options
 #
+# You must define either monitor_interface or monitor_address. Preference
+# will go to monitor_interface if both are defined.
 monitor_interface: interface
+monitor_address: 0.0.0.0
+mon_use_fqdn: false # if set to true, the MON name used will be the fqdn in the ceph.conf
 mon_osd_down_out_interval: 600
 mon_osd_min_down_reporters: 7 # number of OSDs per host + 1
 mon_clock_drift_allowed: .15
@@ -190,8 +239,8 @@ mon_pg_warn_max_object_skew: 10 # set to 20 or higher to disable complaints abou
 journal_size: 0
 pool_default_pg_num: 128
 pool_default_pgp_num: 128
-pool_default_size: 2
-pool_default_min_size: 1
+pool_default_size: 3
+pool_default_min_size: 0 # 0 means no specific default; ceph will use (pool_default_size)-(pool_default_size/2) so 2 if pool_default_size=3
 public_network: 0.0.0.0/0
 cluster_network: "{{ public_network }}"
 osd_mkfs_type: xfs
@@ -240,11 +289,16 @@ osd_disk_thread_ioprio_priority: 0
 osd_scrub_chunk_max: 5
 osd_deep_scrub_stride: 1048576
 
+## MDS options
+#
+mds_use_fqdn: false # if set to true, the MDS name used will be the fqdn in the ceph.conf
+
 ## Rados Gateway options
 #
 #radosgw_dns_name: your.subdomain.tld # subdomains used by radosgw. See http://ceph.com/docs/master/radosgw/config/#enabling-subdomain-s3-calls
 radosgw_frontend: civetweb # supported options are 'apache' or 'civetweb', also edit roles/ceph-rgw/defaults/main.yml
 radosgw_civetweb_port: 8080 # on Infernalis we get: "set_ports_option: cannot bind to 80: 13 (Permission denied)"
+radosgw_civetweb_bind_ip: "{{ ansible_default_ipv4 }}"
 radosgw_keystone: false # activate OpenStack Keystone options full detail here: http://ceph.com/docs/master/radosgw/keystone/
 #radosgw_keystone_url: # url:admin_port ie: http://192.168.0.1:35357
 radosgw_keystone_admin_token: password
@@ -263,6 +317,7 @@ email_address: foo@bar.com
 ## REST API options
 #
 restapi_interface: "{{ monitor_interface }}"
+restapi_address: "{{ monitor_address }}"
 restapi_port: 5000
 restapi_base_url: /api/v0.1
 restapi_log_level: warning # available level are: critical, error, warning, info, debug
@@ -310,3 +365,7 @@ os_tuning_params:
 ##########
 
 docker: false
+
+# Do not comment the variable mon_containerized_deployment_with_kv here. This variable is being used
+# by ceph.conf.j2 template. so it should always be defined
+mon_containerized_deployment_with_kv: false

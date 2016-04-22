@@ -10,7 +10,7 @@
 # NOTE (alahouze): if the device is a partition, the parted command below has
 # failed, this is why we check if the device is a partition too.
 - name: prepare osd disk(s)
-  command: "ceph-disk prepare {{ item.2 }} {{ item.3 }}"
+  command: "ceph-disk prepare --cluster {{ cluster }} {{ item.2 }} {{ item.3 }}"
   with_together:
     - combined_parted_results.results
     - combined_ispartition_results.results
@@ -19,8 +19,10 @@
   changed_when: false
   ignore_errors: true
   when:
-    item.0.rc != 0 and
-    item.1.rc != 0 and
+    not item.0.get("skipped") and
+    not item.1.get("skipped") and
+    item.0.get("rc", 0) != 0 and
+    item.1.get("rc", 0) != 0 and
     raw_multi_journal and
     not osd_auto_discovery
 
