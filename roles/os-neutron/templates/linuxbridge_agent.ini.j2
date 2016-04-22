@@ -1,9 +1,9 @@
 [linux_bridge]
-physical_interface_mappings = "public:{{ neutron_public_interface_name }}"
+physical_interface_mappings = "public:{{ public_interface }}"
 
 [vxlan]
 enable_vxlan = True
-local_ip = {{ hostvars[inventory_hostname]['ansible_' + neutron_public_interface_name ]['ipv4']['address'] }}
+local_ip = {{ hostvars[inventory_hostname]['ansible_' + public_interface ]['ipv4']['address'] }}
 l2_population = True
 
 [agent]

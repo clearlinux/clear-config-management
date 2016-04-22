@@ -7,7 +7,7 @@ use_neutron = True
 firewall_driver = nova.virt.firewall.NoopFirewallDriver
 rpc_backend = rabbit
 auth_strategy = keystone
-my_ip = {{ hostvars[inventory_hostname]['ansible_' + nova_public_interface_name ]['ipv4']['address'] }}
+my_ip = {{ hostvars[inventory_hostname]['ansible_' + public_interface ]['ipv4']['address'] }}
 force_dhcp_release = True
 allow_resize_to_same_host = True
 

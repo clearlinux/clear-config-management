@@ -2,6 +2,7 @@
 # For a complete reference of variables, please go to roles/<role>/defaults/
 
 database_root_password: secret
+
 rabbitmq_password: secret
 
 keystone_database_password: secret
@@ -12,11 +13,9 @@ glance_database_password: secret
 
 nova_user_password: secret
 nova_database_password: secret
-nova_public_interface_name: eno1
 
 neutron_database_password: secret
 neutron_user_password: secret
-neutron_public_interface_name: eno1
 metadata_proxy_shared_secret: secret
 
 heat_domain_admin_password: secret

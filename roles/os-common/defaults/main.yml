@@ -49,3 +49,9 @@ keystone_ssl: false
 # Choose the networking deployment scenario
 # either linuxbridge or openvswitch
 neutron_deployment_scenario: linuxbridge
+
+# Interface name where to deploy openstack services
+# If not specified, the services will be installed
+# In the ip address of the interface with a default gateway
+# values could be eth0, eno1, enp0s8, etc.
+public_interface: "{{ ansible_default_ipv4.alias }}"

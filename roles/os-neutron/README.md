@@ -11,7 +11,6 @@ All variables of this role are defined in `defaults/main.yml`
 
 ## Mandatory variables
 * `neutron_database_password`
-* `neutron_public_interface_name`
 * `metadata_proxy_shared_secret`
 
 ## Handlers

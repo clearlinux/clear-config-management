@@ -22,7 +22,7 @@ firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewal
 
 {% if neutron_deployment_scenario == 'openvswitch' %}
 [ovs]
-local_ip = {{ hostvars[inventory_hostname]['ansible_' + neutron_public_interface_name ]['ipv4']['address'] }}
+local_ip = {{ hostvars[inventory_hostname]['ansible_' + public_interface ]['ipv4']['address'] }}
 datapath_type = system
 tunnel_bridge = br-tun
 

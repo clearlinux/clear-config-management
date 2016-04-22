@@ -19,7 +19,3 @@
 # values [kvm | qemu]
 # If this is not set, then the playbook will try to guess it.
 # nova_virt_type: qemu
-#
-# Public interface of your machines, if not define it will use autodiscover for
-# each machine, this could be use in case your iface are different in your nodes
-# nova_public_interface_name: <iface>

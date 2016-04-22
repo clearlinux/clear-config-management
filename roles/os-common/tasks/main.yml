@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: common_interface_detect.yml
-    when: ( inventory_hostname in groups['openstack_compute_controller'] or
-            inventory_hostname in groups['openstack_compute'] or
-            inventory_hostname in groups['openstack_networking'] ) and
-          ( nova_public_interface_name is not defined or
-            neutron_public_interface_name is not defined )
-
   - set_fact: keystone_protocol=http
     when: not keystone_ssl
 

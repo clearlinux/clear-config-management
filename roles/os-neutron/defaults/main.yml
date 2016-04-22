@@ -16,10 +16,6 @@
 # Password for 'neutron' database
 # neutron_database_password: <password>
 
-# Public interface of your machines, if not define it will use autodiscover for
-# each machine
-# neutron_public_interface_name: <iface>
-
 # syctl values needed by neutron when using openvswitch deployment scenario
 os_tuning_params:
   - { name: net.ipv4.ip_forward, value: 1 }
