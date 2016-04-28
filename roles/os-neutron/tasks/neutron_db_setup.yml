@@ -28,6 +28,9 @@
       password: "{{ neutron_database_password }}"
       priv: neutron.*:ALL
       state: present
-      host: '%'
+      host: "{{ item }}"
       login_user: "{{ database_root_user }}"
       login_password: "{{ database_root_password }}"
+    with_items:
+       - "%"
+       - "localhost"
