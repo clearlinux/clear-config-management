@@ -6,7 +6,7 @@ export OS_PROJECT_NAME=admin
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD={{ keystone_admin_password }}
-export OS_AUTH_URL={{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3
+export OS_AUTH_URL={{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3
 {% if keystone_ssl %}
 export OS_CACERT=$HOME/.pki/cacert.pem
 {% endif %}

@@ -1,4 +1,4 @@
-OPENSTACK_HOST = "{{ groups['openstack_identity'][0] }}"
+OPENSTACK_HOST = "{{ keystone_fqdn }}"
 OPENSTACK_KEYSTONE_URL = "{{keystone_protocol}}://%s:{{keystone_public_port}}/v3" % OPENSTACK_HOST
 {% if keystone_ssl %}
 OPENSTACK_SSL_NO_VERIFY = True

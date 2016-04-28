@@ -18,8 +18,8 @@ rabbit_userid = {{ rabbitmq_username }}
 rabbit_password = {{ rabbitmq_password }}
 
 [keystone_authtoken]
-auth_uri = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
-auth_url = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
+auth_uri = {{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_public_port}}
+auth_url = {{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}
 auth_type = password
 project_domain_id = default
 user_domain_id = default
@@ -31,8 +31,8 @@ insecure = True
 {% endif %}
 
 [trustee]
-auth_uri = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
-auth_url = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}
+auth_uri = {{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_public_port}}
+auth_url = {{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}
 auth_type = password
 project_domain_id = default
 user_domain_id = default
@@ -45,13 +45,13 @@ insecure = True
 {% endif %}
 
 [clients_keystone]
-auth_uri = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
+auth_uri = {{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_public_port}}
 {% if keystone_ssl %}
 insecure = True
 {% endif %}
 
 [ec2authtoken]
-auth_uri = {{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_public_port}}
+auth_uri = {{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_public_port}}
 {% if keystone_ssl %}
 insecure = True
 {% endif %}

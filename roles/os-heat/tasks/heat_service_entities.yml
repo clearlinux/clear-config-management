@@ -23,7 +23,7 @@
       service_name: "{{ item.name }}"
       service_type: "{{ item.type }}"
       description: "{{ item.description }}"
-      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       insecure: yes
     with_items:
       - { name: "heat", type: "orchestration", description: "OpenStack Orchestration" }
@@ -46,7 +46,7 @@
           interface: "internal"
         - url: "{{ item.admin_url }}"
           interface: "admin"
-      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       insecure: yes
     with_items:
       - name: heat

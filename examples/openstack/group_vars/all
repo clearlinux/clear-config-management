@@ -5,7 +5,6 @@ database_root_password: secret
 
 rabbitmq_password: secret
 
-keystone_ssl: True
 keystone_fqdn: host.example.com
 keystone_root_domain: example.com
 keystone_p12password: secret

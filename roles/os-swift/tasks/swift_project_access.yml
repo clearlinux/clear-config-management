@@ -25,7 +25,7 @@
       password: "{{ swift_user_password  }}"
       domain_name: "Default"
       email: "{{item.name}}@example.com"
-      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       insecure: yes
     with_items:
       - { name: "swift", project: "admin" }
@@ -40,7 +40,7 @@
       user_name: "{{item.user}}"
       project_name: "{{item.project}}"
       role_name: "{{item.role}}"
-      endpoint: "{{keystone_protocol}}://{{ groups['openstack_identity'][0] }}:{{keystone_admin_port}}/v3"
+      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       insecure: yes
     with_items:
       - { user: "swift", project: "service", role: "admin"}
