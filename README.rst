@@ -19,6 +19,7 @@ components
  - Dashboard (In identity node)
  - Heat
  - Ceph
+ - Swift
 
 
 How to use it in Clear Linux*
