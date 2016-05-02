@@ -23,10 +23,6 @@ log_debug: False
 database_root_user: root
 # database_root_password: <password>
 
-# Default user for rabbitmq
-rabbitmq_username: openstack
-# rabbitmq_password: <password>
-
 # Password for 'admin' user
 # keystone_admin_password: <password>
 
@@ -38,22 +34,3 @@ keystone_public_port: 5000
 keystone_ssl: True
 keystone_fqdn: "{{ ansible_fqdn }}"
 keystone_root_domain: "example.com"
-
-# Password for 'nova' user
-# nova_user_password: <password>
-
-# password for 'neutron' user
-# neutron_user_password: <password>
-
-# metadata proxy shared secret
-# metadata_proxy_shared_secret: <secret>
-
-# Choose the networking deployment scenario
-# either linuxbridge or openvswitch
-neutron_deployment_scenario: linuxbridge
-
-# Interface name where to deploy openstack services
-# If not specified, the services will be installed
-# In the ip address of the interface with a default gateway
-# values could be eth0, eno1, enp0s8, etc.
-public_interface: "{{ ansible_default_ipv4.alias }}"

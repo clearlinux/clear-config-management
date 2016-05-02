@@ -10,11 +10,7 @@ All variables of this role are defined in `defaults/main.yml`
 
 ## Mandatory variables
 * `database_root_password`
-* `rabbitmq_password`
 * `keystone_admin_password`
-* `nova_user_password`
-* `neutron_user_password`
-* `metadata_proxy_shared_secret`
 
 ## Handlers
 None

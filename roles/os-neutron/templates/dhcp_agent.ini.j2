@@ -1,8 +1,0 @@
-[DEFAULT]
-{% if neutron_deployment_scenario == 'linuxbridge' %}
-interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver
-{% elif neutron_deployment_scenario == 'openvswitch' %}
-dhcp_agent_manager = neutron.agent.dhcp_agent.DhcpAgentWithStateReport
-interface_driver = openvswitch
-ovs_use_veth = False
-{% endif %}
