@@ -20,8 +20,8 @@ operator_roles = admin,user
 
 [filter:authtoken]
 paste.filter_factory = keystonemiddleware.auth_token:filter_factory
-auth_uri = {{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_public_port}}
-auth_url = {{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}
+auth_uri = https://{{ keystone_fqdn }}:{{keystone_public_port}}
+auth_url = https://{{ keystone_fqdn }}:{{keystone_admin_port}}
 memcached_servers = {{ groups['openstack_object_storage_controller'][0] }}:11211
 auth_type = password
 project_domain_id = default

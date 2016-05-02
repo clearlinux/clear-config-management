@@ -31,6 +31,5 @@ keystone_admin_port: 35357
 keystone_public_port: 5000
 
 # Setup keystone with SSL
-keystone_ssl: True
 keystone_fqdn: "{{ ansible_fqdn }}"
 keystone_root_domain: "example.com"

@@ -1,18 +1,12 @@
 server {
-{% if keystone_ssl %}
        listen {{ keystone_admin_port }} ssl;
        server_name {{ keystone_fqdn }};
        ssl_certificate /etc/nginx/ssl/server/{{ keystone_hostname }}.cert.pem;
        ssl_certificate_key /etc/nginx/ssl/server/{{ keystone_hostname }}.key.pem;
-{% else %}
-       listen {{keystone_admin_port}};
-       server_name localhost;
-{% endif %}
        location / {
                include uwsgi_params;
                uwsgi_pass unix:/run/uwsgi/keystone/admin.sock;
                uwsgi_param SCRIPT_NAME '';
-{% if keystone_ssl %}
                if ($request_method = 'OPTIONS') {
                    add_header 'Access-Control-Allow-Origin' '*';
                    add_header 'Access-Control-Allow-Credentials' 'true';
@@ -38,25 +32,18 @@ server {
                    add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Conntent-Type,X-Subject-Token,X-Auth-Token';
                    add_header 'Access-Control-Expose-Headers' 'X-Subject-Token,X-Auth-Token,Content-Type';
                }
-{% endif %}
        }
 }
 
 server {
-{% if keystone_ssl %}
        listen {{ keystone_public_port }} ssl;
        server_name {{ keystone_fqdn }};
        ssl_certificate /etc/nginx/ssl/server/{{ keystone_hostname }}.cert.pem;
        ssl_certificate_key /etc/nginx/ssl/server/{{ keystone_hostname }}.key.pem;
-{% else %}
-       listen {{keystone_public_port}};
-       server_name localhost;
-{% endif %}
        location / {
                include uwsgi_params;
                uwsgi_pass unix:/run/uwsgi/keystone/public.sock;
                uwsgi_param SCRIPT_NAME '';
-{% if keystone_ssl %}
                if ($request_method = 'OPTIONS') {
                    add_header 'Access-Control-Allow-Origin' '*';
                    add_header 'Access-Control-Allow-Credentials' 'true';
@@ -82,6 +69,5 @@ server {
                    add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Conntent-Type,X-Subject-Token,X-Auth-Token';
                    add_header 'Access-Control-Expose-Headers' 'X-Subject-Token,X-Auth-Token,Content-Type';
                }
-{% endif %}
        }
 }

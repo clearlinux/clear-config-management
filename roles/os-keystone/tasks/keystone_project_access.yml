@@ -19,7 +19,7 @@
       project_name: "{{ item.name }}"
       domain_name: Default
       description: "{{ item.desc }}"
-      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -33,7 +33,7 @@
       project_name: "{{ item.project_name }}"
       domain_name: Default
       description: "{{ item.description | default('') }}"
-      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -44,7 +44,7 @@
     keystone:
       command: "ensure_role"
       role_name: "user"
-      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -54,7 +54,7 @@
     keystone:
       command: "ensure_role"
       role_name: "{{ item }}"
-      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -69,7 +69,7 @@
       password: "{{ item.password }}"
       email: "{{ item.email | default('') }}"
       domain_name: "Default"
-      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
@@ -83,7 +83,7 @@
       user_name: "{{ item.user_name }}"
       project_name: "{{ item.project_name }}"
       role_name: "{{ item.role_name }}"
-      endpoint: "{{keystone_protocol}}://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       login_user: "admin"
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
