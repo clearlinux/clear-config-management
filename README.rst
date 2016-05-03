@@ -13,10 +13,10 @@ components
  - MariaDB
  - Keystone
  - Glance
- - Ceph
  - Swift
  - Cinder
-
+ - Ceph
+ - CIAO
 
 How to use it in Clear Linux*
 =============================

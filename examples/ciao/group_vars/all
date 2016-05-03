@@ -1,0 +1,37 @@
+---
+database_root_password: secret
+
+ciao_controller_ip: 192.168.1.21
+ciao_mgmt_subnet: 192.168.1.0/24
+ciao_compute_subnet: {{ciao_mgmt_subnet}}
+ciao_csr_password: secret
+ciao_ssh_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3iVUbsYlp4wuRhDiHFrgELIDII7hmswH9Tbs3MJbsNdwXk4olUwv/y0zda9o4No2cFUJDSJ2Q8zzM1/5hS1ih79aQsMfnKvCgVj+2OMufLSjC6Gob1JAtJjDlSs4qB1To25l8OcGWtJdbR0rGrUfZLNb6FdfU34D8chLUkqt65iybW7W1esy9QmlHzP2TiVZO2A8Lbj3F6VqEjZ9QQr4bji7nCOmOu2YYdWdUoH1cnI/2PKhnFyhrOyZgnnU9tybphoo0u/fC/kqUtUQNuD7wxS/Mv3QD+DCIt9ttK/v38By67t4s1nrlXzm7g0nDfZ29MX2hiOWB2ZeOrRdOj0Uv root@cld-cloud03
+ciao_admin_email: admin@example.com
+ciao_cert_organization: Example, Inc.
+
+keystone_fqdn: identity.example.com
+keystone_root_domain: example.com
+keystone_p12password: secret
+keystone_database_password: secret
+keystone_admin_password: secret
+keystone_services:
+  - service_name: "ciao"
+    service_type: "compute"
+keystone_projects:
+  - project_name: "demo"
+keystone_users:
+  - user_name: "csr"
+    password: "{{ciao_csr_password}}"
+    project_name: "admin"
+  - user_name: "demo"
+    password: "secret"
+    project_name: "demo"
+keystone_roles:
+  - demo
+keystone_user_roles:
+  - user_name: csr
+    project_name: service
+    role_name: admin
+  - user_name: demo
+    project_name: demo
+    role_name: demo

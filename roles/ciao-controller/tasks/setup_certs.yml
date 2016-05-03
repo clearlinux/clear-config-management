@@ -1,0 +1,40 @@
+---
+# Copyright (c) 2016 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+  - name: Create /etc/ca-certs
+    file: path=/etc/ca-certs state=directory
+
+  - name: Copy cacert.pem to /etc/ca-certs
+    command: cp /etc/nginx/ssl/cacert.pem /etc/ca-certs
+    args:
+      creates: /etc/ca-certs/cacert.pem
+
+  - name: Get hash from cacert.pem
+    command: c_hash /etc/ca-certs/cacert.pem
+    register: cert_hash
+
+  - file: >
+      src=/etc/ca-certs/cacert.pem
+      dest=/etc/ca-certs/{{cert_hash.stdout.split(' ') | first}}
+      state=link
+
+  - file: path=/etc/ssl state=directory
+
+  - file: src=/etc/ca-certs dest=/etc/ssl/certs state=link
+
+  - file: >
+      src=/etc/ca-certs/cacert.pem
+      dest=/usr/share/ca-certs/{{cert_hash.stdout.split(' ') | first}}
+      state=link

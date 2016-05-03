@@ -1,0 +1,24 @@
+---
+- hosts: dbservers
+  roles:
+    - mariadb
+
+- hosts: openstack_identity
+  roles:
+    - os-keystone
+
+- hosts: openstack_image
+  roles:
+    - os-glance
+
+- hosts: ciao_controller
+  roles:
+    - ciao-controller
+
+- hosts: ciao_compute
+  roles:
+    - ciao-compute
+
+- hosts: ciao_network
+  roles:
+    - ciao-network

@@ -1,0 +1,45 @@
+---
+# Copyright (c) 2016 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+  - name: Create image directory
+    file: path=/var/lib/ciao/images state=directory owner=ciao group=ciao
+
+  - name: Download Fedora Image
+    get_url: >
+      dest=/var/lib/ciao/images/{{fedora_cloud_image}}
+      url="{{fedora_cloud_image_url}}"
+      force=no
+
+  - file: >
+      path=/var/lib/ciao/images/73a86d7e-93c0-480e-9c41-ab42f69b7799
+      src=/var/lib/ciao/images/{{fedora_cloud_image}}
+      state=link
+
+  - name: Download ClearLinux Image
+    get_url: >
+      dest=/var/lib/ciao/images
+      url="{{clear_cloud_image_url}}"
+      force=no
+
+  - name: Uncompress ClearLinux Image
+    command: xz -T0 --decompress {{clear_cloud_image}}.xz
+    args:
+      chdir: /var/lib/ciao/images
+      creates: /var/lib/ciao/images/{{clear_cloud_image}}
+
+  - file: >
+      path=/var/lib/ciao/images/df3768da-31f5-4ba6-82f0-127a1a705169
+      src=/var/lib/ciao/images/{{clear_cloud_image}}
+      state=link

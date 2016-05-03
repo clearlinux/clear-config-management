@@ -1,0 +1,18 @@
+[Unit]
+Description=CIAO Controller Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ciao-controller --cacert=/etc/pki/ciao/CAcert-{{ groups['ciao_controller'][0] }}.pem \
+                                   --cert=/etc/pki/ciao/cert-Controller-localhost.pem \
+                                   -identity=https://{{ keystone_fqdn }}:35357 \
+                                   --username=csr \
+                                   --password={{ ciao_csr_password }} \
+                                   --tables_init_path=/var/lib/ciao/tables \
+                                   --workloads_path=/var/lib/ciao/workloads \
+                                   --httpskey /etc/nginx/ssl/server/{{ansible_hostname}}.key.pem \
+                                   --httpscert /etc/nginx/ssl/server/{{ansible_hostname}}.cert.pem \
+                                   --logtostderr -v 2
+[Install]
+WantedBy=multi-user.target

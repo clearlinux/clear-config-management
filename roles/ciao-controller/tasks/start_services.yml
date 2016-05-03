@@ -1,0 +1,42 @@
+---
+# Copyright (c) 2016 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+  - name: Create scheduler unit
+    template: src=ciao-scheduler.service.j2 dest=/etc/systemd/system/ciao-scheduler.service
+
+  - name: Create controller unit
+    template: src=ciao-controller.service.j2 dest=/etc/systemd/system/ciao-controller.service
+
+  - name: Reload systemd
+    command: systemctl daemon-reload
+
+  - name: Copy table files
+    copy: dest=/var/lib/ciao src=tables owner=ciao group=ciao
+
+  - name: Create workloads directory
+    file: path=/var/lib/ciao/workloads state=directory owner=ciao group=ciao
+
+  - name: Copy workloads files
+    template: dest=/var/lib/ciao/workloads/{{item}} src=workloads/{{item}}.j2 owner=ciao group=ciao
+    with_items:
+      - docker-iperf.yaml
+      - docker-ubuntu.yaml
+      - test.yaml
+
+  - name: Start Scheduler service
+    service: name=ciao-scheduler enabled=yes state=restarted
+
+  - name: Start Controller service
+    service: name=ciao-controller enabled=yes state=restarted
