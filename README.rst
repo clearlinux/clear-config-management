@@ -15,6 +15,7 @@ components
  - Glance
  - Ceph
  - Swift
+ - Cinder
 
 
 How to use it in Clear Linux*
