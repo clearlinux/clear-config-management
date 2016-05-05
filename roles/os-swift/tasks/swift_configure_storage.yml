@@ -79,4 +79,9 @@
   - name: Ensure proper ownership of /etc/swift
     file: owner=root group=swift recurse=yes state=directory path=/etc/swift
 
+  - name: Change ownership of the certificate if SAIO(Swift All-in-one)
+    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    file: owner=swift group=swift path=/etc/swift/cacert.pem state=file
+    when: "{{ groups['openstack_object_storage_controller'][0] == inventory_hostname}}"
+
   - meta: flush_handlers

@@ -17,7 +17,7 @@
     service: name={{ item }} enabled=yes state=restarted
     with_items:
       - memcached.service
-      - swift-proxy.sevice
+      - swift-proxy.service
 
   - name: restart swift storage node services
     service: name={{ item }} enabled=yes state=restarted
