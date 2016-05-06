@@ -30,6 +30,7 @@ project_name = service
 username = swift
 password = {{swift_user_password}}
 delay_auth_decision = True
+cafile = /etc/swift/cacert.pem
 
 [filter:cache]
 use = egg:swift#memcache
