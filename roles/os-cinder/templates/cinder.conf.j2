@@ -1,0 +1,38 @@
+[DEFAULT]
+rpc_backend = rabbit
+auth_strategy = keystone
+my_ip = {{ hostvars[inventory_hostname]['ansible_' + cinder_public_interface_name ]['ipv4']['address'] }}
+{% if inventory_hostname in groups['openstack_block_storage'][0] %}
+enabled_backends = lvm
+{% endif %}
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ groups['messaging_servers'][0] }}
+rabbit_userid = {{ rabbitmq_username }}
+rabbit_password = {{ rabbitmq_password }}
+
+[database]
+connection = mysql+pymysql://cinder:{{ cinder_database_password }}@{{ groups['dbservers'][0] }}/cinder
+
+[keystone_authtoken]
+auth_uri = https://{{ keystone_fqdn }}:{{ keystone_public_port }}
+auth_url = https://{{ keystone_fqdn }}:{{ keystone_admin_port }}
+memcached_servers = {{ keystone_fqdn }}:11211
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = cinder
+password = {{ cinder_user_password }}
+cafile = /etc/cinder/cacert.pem
+
+[oslo_concurrency]
+lock_path = /var/lib/cinder/tmp
+
+{% if inventory_hostname in groups['openstack_block_storage'] %}
+[lvm]
+volume_driver = cinder.volume.drivers.lvm.LVMVolumeDriver
+volume_group = cinder-volumes
+iscsi_protocol = iscsi
+iscsi_helper = tgtadm
+{% endif %}
