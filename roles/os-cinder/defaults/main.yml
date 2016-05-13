@@ -13,11 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create /etc/cinder
-    file: path=/etc/cinder state=directory group=cinder mode=770
-
-  - name: Configure Cinder /etc/cinder/cinder.conf
-    template: dest=/etc/cinder/cinder.conf
-              src=cinder.conf.j2 group=cinder mode=640
-    notify:
-      - restart cinder storage
+cinder_fqdn: "{{ hostvars[groups['openstack_block_storage_controller']]['ansible_fqdn'] }}"
+cinder_p12password: "secret"
+cinder_hostname: "{{ cinder_fqdn.split('.')|first }}"
+cinder_subject: "/DC={{cinder_fqdn.split('.')[1:]|reverse|join('/DC=')}}/CN={{cinder_fqdn}}/"
