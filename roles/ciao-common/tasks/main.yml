@@ -20,3 +20,6 @@
 
   - name: create /var/lib/ciao
     file: path=/var/lib/ciao state=directory owner=ciao group=ciao
+
+  - name: Create Systemd configuration directory
+    file: path=/etc/systemd/system state=directory mode=640
