@@ -13,9 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: restart keystone
-    service: name={{ item }} enabled=yes state=restarted
-    with_items:
-      - uwsgi@keystone-admin.service
-      - uwsgi@keystone-public.service
-      - memcached
+  - name: restart nginx
+    service: name=nginx enabled=yes state=restarted
