@@ -13,23 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create /etc/nginx directory
-    file: path=/etc/nginx state=directory
-
-  - include: keystone_certificates.yml
-
-  - name: Create keystone configuration for nginx
-    template: dest=/etc/nginx/keystone.conf src=nginx-keystone.conf.j2
-    notify: restart nginx
-
   - name: Create /etc/keystone directory
     file: path=/etc/keystone state=directory group=keystone mode=770
+
+  - include: keystone_certificates.yml
 
   - name: Create /etc/keystone/keystone.conf
     template: dest=/etc/keystone/keystone.conf
               src=keystone.conf.j2 group=keystone mode=640
-    notify:
-      - restart keystone
+    notify: restart keystone
+
+  - name: Create /etc/nginx directory
+    file: path=/etc/nginx state=directory
+
+  - name: Create keystone configuration for nginx
+    template: dest=/etc/nginx/keystone.conf src=nginx-keystone.conf.j2
+    notify: restart nginx
 
   - name: Ensure keystone is running
     service: name={{ item }} enabled=yes state=started

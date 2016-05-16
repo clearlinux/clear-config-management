@@ -25,7 +25,7 @@
 
   - name: Retrieve the certificate
     delegate_to: "{{ groups['openstack_identity'][0] }}"
-    synchronize: src=/etc/nginx/ssl/cacert.pem dest=/etc/cinder
+    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/cinder
 
   - name: Ensure proper permissions of the certificate
     file: path=/etc/cinder/cacert.pem owner=cinder group=cinder mode=400

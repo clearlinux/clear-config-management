@@ -24,7 +24,7 @@
 
   - name: Retrieve the certificate
     delegate_to: "{{ groups['openstack_identity'][0] }}"
-    synchronize: src=/etc/nginx/ssl/cacert.pem dest=/etc/swift
+    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/swift
 
   - name: Ensure proper permissions of the certificate
     file: path=/etc/swift/cacert.pem owner=swift group=swift mode=400

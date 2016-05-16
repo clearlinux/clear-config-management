@@ -13,18 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create nginx ssl directory
-    file: path=/etc/nginx/ssl state=directory
+  - name: Create keystone ssl directory
+    file: path=/etc/keystone/ssl state=directory
 
   - name: Setup a CA
-    ca: certdir="/etc/nginx/ssl" subj="{{ keystone_subj }}"
+    ca: certdir="/etc/keystone/ssl" subj="{{ keystone_subj }}"
 
   - name: Create a Server Cert
     certificate:
-      cadir: "/etc/nginx/ssl"
+      cadir: "/etc/keystone/ssl"
       hostname: "{{ keystone_hostname }}"
       subj: "{{ keystone_subject }}"
       p12password: "{{ keystone_p12password }}"
 
   - name: Copy certificate
-    fetch: src=/etc/nginx/ssl/cacert.pem dest=~/.pki/cacert.pem flat=yes
+    fetch: src=/etc/keystone/ssl/cacert.pem dest=~/.pki/cacert.pem flat=yes

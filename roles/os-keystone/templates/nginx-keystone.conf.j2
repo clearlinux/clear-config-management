@@ -1,8 +1,8 @@
 server {
        listen {{ keystone_admin_port }} ssl;
        server_name {{ keystone_fqdn }};
-       ssl_certificate /etc/nginx/ssl/server/{{ keystone_hostname }}.cert.pem;
-       ssl_certificate_key /etc/nginx/ssl/server/{{ keystone_hostname }}.key.pem;
+       ssl_certificate /etc/keystone/ssl/server/{{ keystone_hostname }}.cert.pem;
+       ssl_certificate_key /etc/keystone/ssl/server/{{ keystone_hostname }}.key.pem;
        location / {
                include uwsgi_params;
                uwsgi_pass unix:/run/uwsgi/keystone/admin.sock;
@@ -38,8 +38,8 @@ server {
 server {
        listen {{ keystone_public_port }} ssl;
        server_name {{ keystone_fqdn }};
-       ssl_certificate /etc/nginx/ssl/server/{{ keystone_hostname }}.cert.pem;
-       ssl_certificate_key /etc/nginx/ssl/server/{{ keystone_hostname }}.key.pem;
+       ssl_certificate /etc/keystone/ssl/server/{{ keystone_hostname }}.cert.pem;
+       ssl_certificate_key /etc/keystone/ssl/server/{{ keystone_hostname }}.key.pem;
        location / {
                include uwsgi_params;
                uwsgi_pass unix:/run/uwsgi/keystone/public.sock;

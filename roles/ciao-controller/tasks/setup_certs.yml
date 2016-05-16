@@ -17,7 +17,7 @@
     file: path=/etc/ca-certs state=directory
 
   - name: Copy cacert.pem to /etc/ca-certs
-    command: cp /etc/nginx/ssl/cacert.pem /etc/ca-certs
+    command: cp /etc/keystone/ssl/cacert.pem /etc/ca-certs
     args:
       creates: /etc/ca-certs/cacert.pem
 
