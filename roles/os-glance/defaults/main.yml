@@ -18,3 +18,8 @@
 
 # Password for 'glance' database
 # glance_database_password: <password>
+
+glance_fqdn: "{{ ansible_fqdn }}"
+glance_p12password: "{{ keystone_p12password }}"
+glance_hostname: "{{ glance_fqdn.split('.')|first }}"
+glance_subject: "/DC={{glance_fqdn.split('.')[1:]|reverse|join('/DC=')}}/CN={{glance_fqdn}}/"

@@ -16,21 +16,29 @@
   - name: Create /etc/glance directory
     file: path=/etc/glance state=directory group=glance mode=770
 
+  - include: glance_certificates.yml
+
   - name: Create /etc/glance/glance-api.conf
     template: dest=/etc/glance/glance-api.conf
               src=glance-api.conf.j2 group=glance mode=640
-    notify:
-      - restart glance
+    notify: restart glance
 
   - name: Create /etc/glance/glance-registry.conf
     template: dest=/etc/glance/glance-registry.conf
               src=glance-registry.conf.j2 group=glance mode=640
-    notify:
-      - restart glance
+    notify: restart glance
+
+  - name: Create /etc/nginx directory
+    file: path=/etc/nginx state=directory
+
+  - name: Create glance configuration for nginx
+    template: dest=/etc/nginx/glance.conf src=nginx-glance.conf.j2
+    notify: restart nginx
 
   - name: Ensure glance is running
     service: name={{ item }} enabled=yes state=started
     with_items:
+      - nginx.service
       - memcached.service
       - glance-registry.service
       - glance-api.service

@@ -1,0 +1,31 @@
+---
+# Copyright (c) 2016 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+  - name: Create glance ssl directory
+    file: path=/etc/glance/ssl state=directory
+
+  - name: Create a Glance Server Cert
+    certificate:
+      cadir: "/etc/keystone/ssl"
+      hostname: "{{ glance_hostname }}"
+      subj: "{{ glance_subject }}"
+      p12password: "{{ glance_p12password }}"
+    delegate_to: "{{ groups['openstack_identity'][0] }}"
+
+  - synchronize: src="{{ item }}" dest=/etc/glance/ssl/
+    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    with_items:
+        - "/etc/keystone/ssl/server/{{ glance_hostname }}.key.pem"
+        - "/etc/keystone/ssl/server/{{ glance_hostname }}.cert.pem"

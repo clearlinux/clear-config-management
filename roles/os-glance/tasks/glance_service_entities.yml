@@ -37,11 +37,11 @@
       service_name: "glance"
       service_type: "image"
       endpoint_list:
-        - url: "http://{{ groups['openstack_image'][0] }}:9292"
+        - url: "https://{{ groups['openstack_image'][0] }}:9292"
           interface: "public"
-        - url: "http://{{ groups['openstack_image'][0] }}:9292"
+        - url: "https://{{ groups['openstack_image'][0] }}:9292"
           interface: "internal"
-        - url: "http://{{ groups['openstack_image'][0] }}:9292"
+        - url: "https://{{ groups['openstack_image'][0] }}:9292"
           interface: "admin"
       endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       insecure: yes
