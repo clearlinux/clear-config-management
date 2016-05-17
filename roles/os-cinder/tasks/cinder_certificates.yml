@@ -13,17 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: restart cinder controller
-    service: name={{ item }} enabled=yes state=restarted
-    with_items:
-      - uwsgi@cinder-api.service
-      - memcached
-      - cinder-scheduler
-    when: inventory_hostname in groups['openstack_block_storage_controller']
+  - name: Create Cinder ssl directory
+    file: path=/etc/cinder/ssl/ state=directory
 
-  - name: restart cinder storage
-    service: name={{ item }} enabled=yes state=restarted
+  - name: Generate Cinder certificate and key
+    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    certificate:
+      cadir: "/etc/keystone/ssl"
+      hostname: "{{ cinder_hostname }}"
+      subj: "{{ cinder_subject }}"
+      p12password: "{{ cinder_p12password }}"
+
+  - name: Copy certificate and key
+    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    synchronize: src=/etc/keystone/ssl/{{ item }} dest=/etc/cinder/ssl
     with_items:
-      - tgtd
-      - cinder-volume
-    when: inventory_hostname in groups['openstack_block_storage_controller']
+      - "{{ cinder_hostname }}.cert.pem"
+      - "{{ cinder_hostname }}.key.pem"

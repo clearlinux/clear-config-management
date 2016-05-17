@@ -17,3 +17,29 @@
   - include: cinder_db_sync.yml
   - include: cinder_service_entities.yml
   - include: cinder_project_access.yml
+
+  - name: Retrieve the certificate
+    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/cinder
+
+  - name: Ensure proper permissions of the certificate
+    file: path=/etc/cinder/cacert.pem owner=cinder group=cinder mode=400
+
+  - include: cinder_certificates.yml
+
+  - name: Create /etc/nginx directory
+    file: path=/etc/nginx state=directory
+
+  - name: Create cinder configuration for nginx
+    template: dest=/etc/nginx/cinder.conf src=nginx-cinder.conf.j2
+    notify:
+      - restart cinder controller
+      - restart nginx
+
+  - name: Ensure Cinder is running
+    service: name={{ item }} enabled=yes state=started
+    with_items:
+      - nginx
+      - uwsgi@cinder-api.socket
+
+  - meta: flush_handlers

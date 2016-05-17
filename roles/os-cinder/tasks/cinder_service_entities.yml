@@ -59,11 +59,11 @@
     with_items:
       - name: cinder
         type: volume
-        public_url: "http://{{ groups['openstack_block_storage_controller'][0] }}:8776/v1/%(tenant_id)s"
-        internal_url: "http://{{ groups['openstack_block_storage_controller'][0] }}:8776/v1/%(tenant_id)s"
-        admin_url: "http://{{ groups['openstack_block_storage_controller'][0] }}:8776/v1/%(tenant_id)s"
+        public_url: "https://{{ cinder_fqdn }}:8776/v1/%(tenant_id)s"
+        internal_url: "https://{{ cinder_fqdn }}:8776/v1/%(tenant_id)s"
+        admin_url: "https://{{ cinder_fqdn }}:8776/v1/%(tenant_id)s"
       - name: cinderv2
         type: volumev2
-        public_url: "http://{{ groups['openstack_block_storage_controller'][0] }}:8776/v2/%(tenant_id)s"
-        internal_url: "http://{{ groups['openstack_block_storage_controller'][0] }}:8776/v2/%(tenant_id)s"
-        admin_url: "http://{{ groups['openstack_block_storage_controller'][0] }}:8776/v2/%(tenant_id)s"
+        public_url: "https://{{ cinder_fqdn }}:8776/v2/%(tenant_id)s"
+        internal_url: "https://{{ cinder_fqdn }}:8776/v2/%(tenant_id)s"
+        admin_url: "https://{{ cinder_fqdn }}:8776/v2/%(tenant_id)s"
