@@ -16,10 +16,9 @@
   - name: Create /etc/ca-certs
     file: path=/etc/ca-certs state=directory
 
-  - name: Copy cacert.pem to /etc/ca-certs
-    command: cp /etc/keystone/ssl/cacert.pem /etc/ca-certs
-    args:
-      creates: /etc/ca-certs/cacert.pem
+  - name: Retrieve CA certificate
+    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/ca-certs
 
   - name: Get hash from cacert.pem
     command: c_hash /etc/ca-certs/cacert.pem
