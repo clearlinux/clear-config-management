@@ -15,9 +15,11 @@
 
   - name: Create Compute unit
     template: src=ciao-compute.service.j2 dest=/etc/systemd/system/ciao-compute.service
+    notify:
+      - reload systemd config
+      - restart compute
 
-  - name: Reload systemd
-    command: systemctl daemon-reload
+  - meta: flush_handlers
 
-  - name: Start Compute service
-    service: name=ciao-compute enabled=yes state=restarted
+  - name: Ensure compute services are running
+    service: name=ciao-compute.service enabled=yes state=started

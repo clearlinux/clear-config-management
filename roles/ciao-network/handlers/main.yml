@@ -13,13 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create network unit
-    template: src=ciao-network.service.j2 dest=/etc/systemd/system/ciao-network.service
-    notify:
-      - reload systemd config
-      - restart network
-
-  - meta: flush_handlers
-
-  - name: Ensure network services are running
-    service: name=ciao-network.service enabled=yes state=started
+  - name: restart network
+    service: name=ciao-network.service enabled=yes state=restarted

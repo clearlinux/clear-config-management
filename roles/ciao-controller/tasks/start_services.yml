@@ -15,12 +15,15 @@
 
   - name: Create scheduler unit
     template: src=ciao-scheduler.service.j2 dest=/etc/systemd/system/ciao-scheduler.service
+    notify:
+      - reload systemd config
+      - restart scheduler
 
   - name: Create controller unit
     template: src=ciao-controller.service.j2 dest=/etc/systemd/system/ciao-controller.service
-
-  - name: Reload systemd
-    command: systemctl daemon-reload
+    notify:
+      - reload systemd config
+      - restart controller
 
   - name: Copy table files
     copy: dest=/var/lib/ciao src=tables owner=ciao group=ciao
@@ -35,8 +38,10 @@
       - docker-ubuntu.yaml
       - test.yaml
 
-  - name: Start Scheduler service
-    service: name=ciao-scheduler enabled=yes state=restarted
+  - meta: flush_handlers
 
-  - name: Start Controller service
-    service: name=ciao-controller enabled=yes state=restarted
+  - name: Ensure controller services are running
+    service: name={{ item }} enabled=yes state=started
+    with_items:
+      - ciao-scheduler.service
+      - ciao-controller.service
