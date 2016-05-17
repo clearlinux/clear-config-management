@@ -29,3 +29,10 @@
     with_items:
         - "/etc/keystone/ssl/server/{{ glance_hostname }}.key.pem"
         - "/etc/keystone/ssl/server/{{ glance_hostname }}.cert.pem"
+
+  - name: Retrieve CA certificate
+    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/glance
+
+  - name: Ensure proper permissions of CA cert
+    file: path=/etc/glance/cacert.pem owner=glance group=glance mode=400
