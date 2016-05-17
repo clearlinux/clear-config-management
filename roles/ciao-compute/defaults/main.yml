@@ -16,5 +16,5 @@
 fedora_cloud_image_url: https://dl.fedoraproject.org/pub/fedora/linux/releases/23/Cloud/x86_64/Images/Fedora-Cloud-Base-23-20151030.x86_64.qcow2
 fedora_cloud_image: "{{fedora_cloud_image_url.split('/') | last}}"
 
-clear_cloud_image_url: https://download.clearlinux.org/image/clear-7820-cloud.img.xz
+clear_cloud_image_url: https://download.clearlinux.org/image/clear-8210-cloud.img.xz
 clear_cloud_image: "{{clear_cloud_image_url.split('/') | last | regex_replace('(.*).xz', '\\1') }}"
