@@ -1,6 +1,7 @@
 ---
 database_root_password: secret
 
+glance_fqdn: image.example.com
 glance_user_password: secret
 glance_database_password: secret
 
