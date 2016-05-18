@@ -17,3 +17,8 @@ ring_conf_files:
   - account.ring.gz
   - container.ring.gz
   - object.ring.gz
+
+swift_fqdn: "{{ hostvars[groups['openstack_object_storage_controller']]['ansible_fqdn'] }}"
+swift_p12password: "{{ keystone_p12password }}"
+swift_hostname: "{{ swift_fqdn.split('.')|first }}"
+swift_subject: "/DC={{swift_fqdn.split('.')[1:]|reverse|join('/DC=')}}/CN={{swift_fqdn}}/"

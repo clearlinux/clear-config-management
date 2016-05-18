@@ -37,11 +37,11 @@
       service_name: "swift"
       service_type: "object-store"
       endpoint_list:
-        - url: "http://{{ groups['openstack_object_storage_controller'][0] }}:8080/v1/AUTH_%(tenant_id)s"
+        - url: "https://{{ swift_fqdn }}:8080/v1/AUTH_%(tenant_id)s"
           interface: "public"
-        - url: "http://{{ groups['openstack_object_storage_controller'][0] }}:8080/v1/AUTH_%(tenant_id)s"
+        - url: "https://{{ swift_fqdn }}:8080/v1/AUTH_%(tenant_id)s"
           interface: "internal"
-        - url: "http://{{ groups['openstack_object_storage_controller'][0] }}:8080/v1"
+        - url: "https://{{ swift_fqdn }}:8080/v1"
           interface: "admin"
       endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
       insecure: yes
