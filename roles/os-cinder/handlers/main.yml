@@ -17,7 +17,6 @@
     service: name={{ item }} enabled=yes state=restarted
     with_items:
       - uwsgi@cinder-api.service
-      - memcached
       - cinder-scheduler
     when: inventory_hostname in groups['openstack_block_storage_controller']
 
