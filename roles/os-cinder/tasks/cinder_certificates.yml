@@ -26,7 +26,7 @@
 
   - name: Copy certificate and key
     delegate_to: "{{ groups['openstack_identity'][0] }}"
-    synchronize: src=/etc/keystone/ssl/{{ item }} dest=/etc/cinder/ssl
+    synchronize: src=/etc/keystone/ssl/server/{{ item }} dest=/etc/cinder/ssl
     with_items:
       - "{{ cinder_hostname }}.cert.pem"
       - "{{ cinder_hostname }}.key.pem"
