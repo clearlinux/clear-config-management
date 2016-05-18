@@ -22,12 +22,15 @@
     template: dest=/etc/swift/proxy-server.conf src=proxy-server.conf.j2 owner=root group=swift mode=660
     notify: restart swift controller node services
 
-  - name: Retrieve the certificate
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
-    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/swift
+  - include: swift_certificates.yml
 
-  - name: Ensure proper permissions of the certificate
-    file: path=/etc/swift/cacert.pem owner=swift group=swift mode=400
+  - name: Create /etc/nginx directory
+    file: path=/etc/nginx state=directory
+    
+  - name: Crete Swift nginx config file
+    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    template: dest=/etc/nginx/swift-proxy.conf src=nginx-swift-proxy.conf.j2
+    notify: restart nginx
 
   # Create the builders
   # Accounting builder
