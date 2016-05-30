@@ -13,6 +13,8 @@ ExecStart=/usr/bin/ciao-controller --cacert=/etc/pki/ciao/CAcert-{{ groups['ciao
                                    --workloads_path=/var/lib/ciao/workloads \
                                    --httpskey /etc/keystone/ssl/server/{{ansible_hostname}}.key.pem \
                                    --httpscert /etc/keystone/ssl/server/{{ansible_hostname}}.cert.pem \
+				   --database_path=/var/lib/ciao/datastore/ciao-controller.db \
+				   --stats_path=/var/lib/ciao/datastore/ciao-controller-stats.db \
                                    --logtostderr -v 2
 [Install]
 WantedBy=multi-user.target
