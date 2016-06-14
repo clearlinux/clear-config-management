@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+  - include: install_cnci.yml
   - include: create_certs.yml
   - include: setup_certs.yml
   - include: start_services.yml

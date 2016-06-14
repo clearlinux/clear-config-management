@@ -21,11 +21,14 @@ echo -e "\nMounting image: $image"
 mkdir -p /mnt/tmp
 modprobe nbd max_part=63
 qemu-nbd -c /dev/nbd0 "$image" -f raw
+partprobe /dev/nbd0
 mount /dev/nbd0p$partition /mnt/tmp
 
 echo -e "Installing the service"
+cp /usr/bin/ciao-cnci-agent /mnt/tmp/usr/bin/
+cp /usr/lib/systemd/system/ciao-cnci-agent.service /mnt/tmp/usr/lib/systemd/system/
 mkdir -p /mnt/tmp/etc/systemd/system/default.target.wants
-chroot /mnt/tmp /bin/bash -c "ln -s /usr/lib/systemd/system/cnci-agent.service /etc/systemd/system/default.target.wants/"
+chroot /mnt/tmp /bin/bash -c "ln -s /usr/lib/systemd/system/ciao-cnci-agent.service /etc/systemd/system/default.target.wants/"
 
 echo -e "Copying CA certificates"
 sudo mkdir -p /mnt/tmp/var/lib/ciao/

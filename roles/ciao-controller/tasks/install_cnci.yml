@@ -13,8 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-fedora_cloud_image_url: https://dl.fedoraproject.org/pub/fedora/linux/releases/23/Cloud/x86_64/Images/Fedora-Cloud-Base-23-20151030.x86_64.qcow2
-fedora_cloud_image: "{{fedora_cloud_image_url.split('/') | last}}"
+- name: Install cloud-network bundle
+  command: "swupd bundle-add cloud-network {{ swupd_args }}"
+  args:
+    creates: /usr/share/clear/bundles/cloud-network
 
-clear_cloud_image_url: https://download.clearlinux.org/image/clear-8740-cloud.img.xz
-clear_cloud_image: "{{clear_cloud_image_url.split('/') | last | regex_replace('(.*).xz', '\\1') }}"
+- name: Run swupd verify
+  command: "swupd verify -f {{ swupd_args }}"
+  args:
+    creates: /usr/bin/ciao-cnci-agent
