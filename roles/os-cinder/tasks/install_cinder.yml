@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install cinder controller bundle
+- name: Install cinder storage bundle
   command: "swupd bundle-add openstack-block-storage {{ swupd_args }}"
   args:
     creates: /usr/share/clear/bundles/openstack-block-storage
@@ -21,4 +21,4 @@
 - name: Run swupd verify
   command: "swupd verify -f {{ swupd_args }}"
   args:
-    creates: /usr/bin/cinder-api
+    creates: /usr/lib/systemd/system/cinder-volume.service
