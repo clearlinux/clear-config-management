@@ -33,7 +33,6 @@
   - name: Create cinder configuration for nginx
     template: dest=/etc/nginx/cinder.conf src=nginx-cinder.conf.j2
     notify:
-      - restart cinder controller
       - restart nginx
 
   - name: Ensure Cinder is running
@@ -41,5 +40,4 @@
     with_items:
       - nginx
       - uwsgi@cinder-api.socket
-
-  - meta: flush_handlers
+      - cinder-scheduler

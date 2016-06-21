@@ -13,16 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: install_cinder_controller.yml
-    when: inventory_hostname in groups['openstack_block_storage_controller']
+- name: Setup LVM
+  lvg: vg=cinder-volumes pvs={{ cinder_devices }}
 
-  - include: install_cinder.yml
-    when: inventory_hostname in groups['openstack_block_storage']
+- name: Ensure Cinder storage services are running
+  service: name={{ item }} enabled=yes state=started
+  with_items:
+    - cinder-volume
+    - tgtd
+    - iscsid
 
-  - include: cinder_configure_common.yml
-
-  - include: cinder_controller.yml
-    when: inventory_hostname in groups['openstack_block_storage_controller']
-
-  - include: cinder_configure_lvm.yml
-    when: inventory_hostname in groups['openstack_block_storage']
+- meta: flush_handlers

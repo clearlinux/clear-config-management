@@ -12,6 +12,17 @@ where this role can create the users, roles, etc.
 All variables of this role are defined in `defaults/main.yml`
 
 ## Mandatory variables
+* `cinder_devices` *This is a list of devices*
+
+  ```
+    Example:
+
+    cinder_devices:
+      - /dev/sdb
+      - /dev/sdc
+      - /dev/sdd
+      - /dev/sdf
+  ```
 * `cinder_user_password`
 * `cinder_database_password`
 
