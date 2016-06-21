@@ -19,3 +19,10 @@ cinder_hostname: "{{ cinder_fqdn.split('.')|first }}"
 cinder_subject: "/DC={{cinder_fqdn.split('.')[1:]|reverse|join('/DC=')}}/CN={{cinder_fqdn}}/"
 
 cinder_public_interface_name: "{{ ansible_default_ipv4['interface'] }}"
+
+### The following variable can be used to specify the list ###
+### of devices to assign to cinder.                        ###
+#cinder_devices:
+#  - /dev/sdb
+#  - /dev/sbc
+#  - /dev/sdd

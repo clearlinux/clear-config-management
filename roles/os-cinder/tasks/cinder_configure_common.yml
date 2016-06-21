@@ -20,4 +20,5 @@
     template: dest=/etc/cinder/cinder.conf
               src=cinder.conf.j2 group=cinder mode=640
     notify:
+      - restart cinder controller
       - restart cinder storage
