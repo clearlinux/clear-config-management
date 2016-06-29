@@ -4,6 +4,7 @@
 - include: ./checks/check_mandatory_vars.yml
 
 - include: ./checks/check_firewall.yml
+  when: check_firewall
 
 - include: ./misc/system_tuning.yml
   when: osd_group_name in group_names
@@ -15,17 +16,16 @@
 
 - include: ./pre_requisites/prerequisite_rh_storage_iso_install.yml
   when:
-    ceph_stable_rh_storage and
-    ceph_stable_rh_storage_iso_install and
-    ansible_os_family == "RedHat"
+    - ceph_stable_rh_storage
+    - ceph_stable_rh_storage_iso_install
   tags:
     - package-install
 
 - include: ./pre_requisites/prerequisite_rh_storage_cdn_install.yml
   when:
-    ceph_stable_rh_storage and
-    ceph_stable_rh_storage_cdn_install and
-    ansible_os_family == "RedHat"
+    - ceph_stable_rh_storage
+    - ceph_stable_rh_storage_cdn_install
+    - ansible_os_family == "RedHat"
   tags:
     - package-install
 
@@ -34,10 +34,17 @@
   tags:
     - package-install
 
+- include: ./installs/install_rh_storage_on_redhat.yml
+  when:
+    - ansible_distribution == "RedHat"
+    - ceph_stable_rh_storage
+  tags:
+    - package-install
+
 - include: ./installs/install_on_debian.yml
   when:
-    ansible_os_family == 'Debian' and
-    not ceph_stable_rh_storage
+    - ansible_os_family == 'Debian'
+    - not ceph_stable_rh_storage
   tags:
     - package-install
 
@@ -48,118 +55,106 @@
 
 - include: ./installs/install_rh_storage_on_debian.yml
   when:
-    ansible_os_family == 'Debian' and
-    ceph_stable_rh_storage
+    - ansible_os_family == 'Debian'
+    - ceph_stable_rh_storage
   tags:
     - package-install
 
 - include: ./installs/install_rgw_on_redhat.yml
   when:
-    ansible_os_family == 'RedHat' and
-    radosgw_frontend == 'apache' and
-    rgw_group_name in group_names
+    - ansible_os_family == 'RedHat'
+    - radosgw_frontend == 'apache'
+    - rgw_group_name in group_names
   tags:
     - package-install
 
 - include: ./installs/install_rgw_on_debian.yml
   when:
-    ansible_os_family == 'Debian' and
-    radosgw_frontend == 'apache' and
-    rgw_group_name in group_names
+    - ansible_os_family == 'Debian'
+    - radosgw_frontend == 'apache'
+    - rgw_group_name in group_names
   tags:
     - package-install
 
-- name: get ceph version
-  command: ceph --version
-  changed_when: false
-  register: ceph_version
-
-- set_fact:
-    ceph_version: "{{ ceph_version.stdout.split(' ')[2] }}"
-
-# NOTE (leseb/jsaintrocc): Your supposed to qoute variables
-# that follow colons to avoid confusion with dicts but this
-# causes issues with the boolean, so we keep this syntax styling...
-- set_fact:
-    is_ceph_infernalis={{ ceph_version | version_compare('9.2.0', '>=') }}
+- include: facts.yml
 
 - set_fact:
     dir_owner: ceph
     dir_group: ceph
     dir_mode: "0755"
-  when: is_ceph_infernalis
+  when: is_after_hammer
 
 - set_fact:
     dir_owner: root
     dir_group: root
     dir_mode: "0755"
-  when: not is_ceph_infernalis
+  when: is_before_infernalis
 
 - set_fact:
     key_owner: root
     key_group: root
     key_mode: "0600"
-  when: not is_ceph_infernalis
+  when: is_before_infernalis
 
 - set_fact:
     key_owner: ceph
     key_group: ceph
     key_mode: "0600"
-  when: is_ceph_infernalis
+  when: is_after_hammer
 
 - set_fact:
     activate_file_owner: ceph
     activate_file_group: ceph
     activate_file_mode: "0644"
-  when: is_ceph_infernalis
+  when: is_after_hammer
 
 - set_fact:
     activate_file_owner: root
     activate_file_group: root
     activate_file_mode: "0644"
-  when: not is_ceph_infernalis
+  when: is_before_infernalis
 
 - set_fact:
     rbd_client_directory_owner: root
   when:
-    not is_ceph_infernalis and
-    (rbd_client_directory_owner is not defined or
-     not rbd_client_directory_owner)
+    - is_before_infernalis
+    - rbd_client_directory_owner is not defined
+      or not rbd_client_directory_owner
 
 - set_fact:
     rbd_client_directory_owner: ceph
   when:
-    is_ceph_infernalis and
-    (rbd_client_directory_owner is not defined or
-     not rbd_client_directory_owner)
+    - is_after_hammer
+    - rbd_client_directory_owner is not defined
+      or not rbd_client_directory_owner
 
 - set_fact:
     rbd_client_directory_group: root
   when:
-    not is_ceph_infernalis and
-    (rbd_client_directory_group is not defined or
-     not rbd_client_directory_group)
+    - is_before_infernalis
+    - rbd_client_directory_group is not defined
+      or not rbd_client_directory_group
 
 - set_fact:
     rbd_client_directory_group: ceph
   when:
-    is_ceph_infernalis and
-    (rbd_client_directory_group is not defined or
-     not rbd_client_directory_group)
+    - is_after_hammer
+    - rbd_client_directory_group is not defined
+      or not rbd_client_directory_group
 
 - set_fact:
     rbd_client_directory_mode: "1777"
   when:
-    not is_ceph_infernalis and
-    (rbd_client_directory_mode is not defined or
-     not rbd_client_directory_mode)
+    - is_before_infernalis
+    - rbd_client_directory_mode is not defined
+      or not rbd_client_directory_mode
 
 - set_fact:
     rbd_client_directory_mode: "0770"
   when:
-    is_ceph_infernalis and
-    (rbd_client_directory_mode is not defined or
-     not rbd_client_directory_mode)
+    - is_after_hammer
+    - rbd_client_directory_mode is not defined
+      or not rbd_client_directory_mode
 
 - name: check for a ceph socket
   shell: "stat /var/run/ceph/*.asok > /dev/null 2>&1"
@@ -178,12 +173,10 @@
   changed_when: false
   become: false
   run_once: true
-  when:
-    cephx or
-    generate_fsid
+  when: cephx or generate_fsid
 
 - name: generate cluster uuid
-  local_action: shell python -c 'import uuid; print str(uuid.uuid4())' | tee {{ fetch_directory }}/ceph_cluster_uuid.conf
+  local_action: shell python -c 'import uuid; print(str(uuid.uuid4()))' | tee {{ fetch_directory }}/ceph_cluster_uuid.conf
     creates="{{ fetch_directory }}/ceph_cluster_uuid.conf"
   register: cluster_uuid
   become: false
@@ -248,8 +241,34 @@
     insertafter: EOF
     create: yes
     line: "CLUSTER={{ cluster }}"
+  when: ansible_os_family == "RedHat"
+
+# NOTE(leseb): we are performing the following check
+# to ensure any Jewel installation will not fail.
+# The following commit https://github.com/ceph/ceph/commit/791eba81a5467dd5de4f1680ed0deb647eb3fb8b
+# fixed a package issue where the path was the wrong.
+# This bug is not yet on all the distros package so we are working around it
+# Impacted versions:
+# - Jewel from UCA: https://bugs.launchpad.net/ubuntu/+source/ceph/+bug/1582773
+# - Jewel from latest Canonical 16.04 distro
+# - All previous versions from Canonical
+# - Infernalis from ceph.com
+- name: check /etc/default/ceph exist
+  stat:
+    path: /etc/default/ceph
+  register: etc_default_ceph
+  when: ansible_os_family == "Debian"
+
+- name: configure cluster name
+  lineinfile:
+    dest: /etc/default/ceph
+    insertafter: EOF
+    create: yes
+    line: "CLUSTER={{ cluster }}"
   when:
-    ansible_os_family == "RedHat"
+    - ansible_os_family == "Debian"
+    - etc_default_ceph.stat.exists
+    - not etc_default_ceph.stat.isdir
 
 - name: configure cluster name
   lineinfile:
@@ -258,4 +277,6 @@
     create: yes
     line: "CLUSTER={{ cluster }}"
   when:
-    ansible_os_family == "Debian"
+    - ansible_os_family == "Debian"
+    - etc_default_ceph.stat.exists
+    - etc_default_ceph.stat.isdir

@@ -1,5 +1,4 @@
 ---
-
 - name: install the ceph repository stable key
   apt_key:
     data: "{{ lookup('file', role_path+'/files/cephstable.asc') }}"
@@ -38,3 +37,15 @@
     state: present
   changed_when: false
   when: ceph_stable_ice
+
+- name: add ubuntu cloud archive key package
+  apt:
+    pkg: ubuntu-cloud-keyring
+  when: ceph_stable_uca
+
+- name: add ubuntu cloud archive repository
+  apt_repository:
+    repo: "deb {{ ceph_stable_repo_uca }} {{ ceph_stable_release_uca}} main"
+    state: present
+  changed_when: false
+  when: ceph_stable_uca
