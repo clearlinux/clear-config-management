@@ -32,7 +32,7 @@
     file: path=/var/lib/ciao/workloads state=directory owner=ciao group=ciao
 
   - name: Copy workloads files
-    template: dest=/var/lib/ciao/workloads/{{item}} src=workloads/{{item}}.j2 owner=ciao group=ciao
+    template: dest=/var/lib/ciao/workloads/{{ item }} src=workloads/{{ item }}.j2 owner=ciao group=ciao
     with_items:
       - docker-iperf.yaml
       - docker-ubuntu.yaml

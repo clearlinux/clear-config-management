@@ -23,7 +23,7 @@
       service_name: "swift"
       service_type: "object-store"
       description: "Openstack Object Storage"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes
 
   - name: Create swift endpoints
@@ -43,5 +43,5 @@
           interface: "internal"
         - url: "https://{{ swift_fqdn }}:8080/v1"
           interface: "admin"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes

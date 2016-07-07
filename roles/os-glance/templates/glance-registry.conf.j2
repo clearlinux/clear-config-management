@@ -9,8 +9,8 @@ bind_port = 9192
 connection = mysql+pymysql://glance:{{ glance_database_password }}@{{ groups['dbservers'][0] }}/glance
 
 [keystone_authtoken]
-auth_uri = https://{{ keystone_fqdn }}:{{keystone_public_port}}
-auth_url = https://{{ keystone_fqdn }}:{{keystone_admin_port}}
+auth_uri = https://{{ keystone_fqdn }}:{{ keystone_public_port }}
+auth_url = https://{{ keystone_fqdn }}:{{ keystone_admin_port }}
 auth_type = password
 project_domain_id = default
 user_domain_id = default

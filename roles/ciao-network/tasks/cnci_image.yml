@@ -19,16 +19,16 @@
   - name: Download CNCI image and install certificates
     script: >
       cnci_image.sh {{ cnci_image_url }}
-      creates=/var/lib/ciao/images/{{cnci_image}}
+      creates=/var/lib/ciao/images/{{ cnci_image }}
     delegate_to: "{{ groups['ciao_controller'][0] }}"
 
   - name: Transfer CNCI image to Network node
     synchronize: >
-      src=/var/lib/ciao/images/{{cnci_image}}
+      src=/var/lib/ciao/images/{{ cnci_image }}
       dest=/var/lib/ciao/images/
     delegate_to: "{{ groups['ciao_controller'][0] }}"
 
   - file: >
       path=/var/lib/ciao/images/4e16e743-265a-4bf2-9fd1-57ada0b28904
-      src=/var/lib/ciao/images/{{cnci_image}}
+      src=/var/lib/ciao/images/{{ cnci_image }}
       state=link

@@ -21,15 +21,15 @@ operator_roles = admin,user
 
 [filter:authtoken]
 paste.filter_factory = keystonemiddleware.auth_token:filter_factory
-auth_uri = https://{{ keystone_fqdn }}:{{keystone_public_port}}
-auth_url = https://{{ keystone_fqdn }}:{{keystone_admin_port}}
+auth_uri = https://{{ keystone_fqdn }}:{{ keystone_public_port }}
+auth_url = https://{{ keystone_fqdn }}:{{ keystone_admin_port }}
 memcached_servers = {{ groups['openstack_object_storage_controller'][0] }}:11211
 auth_type = password
 project_domain_id = default
 user_domain_id = default
 project_name = service
 username = swift
-password = {{swift_user_password}}
+password = {{ swift_user_password }}
 delay_auth_decision = True
 cafile = /etc/swift/cacert.pem
 

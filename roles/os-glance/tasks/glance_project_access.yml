@@ -20,12 +20,12 @@
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
       command: "ensure_user"
-      user_name: "{{item.name}}"
-      project_name: "{{item.project}}"
+      user_name: "{{ item.name }}"
+      project_name: "{{ item.project }}"
       password: "{{ glance_user_password  }}"
       domain_name: "Default"
-      email: "{{item.name}}@example.com"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      email: "{{ item.name }}@example.com"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes
     with_items:
       - { name: "glance", project: "admin" }
@@ -37,10 +37,10 @@
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
       command: "ensure_user_role"
-      user_name: "{{item.user}}"
-      project_name: "{{item.project}}"
-      role_name: "{{item.role}}"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      user_name: "{{ item.user }}"
+      project_name: "{{ item.project }}"
+      role_name: "{{ item.role }}"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes
     with_items:
       - { user: "glance", project: "service", role: "admin"}

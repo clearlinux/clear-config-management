@@ -4,13 +4,13 @@ configure:
     storage_uri: file:///etc/ciao/configuration.yaml
   controller:
     compute_port: 8774
-    compute_ca: /etc/keystone/ssl/server/{{ansible_hostname}}.cert.pem
-    compute_cert: /etc/keystone/ssl/server/{{ansible_hostname}}.key.pem
-    identity_user: csr
-    identity_password: {{ ciao_csr_password }}
+    compute_ca: /etc/keystone/ssl/server/{{ ansible_hostname }}.cert.pem
+    compute_cert: /etc/keystone/ssl/server/{{ ansible_hostname }}.key.pem
+    identity_user: {{ ciao_service_user }}
+    identity_password: {{ ciao_service_password }}
   launcher:
-    compute_net: {{ciao_compute_subnet}}
-    mgmt_net: {{ciao_mgmt_subnet}}
+    compute_net: {{ ciao_compute_subnet }}
+    mgmt_net: {{ ciao_mgmt_subnet }}
     disk_limit: true
     mem_limit: true
   image_service:
@@ -18,4 +18,4 @@ configure:
     url: https://{{ glance_fqdn }}:9292
   identity_service:
     type: keystone
-    url: https://{{ keystone_fqdn }}:35357
+    url: https://{{ keystone_fqdn }}:{{ keystone_admin_port }}

@@ -23,7 +23,7 @@
       service_name: "glance"
       service_type: "image"
       description: "Glance Image Service"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes
 
   - name: Create glance endpoints
@@ -43,5 +43,5 @@
           interface: "internal"
         - url: "https://{{ glance_fqdn }}:9292"
           interface: "admin"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes

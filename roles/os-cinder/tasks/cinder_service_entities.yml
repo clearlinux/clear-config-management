@@ -22,7 +22,7 @@
       service_name: "cinder"
       service_type: "volume"
       description: "OpenStack Block Storage"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes
 
   - name: Create cinderv2 service
@@ -34,7 +34,7 @@
       service_name: "cinderv2"
       service_type: "volumev2"
       description: "OpenStack Block Storage"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes
 
   - name: Create cinder endpoints
@@ -54,7 +54,7 @@
           interface: "internal"
         - url: "{{ item.admin_url }}"
           interface: "admin"
-      endpoint: "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
       insecure: yes
     with_items:
       - name: cinder

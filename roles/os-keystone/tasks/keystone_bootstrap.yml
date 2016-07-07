@@ -21,8 +21,8 @@
       --bootstrap-project-name admin
       --bootstrap-role-name admin
       --bootstrap-service-name keystone
-      --bootstrap-admin-url "https://{{ keystone_fqdn }}:{{keystone_admin_port}}/v3"
-      --bootstrap-public-url "https://{{ keystone_fqdn }}:{{keystone_public_port}}/v3"
-      --bootstrap-internal-url "https://{{ keystone_fqdn }}:{{keystone_public_port}}/v3"
+      --bootstrap-admin-url "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+      --bootstrap-public-url "https://{{ keystone_fqdn }}:{{ keystone_public_port }}/v3"
+      --bootstrap-internal-url "https://{{ keystone_fqdn }}:{{ keystone_public_port }}/v3"
     become: yes
     become_user: keystone

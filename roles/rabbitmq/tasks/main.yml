@@ -23,14 +23,16 @@
     service: name=rabbitmq-server enabled=yes state=started
 
   - name: Remove Users
-    rabbitmq_user: user={{item}} state=absent
-    with_items: "{{rabbitmq_delete_users}}"
+    rabbitmq_user: user={{ item }} state=absent
+    with_items: "{{ rabbitmq_delete_users }}"
 
   - name: Add users
     rabbitmq_user: >
-      user={{item.user}}
-      password={{item.password}}
-      configure_priv={{item.configure_priv | default('.*')}}
-      read_priv={{item.configure_priv | default('.*')}}
-      write_priv={{item.configure_priv | default('.*')}}
-    with_items: "{{rabbitmq_users}}"
+      state=present
+      user={{ item.user }}
+      password={{ item.password }}
+      configure_priv={{ item.configure_priv | default('.*') }}
+      read_priv={{ item.read_priv | default('.*') }}
+      write_priv={{ item.write_priv | default('.*') }}
+    with_items: "{{ rabbitmq_users }}"
+    no_log: true

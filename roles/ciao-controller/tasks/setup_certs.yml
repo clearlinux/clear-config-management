@@ -26,7 +26,7 @@
 
   - file: >
       src=/etc/ca-certs/cacert.pem
-      dest=/etc/ca-certs/{{cert_hash.stdout.split(' ') | first}}
+      dest=/etc/ca-certs/{{ cert_hash.stdout.split(' ') | first }}
       state=link
 
   - file: path=/etc/ssl state=directory
@@ -35,5 +35,5 @@
 
   - file: >
       src=/etc/ca-certs/cacert.pem
-      dest=/usr/share/ca-certs/{{cert_hash.stdout.split(' ') | first}}
+      dest=/usr/share/ca-certs/{{ cert_hash.stdout.split(' ') | first }}
       state=link
