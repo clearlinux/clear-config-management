@@ -18,7 +18,7 @@
   args:
     creates: /usr/share/clear/bundles/cloud-control
 
-- name: Run swupd verify
+- name: Verify cloud-control has been installed
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/ciao-controller

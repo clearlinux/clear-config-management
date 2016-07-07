@@ -18,7 +18,7 @@
   args:
     creates: /usr/share/clear/bundles/cloud-network
 
-- name: Run swupd verify
+- name: Verify cloud-network has been installed
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/ciao-cnci-agent

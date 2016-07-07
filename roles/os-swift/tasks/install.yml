@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install swift bundle
+- name: Install openstack-object-storage bundle
   command: "swupd bundle-add openstack-object-storage {{ swupd_args }}"
   args:
     creates: /usr/share/clear/bundles/openstack-object-storage
 
-- name: Run swupd verify
+- name: Verify openstack-object-storage has been installed
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/swift-ring-builder

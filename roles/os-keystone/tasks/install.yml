@@ -13,22 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install keystone bundle
+- name: Install openstack-identity bundle
   command: "swupd bundle-add openstack-identity {{ swupd_args }}"
   args:
     creates: /usr/share/clear/bundles/openstack-identity
 
-- name: Install python clients bundle
-  command: "swupd bundle-add openstack-python-clients {{ swupd_args }}"
-  args:
-    creates: /usr/share/clear/bundles/openstack-python-clients
-
-- name: Run swupd verify
+- name: Verify openstack-identity has been installed
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/keystone-manage
 
-- name: Run swupd verify
+- name: Install openstack-python-clients bundle
+  command: "swupd bundle-add openstack-python-clients {{ swupd_args }}"
+  args:
+    creates: /usr/share/clear/bundles/openstack-python-clients
+
+- name: Verify openstack-python-clients has been installed
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/openstack

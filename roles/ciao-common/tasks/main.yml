@@ -18,7 +18,7 @@
   - name: Create certificate directory
     file: path=/etc/pki/ciao state=directory
 
-  - name: create /var/lib/ciao
+  - name: Create /var/lib/ciao
     file: path=/var/lib/ciao state=directory owner=ciao group=ciao
 
   - name: Create Systemd configuration directory

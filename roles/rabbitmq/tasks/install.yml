@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install rabbitmq bundle
+- name: Install message-broker-rabbitmq bundle
   command: "swupd bundle-add message-broker-rabbitmq {{ swupd_args }}"
   args:
     creates: /usr/share/clear/bundles/message-broker-rabbitmq
 
-- name: Run swupd verify
+- name: Verify message-broker-rabbitmq has been installed
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/rabbitmq-server

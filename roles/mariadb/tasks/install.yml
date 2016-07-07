@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install mariadb bundle
+- name: Install database-mariadb bundle
   command: "swupd bundle-add database-mariadb {{ swupd_args }}"
   args:
     creates: /usr/share/clear/bundles/database-mariadb
 
-- name: Run swupd verify
+- name: Verify database-mariadb has been installed
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/mysqld
