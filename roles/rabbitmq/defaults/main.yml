@@ -16,6 +16,14 @@
 # Optional arguments for swupd
 swupd_args: ""
 
-# Remove guest user
+# A list of users to create
+# rabbitmq_users:
+#   - user: admin
+#     password: admin
+#     configure_priv: .*
+#     read_priv: .*
+#     write_priv: .*
+
+# A list of users to remove
 rabbitmq_delete_users:
-  - "guest"
+  - guest

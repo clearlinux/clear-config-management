@@ -1,27 +1,38 @@
-# Ansible role: MariaDB
+# mariadb
+This role installs the mariadb service
 
-This role installs the database-mariadb
-bundle and starts the database service
+It also secures the installation by setting
+the `root` user password and removing anonymous access.
 
-# Requirements
+## Requirements
 None
 
-# Role variables
-All variables of this role are defined in `defaults/main.yml`
+## Role variables
+Note: Mandatory variables are shown in **bold**
 
-## Mandatory variables
-* `database_root_password`
+Variable  | Default Value | Description
+--------  | ------------- | -----------
+swupd_args |  | Optional arguments for `swupd` program
+**database_root_password** | | Password for the `root` user in the database
 
-## Handlers
+## Dependencies
 None
 
-# Dependencies
-None
+## Example playbook
+file *dbservers.yml*
+```
+- hosts: dbservers
+  roles:
+    - mariadb
+```
 
-# Example playbook
+file *group_vars/all*
+```
+database_root_password: secret
+```
 
-# License
+## License
 Apache-2.0
 
-# Author Information
+## Author Information
 This role was created by [Alberto Murillo](alberto.murillo.silva@intel.com)

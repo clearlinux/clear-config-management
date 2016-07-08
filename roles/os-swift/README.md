@@ -1,58 +1,63 @@
-# Ansible role: OpenStack-Swift
-
+# os-swift
 This role setups the OpenStack Object Storage service
 
-# Requirements
-You need a previously setup of the OpenStack Identity service
-where this role can create the users, roles, etc.
-You need at least two block devices to install swift(known as account device and container device).
+## Requirements
+- A previously setup OpenStack Identity service.
+  You can setup one with [os-keystone](https://github.com/clearlinux/clear-config-management/tree/master/roles/os-keystone) role
+- At least two block devices to install swift (known as account device and container device).
 
-# Role variables
-All variables of this role are defined in `defaults/main.yml
+## Role variables
+The available variables for this roles are the variables from [os-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common) plus the following
 
-## Mandatory variables
-* swift_user_password
-* swift_database_password
-* swift_storage_device_path
-* swift_replica_count
-* swift_hash_path_suffix
-* swift_hash_path_prefix
-* swift_public_interface_name
+Note: Mandatory variables are shown in **bold**
 
-## Handlers
-* restart swift controller node services
-* restart swift storage node services
-* restart rsyncd
+Variable | Default Value | Description
+-------- | ------------- | -----------
+swift_fqdn | `{{ ansible_fqdn }}` | Fully Qualified Domain Name for Swift controller node
+**swift_user_password** | | Password for the `swift` user in OpenStack
+**swift_p12password** | | Password for Swift certificates
+swift_storage_device_path | /dev/ | Location for storage devices
+**swift_storage_devices** | | A list of devices to use for object storage without the `swift_storage_device_path` prefix
+swift_replica_count | 3 | Number of replicas
+**swift_hash_path_prefix** | | An uniqe value to prevent hash collisions
+**swift_hash_path_suffix** | | An uniqe value to prevent hash collisions
 
-# Dependencies
-This role needs the OpenStack-common (os-common) role.
+## Dependencies
+* [os-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common)
 
-# Configurate scenarios(Mandatory, just one scenario is allowed):
-* **Identical storage nodes and devices**
-  - Set the swift_storage_devices variable in group_vars/all as follows:
-  ```
-  swift_storage_devices:
-    - sdb
-    - sdc
-    - sdd
-    - sdf
-  ```
-* **Different storage nodes**
-  - Create the host_vars directory inside clear-config-management
-  - For each storage node create a new file inside host_vars/
-    - e.g. host_vars/swift_storage_node1
-  - In each file, add the storage devices of each node in their own file
-    - e.g. host_vars/swift_storage_node1
-    ```
-    ---
-    devices:
-      - sdb
-      - sdc
-      - sdd
-    ```
+## Example playbook
+file *swift.yml*
+```
+- hosts: openstack_object_storage_controller
+  roles:
+    - os-swift
 
-# License
+- hosts: openstack_object_storage
+  roles:
+    - os-swift
+```
+
+file *group_vars/all*
+```
+keystone_fqdn: identity.example.com
+keystone_admin_password: secret
+
+swift_fqdn: swift-controller.example.com
+swift_user_password: secret
+swift_p12password: secret
+
+swift_storage_device_path: /dev/
+swift_storage_devices:
+  - sdb
+  - sdc
+  - sdd
+swift_replica_count: 3
+swift_hash_path_prefix: 06f5086772e0cd0b8f4e2381fa610d36
+swift_hash_path_suffix: 9a5841b4ffccef51033ce2e19fadbde5
+```
+
+## License
 Apache-2.0
 
-# Author Information
+## Author Information
 This role was created by [Erick Oziel Cardona Ruiz](erick.cardona.ruiz@intel.com)

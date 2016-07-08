@@ -21,15 +21,16 @@ log_debug: False
 
 # Root user for the database
 database_root_user: root
+
+# Password for the 'root' user in the database
 # database_root_password: <password>
 
-# Password for 'admin' user
-# keystone_admin_password: <password>
+# Fully Qualified Domain Name for Keystone node
+keystone_fqdn: "{{ hostvars[groups['openstack_identity'][0]]['ansible_fqdn'] }}"
 
 # Default ports
 keystone_admin_port: 35357
 keystone_public_port: 5000
 
-# Setup keystone with SSL
-keystone_fqdn: "{{ hostvars[groups['openstack_identity']]['ansible_fqdn'] }}"
-keystone_root_domain: "example.com"
+# Password for the 'admin' user in OpenStack
+# keystone_admin_password: secret

@@ -1,42 +1,61 @@
-# Ansible role: OpenStack-Cinder
-
+# os-cinder
 This role setups the OpenStack Block Storage service
 
-# Requirements
-- A previously setup of the OpenStack Identity service
-where this role can create the users, roles, etc.
+## Requirements
+- A previously setup database server.
+  You can setup one with [mariadb](https://github.com/clearlinux/clear-config-management/tree/master/roles/mariadb) role
+- A previously setup OpenStack Identity service.
+  You can setup one with [os-keystone](https://github.com/clearlinux/clear-config-management/tree/master/roles/os-keystone) role
+- A previously setup messaging server.
+  You can setup one with [rabbitmq](https://github.com/clearlinux/clear-config-management/tree/master/roles/rabbitmq) role.
 
-- A previously setup messaging server like RabbitMQ
+## Role variables
+The available variables for this roles are the variables from [os-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common) plus the following
 
-# Role variables
-All variables of this role are defined in `defaults/main.yml`
+Note: Mandatory variables are shown in **bold**
 
-## Mandatory variables
-* `cinder_devices` *This is a list of devices*
+Variable | Default Value | Description
+-------- | ------------- | -----------
+cinder_fqdn | `{{ ansible_fqdn }}` | Fully Qualified Domain Name for Cinder controller node
+**cinder_user_password** | | Password for the `cinder` user in OpenStack
+**cinder_database_password** | | Password for the `cinder` user in the database
+**cinder_p12password** | | Password for Cinder certificates
+**cinder_devices** | | A list of devices to use for block storage
 
-  ```
-    Example:
+## Dependencies
+* [os-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common)
 
-    cinder_devices:
-      - /dev/sdb
-      - /dev/sdc
-      - /dev/sdd
-      - /dev/sdf
-  ```
-* `cinder_user_password`
-* `cinder_database_password`
+## Example playbook
+file *cinder.yml*
+```
+- hosts: openstack_block_storage_controller
+  roles:
+    - os-cinder
 
-## Handlers
-* `restart cinder controller`
-* `restart cinder storage`
+- hosts: openstack_block_storage
+  roles:
+    - os-cinder
+```
 
-# Dependencies
-This role needs the OpenStack-common (os-common) role.
+file *group_vars/all*
+```
+database_root_password: secret
 
-# Example playbook
+keystone_fqdn: identity.example.com
+keystone_admin_password: secret
 
-# License
+cinder_fqdn: cinder-controller.example.com
+cinder_user_password: secret
+cinder_database_password: secret
+cinder_p12password: secret
+
+cinder_devices:
+  - /dev/sdb
+  - /dev/sdc
+```
+
+## License
 Apache-2.0
 
-# Author Information
+## Author Information
 This role was created by [Erick Cardona](erick.cardona.ruiz@intel.com)

@@ -1,4 +1,4 @@
 export CIAO_CONTROLLER={{ keystone_fqdn }}
 export CIAO_IDENTITY=https://{{ keystone_fqdn }}:{{ keystone_admin_port }}
-export CIAO_USERNAME=csr
-export CIAO_PASSWORD={{ ciao_csr_password }}
+export CIAO_USERNAME={{ ciao_service_user }}
+export CIAO_PASSWORD={{ ciao_service_password }}

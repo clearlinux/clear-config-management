@@ -13,13 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Password for 'glance' user
-# glance_user_password: <password>
-
-# Password for 'glance' database
-# glance_database_password: <password>
-
+# Fully Qualified Domain Name for Glance node
 glance_fqdn: "{{ ansible_fqdn }}"
-glance_p12password: "{{ keystone_p12password }}"
-glance_hostname: "{{ glance_fqdn.split('.')|first }}"
-glance_subject: "/DC={{glance_fqdn.split('.')[1:]|reverse|join('/DC=')}}/CN={{glance_fqdn}}/"
+
+# Password for the 'glance' user in OpenStack
+# glance_user_password: secret
+
+# Password for the 'glance' user in the database
+# glance_database_password: secret
+
+# Password for Glance certificates
+# glance_p12password: secret
+
+# Glance node hostname (guessed from glance_fqdn)
+glance_hostname: "{{ glance_fqdn.split('.') | first }}"
+
+# Glance subjects to be used on certificates
+glance_subject: "/DC={{ glance_fqdn.split('.')[1:] | reverse | join('/DC=') }}/CN={{ glance_fqdn }}/"

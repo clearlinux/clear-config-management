@@ -13,12 +13,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+# Fully Qualified Domain Name for Swift node
+swift_fqdn: "{{ hostvars[groups['openstack_object_storage_controller'][0]]['ansible_fqdn'] }}"
+
+# Password for the 'swift' user in OpenStack
+# swift_user_password: secret
+
+# Password for Swift certificates
+# swift_p12password: secret
+
+# Swift node hostname (guessed from swift_fqdn)
+swift_hostname: "{{ swift_fqdn.split('.') | first }}"
+
+# Swift subjects to be used on certificates
+swift_subject: "/DC={{ swift_fqdn.split('.')[1:] | reverse | join('/DC=')}}/CN={{ swift_fqdn }}/"
+
+# A list of ring configuration files
 ring_conf_files:
   - account.ring.gz
   - container.ring.gz
   - object.ring.gz
 
-swift_fqdn: "{{ hostvars[groups['openstack_object_storage_controller'][0]]['ansible_fqdn'] }}"
-swift_p12password: "{{ keystone_p12password }}"
-swift_hostname: "{{ swift_fqdn.split('.') | first }}"
-swift_subject: "/DC={{ swift_fqdn.split('.')[1:] | reverse | join('/DC=')}}/CN={{ swift_fqdn }}/"
+# Path for storage devices
+swift_storage_device_path: /dev/
+
+# A list of storage devices to use for object storage
+# Note: list only the names without the prefix of swift_storage_device_path
+# For example:
+# swift_storage_devices
+#   - sdb
+#   - sdc
+
+# Swift used hash values to store objects. Set prefix and suffix to uniqe values
+# to avoid hash collisions
+# swift_hash_path_prefix:
+# swift_hash_path_suffix:
+
+# Number of replicas
+swift_replica_count: 3
