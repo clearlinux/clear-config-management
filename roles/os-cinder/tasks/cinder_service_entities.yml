@@ -14,6 +14,7 @@
 # limitations under the License.
 
   - name: Create cinder service
+    delegate_to: "{{ keystone_fqdn }}"
     keystone:
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
@@ -26,6 +27,7 @@
       insecure: yes
 
   - name: Create cinderv2 service
+    delegate_to: "{{ keystone_fqdn }}"
     keystone:
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
@@ -38,7 +40,7 @@
       insecure: yes
 
   - name: Create cinder endpoints
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     keystone:
       login_user: admin
       login_password: "{{ keystone_admin_password }}"

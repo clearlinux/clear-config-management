@@ -13,9 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Copy Compute Node Agent Key
-    synchronize: src={{ item }} dest=/etc/pki/ciao
-    delegate_to: "{{ ciao_controller_fqdn }}"
-    with_items:
-      - /etc/pki/ciao/CAcert-{{ ciao_controller_fqdn }}.pem
-      - /etc/pki/ciao/cert-CNAgent-localhost.pem
+# Fully Qualified Domain Name for CIAO controller node
+ciao_controller_fqdn: "{{ hostvars[groups['ciao_controller'][0]]['ansible_fqdn'] }}"

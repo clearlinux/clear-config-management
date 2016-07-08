@@ -68,7 +68,7 @@
     notify: restart swift storage node services
 
   - name: Fetch ring files
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     fetch: src=/etc/swift/{{ item }} dest=/tmp/
     with_items: "{{ ring_conf_files }}"
 
@@ -80,8 +80,8 @@
     file: owner=root group=swift recurse=yes state=directory path=/etc/swift
 
   - name: Change ownership of the certificate if SAIO(Swift All-in-one)
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     file: owner=swift group=swift path=/etc/swift/cacert.pem state=file
-    when: "{{ groups['openstack_object_storage_controller'][0] == inventory_hostname}}"
+    when: "{{ swift_fqdn == inventory_hostname}}"
 
   - meta: flush_handlers

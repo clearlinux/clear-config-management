@@ -19,7 +19,7 @@
   - include: cinder_project_access.yml
 
   - name: Retrieve the certificate
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/cinder
 
   - name: Ensure proper permissions of the certificate

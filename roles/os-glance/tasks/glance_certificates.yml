@@ -22,16 +22,16 @@
       hostname: "{{ glance_hostname }}"
       subj: "{{ glance_subject }}"
       p12password: "{{ glance_p12password }}"
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
 
   - synchronize: src="{{ item }}" dest=/etc/glance/ssl/
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     with_items:
         - "/etc/keystone/ssl/server/{{ glance_hostname }}.key.pem"
         - "/etc/keystone/ssl/server/{{ glance_hostname }}.cert.pem"
 
   - name: Retrieve CA certificate
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/glance
 
   - name: Ensure proper permissions of CA cert

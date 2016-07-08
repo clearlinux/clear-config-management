@@ -14,7 +14,7 @@
 # limitations under the License.
 
   - name: Create users
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     keystone:
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
@@ -31,7 +31,7 @@
       - { name: "swift", project: "admin" }
 
   - name: Add users to roles
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     keystone:
       login_user: admin
       login_password: "{{ keystone_admin_password }}"

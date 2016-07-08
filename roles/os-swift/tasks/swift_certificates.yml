@@ -22,16 +22,16 @@
       hostname: "{{ swift_hostname }}"
       subj: "{{ swift_subject }}"
       p12password: "{{ swift_p12password }}"
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
 
   - synchronize: src="{{ item }}" dest=/etc/swift/ssl/
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     with_items:
         - "/etc/keystone/ssl/server/{{ swift_hostname }}.key.pem"
         - "/etc/keystone/ssl/server/{{ swift_hostname }}.cert.pem"
 
   - name: Retrieve CA certificate
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/swift
 
   - name: Ensure proper permissions of CA cert

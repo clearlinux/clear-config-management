@@ -15,7 +15,7 @@
 
   - name: Copy Network Node Agent Key
     synchronize: src={{ item }} dest=/etc/pki/ciao
-    delegate_to: "{{ groups['ciao_controller'][0] }}"
+    delegate_to: "{{ ciao_controller_fqdn }}"
     with_items:
-      - /etc/pki/ciao/CAcert-{{ groups['ciao_controller'][0] }}.pem
+      - /etc/pki/ciao/CAcert-{{ ciao_controller_fqdn }}.pem
       - /etc/pki/ciao/cert-NetworkingAgent-localhost.pem

@@ -14,11 +14,11 @@
 # limitations under the License.
 
   - name: Create /etc/swift/swift-ring-builder.sh
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     template: dest=/etc/swift/swift-ring-builder.sh src=swift-ring-builder.sh.j2 owner=root group=swift mode=770
 
   - name: Create /etc/swift/proxy-server.conf in the swift controller node
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     template: dest=/etc/swift/proxy-server.conf src=proxy-server.conf.j2 owner=root group=swift mode=660
     notify: restart swift controller node services
 
@@ -26,44 +26,44 @@
 
   - name: Create /etc/nginx directory
     file: path=/etc/nginx state=directory
-    
+
   - name: Crete Swift nginx config file
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     template: dest=/etc/nginx/swift-proxy.conf src=nginx-swift-proxy.conf.j2
     notify: restart nginx
 
   # Create the builders
   # Accounting builder
   - name: Create the base account.builder file
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     command: chdir=/etc/swift swift-ring-builder account.builder create 10 {{  swift_replica_count }} 1 creates=/etc/swift/account.builder
 
   # Container builder
   - name: Create the base container.builder file
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     command: chdir=/etc/swift swift-ring-builder container.builder create 10 {{  swift_replica_count }} 1 creates=/etc/swift/container.builder
 
   # Object builder
   - name: Create the base object.builder file
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     command: chdir=/etc/swift swift-ring-builder object.builder create 10 {{  swift_replica_count }} 1 creates=/etc/swift/object.builder
 
   # Add devices to the ring
   - name: Add devices to the ring
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     command: chdir=/etc/swift ./swift-ring-builder.sh
     ignore_errors: yes
 
   - name: Rebalance account builder
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     command: chdir=/etc/swift swift-ring-builder account.builder rebalance creates=/etc/swift/account.ring.gz
 
   - name: Rebalance container builder
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     command: chdir=/etc/swift swift-ring-builder container.builder rebalance creates=/etc/swift/container.ring.gz
 
   - name: Rebalance object builder
-    delegate_to: "{{ groups['openstack_object_storage_controller'][0] }}"
+    delegate_to: "{{ swift_fqdn }}"
     command: chdir=/etc/swift swift-ring-builder object.builder rebalance creates=/etc/swift/object.ring.gz
 
   - meta: flush_handlers

@@ -17,7 +17,7 @@
     file: path=/etc/cinder/ssl/ state=directory
 
   - name: Generate Cinder certificate and key
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     certificate:
       cadir: "/etc/keystone/ssl"
       hostname: "{{ cinder_hostname }}"
@@ -25,7 +25,7 @@
       p12password: "{{ cinder_p12password }}"
 
   - name: Copy certificate and key
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     synchronize: src=/etc/keystone/ssl/server/{{ item }} dest=/etc/cinder/ssl
     with_items:
       - "{{ cinder_hostname }}.cert.pem"

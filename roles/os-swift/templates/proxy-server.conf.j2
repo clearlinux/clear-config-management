@@ -23,7 +23,7 @@ operator_roles = admin,user
 paste.filter_factory = keystonemiddleware.auth_token:filter_factory
 auth_uri = https://{{ keystone_fqdn }}:{{ keystone_public_port }}
 auth_url = https://{{ keystone_fqdn }}:{{ keystone_admin_port }}
-memcached_servers = {{ groups['openstack_object_storage_controller'][0] }}:11211
+memcached_servers = {{ swift_fqdn }}:11211
 auth_type = password
 project_domain_id = default
 user_domain_id = default
@@ -35,7 +35,7 @@ cafile = /etc/swift/cacert.pem
 
 [filter:cache]
 use = egg:swift#memcache
-memcache_servers = {{ groups['openstack_object_storage_controller'][0] }}:11211
+memcache_servers = {{ swift_fqdn }}:11211
 
 [filter:tempauth]
 use = egg:swift#tempauth

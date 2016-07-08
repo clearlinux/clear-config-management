@@ -17,7 +17,7 @@
     file: path=/etc/ca-certs state=directory
 
   - name: Retrieve CA certificate
-    delegate_to: "{{ groups['openstack_identity'][0] }}"
+    delegate_to: "{{ keystone_fqdn }}"
     synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/ca-certs
 
   - name: Get hash from cacert.pem
