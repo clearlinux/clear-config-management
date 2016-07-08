@@ -4,9 +4,6 @@ database.example.com
 [openstack_identity]
 controller.example.com
 
-[openstack_image]
-controller.example.com
-
 [ciao_controller]
 controller.example.com
 
@@ -15,3 +12,6 @@ network.example.com
 
 [ciao_compute]
 compute.example.com
+
+[ciao_network]
+network.example.com

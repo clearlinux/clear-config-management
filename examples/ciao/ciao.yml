@@ -7,10 +7,6 @@
   roles:
     - os-keystone
 
-- hosts: openstack_image
-  roles:
-    - os-glance
-
 - hosts: ciao_controller
   roles:
     - ciao-controller
