@@ -14,15 +14,3 @@ ciao_admin_email: admin@example.com
 ciao_cert_organization: Example, Inc.
 ciao_guest_user: demouser
 ciao_guest_key: ~/.ssh/id_rsa.pub
-
-keystone_services:
-  - service_name: "ciao"
-    service_type: "compute"
-keystone_users:
-  - user_name: "{{ ciao_service_user }}"
-    password: "{{ ciao_service_password }}"
-    project_name: "admin"
-keystone_user_roles:
-  - user_name: "{{ ciao_service_user }}"
-    project_name: service
-    role_name: admin

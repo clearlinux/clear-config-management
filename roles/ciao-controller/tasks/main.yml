@@ -17,4 +17,5 @@
   - include: create_certs.yml
   - include: setup_certs.yml
   - include: start_services.yml
+  - include: create_endpoints.yml
   - include: ciaorc.yml
