@@ -23,6 +23,7 @@
   - name: Get hash from cacert.pem
     command: c_hash /etc/ca-certs/cacert.pem
     register: cert_hash
+    changed_when: False
 
   - file: >
       src=/etc/ca-certs/cacert.pem

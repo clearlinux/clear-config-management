@@ -26,3 +26,5 @@
       --bootstrap-internal-url "https://{{ keystone_fqdn }}:{{ keystone_public_port }}/v3"
     become: yes
     become_user: keystone
+    register: result
+    changed_when: "'Created' in result.stderr"

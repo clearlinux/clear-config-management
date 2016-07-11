@@ -18,12 +18,12 @@
   - include: cinder_service_entities.yml
   - include: cinder_project_access.yml
 
-  - name: Retrieve the certificate
+  - name: Retrieve CA certificate
     delegate_to: "{{ keystone_fqdn }}"
-    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/cinder
-
-  - name: Ensure proper permissions of the certificate
-    file: path=/etc/cinder/cacert.pem owner=cinder group=cinder mode=400
+    synchronize:
+      src: /etc/keystone/ssl/cacert.pem
+      dest: /etc/cinder
+      rsync_opts: --chown=cinder:cinder,--chmod=0400
 
   - include: cinder_certificates.yml
 
