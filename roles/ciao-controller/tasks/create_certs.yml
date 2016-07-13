@@ -18,7 +18,7 @@
 
   - name: Create Scheduler key and CA certificate
     command: >
-      ciao-cert -server -role scheduler -email={{ ciao_admin_email }} -organization="{{ ciao_cert_organization }}"
+      {{ environment_path }}/ciao-cert -server -role scheduler -email={{ ciao_admin_email }} -organization="{{ ciao_cert_organization }}"
       -ip={{ ciao_controller_ip }} -host={{ ciao_controller_fqdn }} -verify
     args:
       chdir: /etc/pki/ciao
@@ -26,7 +26,7 @@
 
   - name: Create Compute Node Agent key
     command: >
-      ciao-cert -role agent -server-cert cert-Scheduler-{{ ciao_controller_fqdn }}.pem
+      {{ environment_path }}/ciao-cert -role agent -server-cert cert-Scheduler-{{ ciao_controller_fqdn }}.pem
       -email={{ ciao_admin_email }} -organization="{{ ciao_cert_organization }}" -host=localhost -verify
     args:
       chdir: /etc/pki/ciao
@@ -34,7 +34,7 @@
 
   - name: Create Networking Node Agent key
     command: >
-      ciao-cert -role netagent -server-cert cert-Scheduler-{{ ciao_controller_fqdn }}.pem
+      {{ environment_path }}/ciao-cert -role netagent -server-cert cert-Scheduler-{{ ciao_controller_fqdn }}.pem
       -email={{ ciao_admin_email }} -organization="{{ ciao_cert_organization }}" -host=localhost -verify
     args:
       chdir: /etc/pki/ciao
@@ -42,7 +42,7 @@
 
   - name: Create CNCI Agent key
     command: >
-      ciao-cert -role cnciagent -server-cert cert-Scheduler-{{ ciao_controller_fqdn }}.pem
+      {{ environment_path }}/ciao-cert -role cnciagent -server-cert cert-Scheduler-{{ ciao_controller_fqdn }}.pem
       -email={{ ciao_admin_email }} -organization="{{ ciao_cert_organization }}" -host=localhost -verify
     args:
       chdir: /etc/pki/ciao
@@ -50,7 +50,7 @@
 
   - name: Create Controller private key
     command: >
-      ciao-cert -role controller -server-cert cert-Scheduler-{{ ciao_controller_fqdn }}.pem
+      {{ environment_path }}/ciao-cert -role controller -server-cert cert-Scheduler-{{ ciao_controller_fqdn }}.pem
       -email={{ ciao_admin_email }} -organization="{{ ciao_cert_organization }}" -host=localhost -verify
     args:
       chdir: /etc/pki/ciao

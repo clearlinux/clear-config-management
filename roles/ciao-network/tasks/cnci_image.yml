@@ -16,9 +16,13 @@
   - name: Create image directory
     file: path=/var/lib/ciao/images state=directory owner=ciao group=ciao
 
+  - name: Set path to ciao-cnci-agent.service
+    set_fact: ciao_cnci_agent_service=~/go/src/github.com/01org/ciao/networking/ciao-cnci-agent/scripts/ciao-cnci-agent.service
+    when: ciao_dev
+
   - name: Download CNCI image and install certificates
     script: >
-      cnci_image.sh {{ cnci_image_url }}
+      cnci_image.sh {{ cnci_image_url }} {{ environment_path }}/ciao-cnci-agent {{ ciao_cnci_agent_service }}
       creates=/var/lib/ciao/images/{{ cnci_image }}
     delegate_to: "{{ ciao_controller_fqdn }}"
 

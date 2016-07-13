@@ -2,6 +2,8 @@
 
 # Variables
 image_url=$1
+ciao_cnci_agent=$2
+ciao_cnci_agent_service=$3
 image=${image_url##*/}
 image=${image%*.xz}
 
@@ -25,8 +27,8 @@ partprobe /dev/nbd0
 mount /dev/nbd0p$partition /mnt/tmp
 
 echo -e "Installing the service"
-cp /usr/bin/ciao-cnci-agent /mnt/tmp/usr/bin/
-cp /usr/lib/systemd/system/ciao-cnci-agent.service /mnt/tmp/usr/lib/systemd/system/
+cp $ciao_cnci_agent /mnt/tmp/usr/bin/
+cp $ciao_cnci_agent_service /mnt/tmp/usr/lib/systemd/system/
 mkdir -p /mnt/tmp/etc/systemd/system/default.target.wants
 chroot /mnt/tmp /bin/bash -c "ln -s /usr/lib/systemd/system/ciao-cnci-agent.service /etc/systemd/system/default.target.wants/"
 

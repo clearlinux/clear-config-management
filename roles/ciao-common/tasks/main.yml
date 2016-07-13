@@ -23,3 +23,7 @@
 
   - name: Create Systemd configuration directory
     file: path=/etc/systemd/system state=directory mode=640
+
+  - name: Set environment_path to /usr/local/bin
+    set_fact: environment_path='/usr/local/bin'
+    when: ciao_dev
