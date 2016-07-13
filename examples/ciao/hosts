@@ -12,6 +12,3 @@ network.example.com
 
 [ciao_compute]
 compute.example.com
-
-[ciao_network]
-network.example.com
