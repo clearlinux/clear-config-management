@@ -13,6 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+  - name: Copy CIAO Binaries
+    synchronize: src={{ item }} dest=/usr/local/bin
+    delegate_to: "{{ ciao_controller_fqdn }}"
+    with_items:
+      - /usr/local/bin/ciao-cli
+      - /usr/local/bin/ciao-launcher
+    when: ciao_dev
+
   - include: setup_certs.yml
   - include: setup_image.yml
   - include: start_compute_service.yml

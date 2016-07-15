@@ -1,0 +1,8 @@
+---
+- hosts: dbservers
+  tasks:
+    - name: Stop MariaDB services
+      service: name=mariadb.service enabled=no state=stopped
+
+    - name: Remove MariaDB files
+      file: path=/var/lib/mysql state=absent

@@ -13,5 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Set to True to install ciao from sources instead of the operating system pacakge
+ciao_dev: False
+
 # Fully Qualified Domain Name for CIAO controller node
 ciao_controller_fqdn: "{{ hostvars[groups['ciao_controller'][0]]['ansible_fqdn'] }}"
+
+# Path to CIAO binaries
+environment_path: /usr/bin

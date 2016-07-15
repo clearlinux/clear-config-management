@@ -14,6 +14,11 @@
 # limitations under the License.
 
   - include: install_cnci.yml
+    when: not ciao_dev
+
+  - include: install_from_source.yml
+    when: ciao_dev
+
   - include: create_certs.yml
   - include: setup_certs.yml
   - include: start_services.yml
