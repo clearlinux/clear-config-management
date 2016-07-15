@@ -1,0 +1,19 @@
+---
+- hosts: openstack_identity
+  tasks:
+    - name: Stop Keystone services
+      service: name={{ item }} enabled=no state=stopped
+      with_items:
+        - uwsgi@keystone-public.socket
+        - uwsgi@keystone-public.service
+        - uwsgi@keystone-admin.socket
+        - uwsgi@keystone-admin.service
+        - nginx.service
+        - memcached.service
+
+    - name: Remove Keystone files
+      file: name={{ item }} state=absent
+      with_items:
+        - /etc/keystone/ssl
+        - /etc/keystone/keystone.conf
+        - /etc/nginx/keystone.conf

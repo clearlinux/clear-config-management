@@ -18,8 +18,13 @@
   - name: Create certificate directory
     file: path=/etc/pki/ciao state=directory
 
-  - name: Create /var/lib/ciao
-    file: path=/var/lib/ciao state=directory owner=ciao group=ciao
+  - name: Create /var/lib/ciao tree
+    file: path={{ item }} state=directory owner=ciao group=ciao
+    with_items:
+      - /var/lib/ciao
+      - /var/lib/ciao/instances
+      - /var/lib/ciao/datastore
+      - /var/lib/ciao/images
 
   - name: Create Systemd configuration directory
     file: path=/etc/systemd/system state=directory mode=640
