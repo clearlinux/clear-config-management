@@ -16,6 +16,7 @@ mon_group_name: mons
 osd_group_name: osds
 rgw_group_name: rgws
 mds_group_name: mdss
+nfs_group_name: nfss
 restapi_group_name: restapis
 rbdmirror_group_name: rbdmirrors
 client_group_name: clients
@@ -35,7 +36,7 @@ upgrade_ceph_packages: False
 # is not needed for versions after infernalis.
 use_server_package_split: true
 
-# /!\ EITHER ACTIVE ceph_stable OR ceph_stable_ice OR ceph_stable_uca OR ceph_dev /!\
+# /!\ EITHER ACTIVE ceph_stable OR ceph_stable_ice OR ceph_stable_uca OR ceph_dev OR ceph_custom /!\
 
 debian_package_dependencies:
   - python-pycurl
@@ -56,6 +57,9 @@ redhat_package_dependencies:
   - ntp
   - python-setuptools
 
+# Enable the ntp service by default to avoid clock skew on
+# ceph nodes
+ntp_service_enabled: true
 
 # The list of ceph packages needed for debian.
 # This variable should only be changed if packages are not available from a given
@@ -83,7 +87,7 @@ ceph_use_distro_backports: false # DEBIAN ONLY
 ########
 
 # COMMUNITY VERSION
-ceph_stable: False   # use ceph stable branch
+ceph_stable: false # use ceph stable branch
 ceph_stable_key: https://download.ceph.com/keys/release.asc
 ceph_stable_release: jewel # ceph stable release
 ceph_stable_repo: "http://download.ceph.com/debian-{{ ceph_stable_release }}"
@@ -165,6 +169,15 @@ ceph_dev_branch: master # development branch you would like to use e.g: master, 
 # fedora19, fedora20, opensuse12, sles0. (see http://gitbuilder.ceph.com/).
 # For rhel, please pay attention to the versions: 'rhel6 3' or 'rhel 4', the fullname is _very_ important.
 ceph_dev_redhat_distro: centos7
+
+# CUSTOM
+# ###
+
+# Use a custom repository to install ceph.  For RPM, ceph_custom_repo should be
+# a URL to the .repo file to be installed on the targets.  For deb,
+# ceph_custom_repo should be the URL to the repo base.
+ceph_custom: false # use custom ceph repository
+ceph_custom_repo: https://server.domain.com/ceph-custom-repo
 
 
 ######################

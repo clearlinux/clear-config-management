@@ -7,7 +7,7 @@
 - name: fail on unsupported architecture
   fail:
     msg: "Architecture not supported {{ ansible_architecture }}"
-  when: "'{{ ansible_architecture }}' not in ['x86_64', 'ppc64le']"
+  when: "'{{ ansible_architecture }}' not in ['x86_64', 'ppc64le', 'armv7l']"
 
 - name: fail on unsupported distribution
   fail:
@@ -16,7 +16,7 @@
 
 - name: fail on unsupported distribution for red hat storage
   fail:
-    msg: "Distribution not supported {{ ansible_distribution_version }} by Red Hat Storage, only RHEL 7.1"
+    msg: "Distribution not supported {{ ansible_distribution_version }} by Red Hat Ceph Storage, only RHEL 7.1"
   when:
     - ceph_stable_rh_storage
     - ansible_distribution_version | version_compare('7.1', '<')

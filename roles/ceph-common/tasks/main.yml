@@ -30,7 +30,9 @@
     - package-install
 
 - include: ./installs/install_on_redhat.yml
-  when: ansible_os_family == 'RedHat'
+  when:
+    ansible_os_family == 'RedHat' and
+    not ceph_stable_rh_storage_iso_install
   tags:
     - package-install
 
@@ -75,6 +77,16 @@
     - rgw_group_name in group_names
   tags:
     - package-install
+
+- include: ./misc/ntp_redhat.yml
+  when:
+    - ansible_os_family == 'RedHat'
+    - ntp_service_enabled
+
+- include: ./misc/ntp_debian.yml
+  when:
+    - ansible_os_family == 'Debian'
+    - ntp_service_enabled
 
 - include: facts.yml
 
@@ -222,6 +234,7 @@
     - restart ceph rgws on ubuntu
     - restart ceph rgws on red hat
     - restart ceph rgws with systemd
+    - restart ceph nfss
 
 - name: create rbd client directory
   file:

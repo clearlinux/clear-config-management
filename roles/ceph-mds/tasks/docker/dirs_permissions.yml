@@ -2,16 +2,15 @@
 # NOTE (leseb): we can not use docker inspect with 'format filed' because of
 # https://github.com/ansible/ansible/issues/10156
 - name: inspect ceph version
-  shell: docker inspect "docker.io/{{ ceph_mon_docker_username }}/{{ ceph_mon_docker_imagename }}:{{ ceph_mon_docker_image_tag }}" | awk -F '=' '/CEPH_VERSION/ { gsub ("\",", "", $2); print $2 }' | uniq
+  shell: docker inspect "docker.io/{{ ceph_mds_docker_username }}/{{ ceph_mds_docker_imagename }}:{{ ceph_mds_docker_image_tag }}" | awk -F '=' '/CEPH_VERSION/ { gsub ("\",", "", $2); print $2 }' | uniq
   changed_when: false
   failed_when: false
   run_once: true
   register: ceph_version
 
 - set_fact:
-    after_hamer=True
-  when:
-    ceph_version.stdout not in ['firefly','giant', 'hammer']
+    after_hammer=True
+  when: ceph_version.stdout not in ['firefly','giant', 'hammer']
 
 - name: create bootstrap directories (for or before hammer)
   file:
@@ -22,10 +21,8 @@
     mode: "0755"
   with_items:
     - /etc/ceph/
-    - /var/lib/ceph/bootstrap-osd
     - /var/lib/ceph/bootstrap-mds
-    - /var/lib/ceph/bootstrap-rgw
-  when: not after_hamer
+  when: not after_hammer
 
 - name: create bootstrap directories (after hammer)
   file:
@@ -36,7 +33,5 @@
     mode: "0755"
   with_items:
     - /etc/ceph/
-    - /var/lib/ceph/bootstrap-osd
     - /var/lib/ceph/bootstrap-mds
-    - /var/lib/ceph/bootstrap-rgw
-  when: after_hamer
+  when: after_hammer
