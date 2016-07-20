@@ -17,3 +17,5 @@
     command: "glance-manage db_sync"
     become: yes
     become_user: glance
+    register: result
+    changed_when: result.stderr != "" and result.rc == 0

@@ -32,7 +32,7 @@
 
   - name: Retrieve CA certificate
     delegate_to: "{{ keystone_fqdn }}"
-    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/swift
-
-  - name: Ensure proper permissions of CA cert
-    file: path=/etc/swift/cacert.pem owner=swift group=swift mode=400
+    synchronize:
+      src: /etc/keystone/ssl/cacert.pem
+      dest: /etc/swift
+      rsync_opts: --chown=swift:swift,--chmod=0400

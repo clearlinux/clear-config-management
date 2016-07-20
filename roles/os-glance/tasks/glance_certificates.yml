@@ -32,7 +32,7 @@
 
   - name: Retrieve CA certificate
     delegate_to: "{{ keystone_fqdn }}"
-    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/glance
-
-  - name: Ensure proper permissions of CA cert
-    file: path=/etc/glance/cacert.pem owner=glance group=glance mode=400
+    synchronize:
+      src: /etc/keystone/ssl/cacert.pem
+      dest: /etc/glance
+      rsync_opts: --chown=glance:glance,--chmod=0400

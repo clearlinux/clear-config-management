@@ -17,3 +17,5 @@
     command: "keystone-manage db_sync"
     become: yes
     become_user: keystone
+    register: result
+    changed_when: result.stderr != "" and result.rc == 0
