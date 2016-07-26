@@ -23,6 +23,16 @@
     args:
       creates: /usr/bin/go
 
+  - name: Install os-core-dev bundle
+    command: "swupd bundle-add os-core-dev {{ swupd_args }}"
+    args:
+      creates: /usr/share/clear/bundles/os-core-dev
+
+  - name: Verify os-core-dev has been installed
+    command: "swupd verify -f {{ swupd_args }}"
+    args:
+      creates: /usr/bin/gcc
+
   - name: Setup GOROOT directory
     file: path=~/go state=directory
 
