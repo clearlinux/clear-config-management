@@ -1,0 +1,12 @@
+[Unit]
+Description=uWSGI service
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/uwsgi --ini /usr/share/uwsgi/%I.ini
+Restart=always
+KillSignal=SIGQUIT
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

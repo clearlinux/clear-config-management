@@ -20,6 +20,7 @@
       login_password: "{{ database_root_password }}"
       name: keystone
       state: present
+      encoding: utf8
 
   - name: Create mysql keystone user
     delegate_to: "{{ groups['dbservers'][0] }}"
@@ -34,3 +35,10 @@
     with_items:
        - "%"
        - "localhost"
+
+  - name: Perform a Keystone DB sync
+    command: "keystone-manage db_sync"
+    become: yes
+    become_user: keystone
+    register: result
+    changed_when: result.stderr != "" and result.rc == 0

@@ -13,9 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Perform a Keystone DB sync
-    command: "keystone-manage db_sync"
-    become: yes
-    become_user: keystone
-    register: result
-    changed_when: result.stderr != "" and result.rc == 0
+  - name: Create /etc/keystone directory
+    file: path=/etc/keystone state=directory group=keystone mode=770
+
+  - name: Create /etc/keystone/keystone.conf
+    template: dest=/etc/keystone/keystone.conf
+              src=keystone.conf.j2 group=keystone mode=640
+    notify: restart keystone
+
+  - name: Create {{ nginx_conf_dir }} directory
+    file: path={{ nginx_conf_dir }} state=directory
+
+  - name: Create keystone configuration for nginx
+    template: dest={{ nginx_conf_dir }}/keystone.conf src=nginx-keystone.conf.j2
+    notify: restart nginx

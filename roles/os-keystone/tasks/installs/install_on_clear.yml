@@ -32,3 +32,9 @@
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/openstack
+
+- name: Set httpd user
+  set_fact: http_user='httpd'
+
+- name: Set nginx_conf_dir
+  set_fact: nginx_conf_dir='/etc/nginx'

@@ -13,11 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: install.yml
-  - include: keystone_db_setup.yml
-  - include: keystone_configure_components.yml
-  - include: keystone_db_sync.yml
-  - include: keystone_bootstrap.yml
+  - include: ./installs/install_on_clear.yml
+    when: ansible_distribution == 'Clear linux software for intel architecture'
+
+  - include: ./installs/install_on_ubuntu.yml
+    when: ansible_distribution == 'Ubuntu'
+
+  - include: configure.yml
+  - include: certificates.yml
+  - include: dbsetup.yml
+  - include: start_services.yml
+
+  - include: bootstrap.yml
   - include: keystone_service_entities.yml
   - include: keystone_project_access.yml
-  - include: keystone_openrc.yml
+
+  - name: Create openrc file
+    local_action: template src=openrc.j2 dest=~/openrc mode=0600
