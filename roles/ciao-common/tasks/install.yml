@@ -22,3 +22,7 @@
   command: "swupd verify -f {{ swupd_args }}"
   args:
     creates: /usr/bin/ciao-controller
+
+- name: Create /usr/local/bin
+  file: path=/usr/local/bin state=directory
+  when: ciao_dev
