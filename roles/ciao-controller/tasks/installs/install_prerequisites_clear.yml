@@ -33,22 +33,5 @@
     args:
       creates: /usr/bin/gcc
 
-  - name: Setup GOROOT directory
-    file: path=~/go state=directory
-
-  - name: Build CIAO from sources
-    shell: "GOPATH=~/go go get -v -u github.com/01org/ciao/..."
-    register: result
-    changed_when: result.stderr != "" and result.rc == 0
-
-  - name: Install CIAO binaries
-    shell: "cp ~/go/bin/{{ item }} /usr/local/bin"
-    args:
-      creates: /usr/local/bin/{{ item }}
-    with_items:
-      - ciao-controller
-      - ciao-scheduler
-      - ciao-launcher
-      - ciao-cli
-      - ciao-cert
-      - ciao-cnci-agent
+  - name: Set certificate directory
+    set_fact: cert_dir=/usr/share/ca-certs

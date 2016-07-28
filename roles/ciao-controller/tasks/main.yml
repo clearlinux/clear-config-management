@@ -13,14 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: install_cnci.yml
-    when: not ciao_dev
+  - include: ./installs/install_cnci.yml
+    when: not ciao_dev and
+          ansible_distribution == 'Clear linux software for intel architecture'
 
-  - include: install_from_source.yml
+  - include: ./installs/install_prerequisites_clear.yml
+    when: ansible_distribution == 'Clear linux software for intel architecture'
+
+  - include: ./installs/install_prerequisites_ubuntu.yml
+    when: ansible_distribution == 'Ubuntu'
+
+  - include: ./installs/install_from_source.yml
     when: ciao_dev
 
   - include: create_certs.yml
   - include: setup_certs.yml
   - include: start_services.yml
   - include: create_endpoints.yml
-  - include: ciaorc.yml
+
+  - include: create_cnci_image.yml
+
+  - name: Create ciaorc file
+    local_action: template src=ciaorc.j2 dest=~/ciaorc mode=0400

@@ -13,28 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create /etc/ca-certs
-    file: path=/etc/ca-certs state=directory
-
   - name: Retrieve CA certificate
     delegate_to: "{{ keystone_fqdn }}"
-    synchronize: src=/etc/keystone/ssl/cacert.pem dest=/etc/ca-certs
+    synchronize: "src=/etc/keystone/ssl/cacert.pem dest={{ cert_dir }}"
 
   - name: Get hash from cacert.pem
-    command: c_hash /etc/ca-certs/cacert.pem
+    command: openssl x509 -hash -noout -in {{ cert_dir }}/cacert.pem
     register: cert_hash
     changed_when: False
 
-  - file: >
-      src=/etc/ca-certs/cacert.pem
-      dest=/etc/ca-certs/{{ cert_hash.stdout.split(' ') | first }}
-      state=link
+  - file:
+      src: "{{ cert_dir }}/cacert.pem"
+      dest: "{{ cert_dir }}/{{ cert_hash.stdout }}.0"
+      state: link
 
-  - file: path=/etc/ssl state=directory
+  - command: "cp {{ cert_dir }}/cacert.pem /usr/local/share/ca-certificates/cacert.crt"
+    when: ansible_distribution == 'Ubuntu'
 
-  - file: src=/etc/ca-certs dest=/etc/ssl/certs state=link
-
-  - file: >
-      src=/etc/ca-certs/cacert.pem
-      dest=/usr/share/ca-certs/{{ cert_hash.stdout.split(' ') | first }}
-      state=link
+  - command: update-ca-certificates
+    when: ansible_distribution == 'Ubuntu'

@@ -47,3 +47,6 @@ ciao_guest_key: ~/.ssh/id_rsa.pub
 
 # The contents of ciao_guest_key file
 ciao_ssh_public_key: "{{ lookup('file', ciao_guest_key) }}"
+
+# Path to ciao-cnci-agent.service
+ciao_cnci_agent_service: /usr/lib/systemd/system/ciao-cnci-agent.service

@@ -15,6 +15,8 @@ Variable  | Default Value | Description
 swupd_args |  | Optional arguments for `swupd` program
 ciao_dev | False | Set to True to install ciao from the master branch, Otherwise CIAO will be installed from the operating system packages.
 ciao_controller_fqdn | `{{ ansible_fqdn }}` | FQDN for CIAO controller node
+cnci_image_url | [clear-8260-ciao-networking.img.xz](https://download.clearlinux.org/demos/ciao/clear-8260-ciao-networking.img.xz) | URL for the latest ciao networking image
+ovmf_url | [OVMF.fd](https://download.clearlinux.org/image/OVMF.fd) | EFI firmware required for CNCI Image.
 
 ## Dependencies
 None

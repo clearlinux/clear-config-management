@@ -21,3 +21,12 @@ ciao_controller_fqdn: "{{ hostvars[groups['ciao_controller'][0]]['ansible_fqdn']
 
 # Path to CIAO binaries
 environment_path: /usr/bin
+
+# URL for the latest ciao networking image
+cnci_image_url: https://download.clearlinux.org/demos/ciao/clear-8260-ciao-networking.img.xz
+
+# Ciao networking image file name
+cnci_image: "{{ cnci_image_url[0:-3].split('/') | last }}"
+
+# URL for EFI Firmware required by CNCI Image
+ovmf_url: https://download.clearlinux.org/image/OVMF.fd

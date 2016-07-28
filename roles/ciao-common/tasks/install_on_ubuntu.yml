@@ -13,5 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create openrc file
-    local_action: template src=ciaorc.j2 dest=~/ciaorc mode=0400
+- name: Install Ciao dependencies
+  apt: name={{ item }} state=present
+  with_items:
+    - golang
+    - git
+    - openssl
+    - qemu-kvm
+    - xorriso
