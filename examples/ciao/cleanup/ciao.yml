@@ -24,10 +24,8 @@
     - name: Remove CIAO directories
       file: path={{ item }} state=absent
       with_items:
-        - /etc/ca-certs
         - /etc/ciao
         - /etc/pki/ciao
-        - /etc/ssl/certs
         - /var/lib/ciao
 
     - name: Remove CIAO files from github
@@ -41,3 +39,24 @@
         - /usr/local/bin/ciao-cert
         - /usr/local/bin/ciao-cnci-agent
       when: ciao_dev
+
+    - name: Remove CIAO user
+      user:
+        name: ciao
+        state: absent
+        remove: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Remove Ciao packages (Ubuntu)
+      apt:
+        name: "{{ item }}"
+        state: absent
+        autoremove: yes
+        purge: yes
+      with_items:
+        - golang
+        - git
+        - openssl
+        - qemu-kvm
+        - xorriso
+      when: ansible_distribution == 'Ubuntu'

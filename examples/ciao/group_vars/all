@@ -1,4 +1,14 @@
 ---
+# Vars from geerlingguy.mysql. Use with Ubuntu
+# https://galaxy.ansible.com/geerlingguy/mysql/
+# mysql_user_home: /root
+# mysql_root_password: secret
+# mysql_packages:
+#   - mariadb-client
+#   - mariadb-server
+#   - python-mysqldb
+# mysql_bind_address: '0.0.0.0'
+
 # Vars required for mariadb and os-common
 # https://github.com/clearlinux/clear-config-management/tree/master/roles/mariadb
 # https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common

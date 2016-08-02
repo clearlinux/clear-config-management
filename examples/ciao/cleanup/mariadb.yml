@@ -1,0 +1,24 @@
+---
+- hosts: dbservers
+  tasks:
+    - name: Stop MariaDB services
+      service: name=mariadb.service enabled=no state=stopped
+      when: ansible_distribution == "Clear linux software for intel architecture"
+
+    - name: Remove MariaDB files
+      file: path=/var/lib/mysql state=absent
+      when: ansible_distribution == "Clear linux software for intel architecture"
+
+    - name: Stop MariaDB services (Ubuntu)
+      service: name=mysql.service enabled=no state=stopped
+      ignore_errors: yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Uninstall MariaDB (Ubuntu)
+      apt:
+        name: "{{ item }}"
+        state: absent
+        purge: yes
+        autoremove: yes
+      with_items: "{{ mysql_packages }}"
+      when: ansible_distribution == "Ubuntu"

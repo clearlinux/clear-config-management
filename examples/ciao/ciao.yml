@@ -2,6 +2,8 @@
 - hosts: dbservers
   roles:
     - mariadb
+    # Use geerlingguy's mysql for Ubuntu
+    # - geerlingguy.mysql
 
 - hosts: openstack_identity
   roles:
