@@ -6,11 +6,7 @@ Ansible role to install the network node for a CIAO cluster
   You can setup one with [ciao-controller](https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-controller) role
 
 ## Role Variables
-The available variables for this roles are the variables from [ciao-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-common) plus the following
-
-Variable  | Default Value | Description
---------  | ------------- | -----------
-cnci_image_url | [clear-8260-ciao-networking.img.xz](https://download.clearlinux.org/demos/ciao/clear-8260-ciao-networking.img.xz) | URL for the latest ciao networking image
+The available variables for this roles are the variables from [ciao-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-common)
 
 ## Dependencies
 * [ciao-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-common)
