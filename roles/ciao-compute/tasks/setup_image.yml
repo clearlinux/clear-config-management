@@ -22,10 +22,11 @@
       url="{{ fedora_cloud_image_url }}"
       force=no
 
-  - file: >
-      path=/var/lib/ciao/images/73a86d7e-93c0-480e-9c41-ab42f69b7799
-      src=/var/lib/ciao/images/{{ fedora_cloud_image }}
-      state=link
+  - name: Link fedora image to its reference in the DB
+    file:
+      path: /var/lib/ciao/images/73a86d7e-93c0-480e-9c41-ab42f69b7799
+      src: /var/lib/ciao/images/{{ fedora_cloud_image }}
+      state: link
 
   - name: Download ClearLinux Image
     get_url: >
@@ -34,12 +35,19 @@
       force=no
 
   - name: Uncompress ClearLinux Image
-    command: xz -T0 --decompress {{ clear_cloud_image }}.xz
+    command: unxz -k {{ clear_cloud_image }}.xz
     args:
       chdir: /var/lib/ciao/images
       creates: /var/lib/ciao/images/{{ clear_cloud_image }}
 
-  - file: >
-      path=/var/lib/ciao/images/df3768da-31f5-4ba6-82f0-127a1a705169
-      src=/var/lib/ciao/images/{{ clear_cloud_image }}
-      state=link
+  - name: Link clear linux image to its reference in the DB
+    file:
+      path: /var/lib/ciao/images/df3768da-31f5-4ba6-82f0-127a1a705169
+      src: /var/lib/ciao/images/{{ clear_cloud_image }}
+      state: link
+
+  - name: Download OVMF.fd
+    get_url:
+      url: "{{ ovmf_url }}"
+      dest: /usr/share/qemu/OVMF.fd
+      validate_certs: no
