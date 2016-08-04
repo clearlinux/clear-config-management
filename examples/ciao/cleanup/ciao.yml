@@ -38,7 +38,7 @@
         - /usr/local/bin/ciao-cli
         - /usr/local/bin/ciao-cert
         - /usr/local/bin/ciao-cnci-agent
-      when: ciao_dev
+      when: ciao_dev is defined and ciao_dev
 
     - name: Remove CIAO user
       user:

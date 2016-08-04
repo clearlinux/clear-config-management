@@ -20,5 +20,5 @@
         state: absent
         purge: yes
         autoremove: yes
-      with_items: "{{ mysql_packages }}"
+      with_items: "{{ mysql_packages | default([]) }}"
       when: ansible_distribution == "Ubuntu"
