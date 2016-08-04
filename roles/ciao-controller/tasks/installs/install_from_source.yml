@@ -19,7 +19,7 @@
   - name: Build CIAO from sources
     shell: "GOPATH=~/go go get -v -u github.com/01org/ciao/..."
     register: result
-    changed_when: result.stderr != "" and result.rc == 0
+    changed_when: "'github.com/01org/ciao/' in result.stderr"
 
   - name: Install CIAO binaries
     shell: "cp ~/go/bin/{{ item }} /usr/local/bin"
