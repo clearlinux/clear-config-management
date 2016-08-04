@@ -28,6 +28,7 @@ keystone_p12password: secret
 # Vars required for ciao-common
 # https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-common
 ciao_controller_fqdn: controller.example.com
+ciao_dev: False
 
 # Vars required for ciao-controller
 # https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-controller
