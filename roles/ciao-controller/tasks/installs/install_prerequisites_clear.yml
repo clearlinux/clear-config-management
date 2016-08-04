@@ -33,5 +33,5 @@
     args:
       creates: /usr/bin/gcc
 
-  - name: Set certificate directory
-    set_fact: cert_dir=/usr/share/ca-certs
+  - name: Set CA cert file (ClearLinux)
+    set_fact: ca_cert_file=/usr/share/ca-certs/cacert.pem

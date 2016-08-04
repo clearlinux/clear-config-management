@@ -13,5 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Set certificate directory
-  set_fact: cert_dir=/etc/ssl/certs
+- name: Set CA cert file
+  set_fact: ca_cert_file=/usr/local/share/ca-certificates/cacert.crt

@@ -15,20 +15,23 @@
 
   - name: Retrieve CA certificate
     delegate_to: "{{ keystone_fqdn }}"
-    synchronize: "src=/etc/keystone/ssl/cacert.pem dest={{ cert_dir }}"
+    synchronize: "src=/etc/keystone/ssl/cacert.pem dest={{ ca_cert_file }}"
 
-  - name: Get hash from cacert.pem
-    command: openssl x509 -hash -noout -in {{ cert_dir }}/cacert.pem
+  - name: Get hash from CA certificate
+    command: "openssl x509 -hash -noout -in {{ ca_cert_file }}"
     register: cert_hash
     changed_when: False
+    when: ansible_distribution == "Clear linux software for intel architecture"
 
-  - file:
-      src: "{{ cert_dir }}/cacert.pem"
-      dest: "{{ cert_dir }}/{{ cert_hash.stdout }}.0"
+  - name: Enable CA certificate (ClearLinux)
+    file:
+      src: "{{ ca_cert_file }}"
+      dest: "/usr/share/ca-certs/{{ cert_hash.stdout }}.0"
       state: link
+    when: ansible_distribution == "Clear linux software for intel architecture"
 
-  - command: "cp {{ cert_dir }}/cacert.pem /usr/local/share/ca-certificates/cacert.crt"
-    when: ansible_distribution == 'Ubuntu'
-
-  - command: update-ca-certificates
+  - name: Enable CA certificate (Ubuntu)
+    command: update-ca-certificates
+    args:
+      creates: /etc/ssl/certs/cacert.pem
     when: ansible_distribution == 'Ubuntu'
