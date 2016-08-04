@@ -38,3 +38,17 @@ ciao_admin_email: admin@example.com
 ciao_cert_organization: Example, Inc.
 ciao_guest_user: demouser
 ciao_guest_key: ~/.ssh/id_rsa.pub
+
+# Create a demo project and a demo user for ciao
+keystone_projects:
+  - project_name: demo
+    description: Demo Project
+keystone_users:
+  - user_name: demo
+    password: secret
+    project_name: demo
+    email: demo@example.com
+keystone_user_roles:
+  - user_name: demo
+    project_name: demo
+    role_name: user
