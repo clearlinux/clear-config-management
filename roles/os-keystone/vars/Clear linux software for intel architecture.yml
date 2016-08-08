@@ -7,3 +7,4 @@ packages:
 
 http_user: httpd
 nginx_conf_dir: /etc/nginx
+http2: True
