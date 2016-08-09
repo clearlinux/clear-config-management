@@ -13,35 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: install_on_clear.yml
-    when: ansible_distribution == 'Clear linux software for intel architecture'
+  - name: Include OS specific variables
+    include_vars: "{{ ansible_os_family }}.yml"
 
-  - include: install_on_ubuntu.yml
-    when: ansible_distribution == 'Ubuntu'
-
-  - name: Create CIAO user
-    user:
-      name: ciao
-      comment: CIAO user
-      createhome: no
-      shell: /usr/sbin/nologin
-      system: yes
-    when: ansible_distribution == 'Ubuntu'
-
-  - name: Create certificate directory
-    file: path=/etc/pki/ciao state=directory
-
-  - name: Create /var/lib/ciao tree
-    file: path={{ item }} state=directory owner=ciao group=ciao
-    with_items:
-      - /var/lib/ciao
-      - /var/lib/ciao/instances
-      - /var/lib/ciao/datastore
-      - /var/lib/ciao/images
-
-  - name: Create systemd configuration directory
-    file: path=/etc/systemd/system state=directory mode=640
-
-  - name: Set environment_path to /usr/local/bin
-    set_fact: environment_path='/usr/local/bin'
-    when: ciao_dev
+  - include: install.yml

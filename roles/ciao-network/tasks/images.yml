@@ -13,5 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Set CA cert file
-  set_fact: ca_cert_file=/usr/local/share/ca-certificates/cacert.crt
+  - name: Download OVMF.fd
+    get_url:
+      url: "{{ ovmf_url }}"
+      dest: /usr/share/qemu/OVMF.fd
+      validate_certs: no
+
+  - name: Transfer cnci image to network node
+    synchronize: >
+      src=/var/lib/ciao/images/{{ cnci_image }}
+      dest=/var/lib/ciao/images/
+    delegate_to: "{{ ciao_controller_fqdn }}"
+
+  - name: Link cnci image
+    file:
+      path: /var/lib/ciao/images/4e16e743-265a-4bf2-9fd1-57ada0b28904
+      src: /var/lib/ciao/images/{{ cnci_image }}
+      state: link

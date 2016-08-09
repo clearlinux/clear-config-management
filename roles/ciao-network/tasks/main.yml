@@ -13,46 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Copy CIAO Binaries
-    synchronize: src={{ item }} dest=/usr/local/bin
-    delegate_to: "{{ ciao_controller_fqdn }}"
-    with_items:
-      - /usr/local/bin/ciao-cli
-      - /usr/local/bin/ciao-launcher
-    when: ciao_dev
-
-  - name: Copy Network Node Agent Key
-    synchronize: src={{ item }} dest=/etc/pki/ciao
-    delegate_to: "{{ ciao_controller_fqdn }}"
-    with_items:
-      - /etc/pki/ciao/CAcert-{{ ciao_controller_fqdn }}.pem
-      - /etc/pki/ciao/cert-NetworkingAgent-localhost.pem
-
-  - name: Transfer CNCI image to Network node
-    synchronize: >
-      src=/var/lib/ciao/images/{{ cnci_image }}
-      dest=/var/lib/ciao/images/
-    delegate_to: "{{ ciao_controller_fqdn }}"
-
-  - name: Link cnci image
-    file:
-      path: /var/lib/ciao/images/4e16e743-265a-4bf2-9fd1-57ada0b28904
-      src: /var/lib/ciao/images/{{ cnci_image }}
-      state: link
-
-  - name: Download OVMF.fd
-    get_url:
-      url: "{{ ovmf_url }}"
-      dest: /usr/share/qemu/OVMF.fd
-      validate_certs: no
-
-  - name: Create network unit
-    template: src=ciao-network.service.j2 dest=/etc/systemd/system/ciao-network.service
-    notify:
-      - reload systemd config
-      - restart network
-
-  - meta: flush_handlers
-
-  - name: Ensure network services are running
-    service: name=ciao-network.service enabled=yes state=started
+  - include: install.yml
+  - include: images.yml
+  - include: startservices.yml

@@ -13,13 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create Compute unit
-    template: src=ciao-compute.service.j2 dest=/etc/systemd/system/ciao-compute.service
-    notify:
-      - reload systemd config
-      - restart compute
+  - name: Copy CIAO Binaries
+    synchronize: src={{ item }} dest=/usr/local/bin
+    delegate_to: "{{ ciao_controller_fqdn }}"
+    with_items:
+      - /usr/local/bin/ciao-cli
+      - /usr/local/bin/ciao-launcher
+    when: ciao_dev
 
-  - meta: flush_handlers
-
-  - name: Ensure compute services are running
-    service: name=ciao-compute.service enabled=yes state=started
+  - name: Copy Compute Node Agent Key
+    synchronize: src={{ item }} dest=/etc/pki/ciao
+    delegate_to: "{{ ciao_controller_fqdn }}"
+    with_items:
+      - /etc/pki/ciao/CAcert-{{ ciao_controller_fqdn }}.pem
+      - /etc/pki/ciao/cert-CNAgent-localhost.pem

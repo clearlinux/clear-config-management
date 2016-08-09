@@ -13,11 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install Ciao dependencies
-  apt: name={{ item }} state=present
-  with_items:
-    - golang
-    - git
-    - openssl
-    - qemu-kvm
-    - xorriso
+  - name: Copy CIAO Binaries
+    synchronize: src={{ item }} dest=/usr/local/bin
+    delegate_to: "{{ ciao_controller_fqdn }}"
+    with_items:
+      - /usr/local/bin/ciao-cli
+      - /usr/local/bin/ciao-launcher
+    when: ciao_dev
+
+  - name: Copy Network Node Agent Key
+    synchronize: src={{ item }} dest=/etc/pki/ciao
+    delegate_to: "{{ ciao_controller_fqdn }}"
+    with_items:
+      - /etc/pki/ciao/CAcert-{{ ciao_controller_fqdn }}.pem
+      - /etc/pki/ciao/cert-NetworkingAgent-localhost.pem

@@ -13,24 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: ./installs/install_cnci.yml
-    when: not ciao_dev and
-          ansible_distribution == 'Clear linux software for intel architecture'
+  - name: Include OS specific variables
+    include_vars: "{{ ansible_os_family }}.yml"
 
-  - include: ./installs/install_prerequisites_clear.yml
-    when: ansible_distribution == 'Clear linux software for intel architecture'
+  - include: installs/install_on_clearlinux.yml
+    when: ansible_os_family == "Clear linux software for intel architecture"
 
-  - include: ./installs/install_prerequisites_ubuntu.yml
-    when: ansible_distribution == 'Ubuntu'
+  - include: installs/install_from_source.yml
+    when: ciao_dev or ansible_os_family == "Debian"
 
-  - include: ./installs/install_from_source.yml
-    when: ciao_dev
+  - include: certificates.yml
+  - include: startservices.yml
 
-  - include: create_certs.yml
-  - include: setup_certs.yml
-  - include: start_services.yml
   - include: create_endpoints.yml
-
   - include: create_cnci_image.yml
 
   - name: Create ciaorc file

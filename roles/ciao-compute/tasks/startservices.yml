@@ -13,12 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install cloud-network bundle
-  command: "swupd bundle-add cloud-network {{ swupd_args }}"
-  args:
-    creates: /usr/share/clear/bundles/cloud-network
+  - name: Create ciao-compute unit
+    template: src=ciao-compute.service.j2 dest=/etc/systemd/system/ciao-compute.service
+    notify:
+      - reload systemd config
+      - restart compute
 
-- name: Verify cloud-network has been installed
-  command: "swupd verify -f {{ swupd_args }}"
-  args:
-    creates: /usr/bin/ciao-cnci-agent
+  - meta: flush_handlers
+
+  - name: Ensure ciao-compute service is running
+    service: name=ciao-compute.service enabled=yes state=started

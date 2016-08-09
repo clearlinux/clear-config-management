@@ -13,8 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create image directory
-    file: path=/var/lib/ciao/images state=directory owner=ciao group=ciao
+  - name: Download OVMF.fd
+    get_url:
+      url: "{{ ovmf_url }}"
+      dest: /usr/share/qemu/OVMF.fd
+      validate_certs: no
 
   - name: Download Fedora Image
     get_url: >
@@ -29,10 +32,10 @@
       state: link
 
   - name: Download ClearLinux Image
-    get_url: >
-      dest=/var/lib/ciao/images
-      url="{{ clear_cloud_image_url }}"
-      force=no
+    get_url:
+      dest: /var/lib/ciao/images
+      url: "{{ clear_cloud_image_url }}"
+      force: no
 
   - name: Uncompress ClearLinux Image
     command: unxz -k {{ clear_cloud_image }}.xz
@@ -45,9 +48,3 @@
       path: /var/lib/ciao/images/df3768da-31f5-4ba6-82f0-127a1a705169
       src: /var/lib/ciao/images/{{ clear_cloud_image }}
       state: link
-
-  - name: Download OVMF.fd
-    get_url:
-      url: "{{ ovmf_url }}"
-      dest: /usr/share/qemu/OVMF.fd
-      validate_certs: no
