@@ -17,8 +17,7 @@
     file: path=/etc/keystone state=directory group=keystone mode=770
 
   - name: Create /etc/keystone/keystone.conf
-    template: dest=/etc/keystone/keystone.conf
-              src=keystone.conf.j2 group=keystone mode=640
+    template: dest=/etc/keystone/keystone.conf src=keystone.conf.j2 group=keystone mode=640
     notify: restart keystone
 
   - name: Create {{ nginx_conf_dir }} directory

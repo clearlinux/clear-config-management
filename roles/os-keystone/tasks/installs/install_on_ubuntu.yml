@@ -15,39 +15,25 @@
 
 - name: Install openstack identity (keystone)
   apt: name={{ item }} state=present
-  with_items:
-    - nginx
-    - keystone
-    - memcached
-    - uwsgi
-    - uwsgi-plugin-python
+  with_items: "{{ packages }}"
 
 - name: Stop keystone service (will be handled by nginx)
   service: name=keystone enabled=no state=stopped
 
-- name: Set httpd user
-  set_fact: http_user='www-data'
-
-- name: Set nginx_conf_dir
-  set_fact: nginx_conf_dir='/etc/nginx/conf.d'
-
 - name: Create keystone uwsgi scripts directory
   file: path=/usr/share/uwsgi/keystone state=directory
 
-- name: Create uwsgi@.service
-  template: src=ubuntu/uwsgi.service.j2 dest=/etc/systemd/system/uwsgi@.service
-  notify: reload systemd config
-
-- name: Create uwsgi@.socket
-  template: src=ubuntu/uwsgi.socket.j2 dest=/etc/systemd/system/uwsgi@.socket
-  notify: reload systemd config
-
-- name: Create keystone/public uwsgi config file
-  template: src=ubuntu/public.ini.j2 dest=/usr/share/uwsgi/keystone/public.ini
-  notify: reload systemd config
-
-- name: Create keystone/admin uwsgi config file
-  template: src=ubuntu/admin.ini.j2 dest=/usr/share/uwsgi/keystone/admin.ini
+- name: Create keystone service files
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - src: ubuntu/uwsgi.service.j2
+      dest: /etc/systemd/system/uwsgi@.service
+    - src: ubuntu/uwsgi.socket.j2
+      dest: /etc/systemd/system/uwsgi@.socket
+    - src: ubuntu/public.ini.j2
+      dest: /usr/share/uwsgi/keystone/public.ini
+    - src: ubuntu/admin.ini.j2
+      dest: /usr/share/uwsgi/keystone/admin.ini
   notify: reload systemd config
 
 - meta: flush_handlers

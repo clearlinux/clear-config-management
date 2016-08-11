@@ -13,28 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install openstack-identity bundle
-  command: "swupd bundle-add openstack-identity {{ swupd_args }}"
+- name: Install bundles
+  command: swupd bundle-add {{ item.name }} {{ swupd_args }}
   args:
-    creates: /usr/share/clear/bundles/openstack-identity
+    creates: /usr/share/clear/bundles/{{ item.name }}
+  with_items: "{{ packages }}"
 
-- name: Verify openstack-identity has been installed
+- name: Verify bundles have been installed
   command: "swupd verify -f {{ swupd_args }}"
   args:
-    creates: /usr/bin/keystone-manage
-
-- name: Install openstack-python-clients bundle
-  command: "swupd bundle-add openstack-python-clients {{ swupd_args }}"
-  args:
-    creates: /usr/share/clear/bundles/openstack-python-clients
-
-- name: Verify openstack-python-clients has been installed
-  command: "swupd verify -f {{ swupd_args }}"
-  args:
-    creates: /usr/bin/openstack
-
-- name: Set httpd user
-  set_fact: http_user='httpd'
-
-- name: Set nginx_conf_dir
-  set_fact: nginx_conf_dir='/etc/nginx'
+    creates: "{{ item.creates }}"
+  with_items: "{{ packages }}"

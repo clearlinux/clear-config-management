@@ -1,0 +1,10 @@
+---
+packages:
+  - nginx
+  - keystone
+  - memcached
+  - uwsgi
+  - uwsgi-plugin-python
+
+http_user: www-data
+nginx_conf_dir: /etc/nginx/conf.d
