@@ -1,4 +1,10 @@
 ---
+# Prerun ciao-common in parallel on all nodes to speed things up a little bit.
+- hosts: all
+  strategy: free
+  roles:
+    - ciao-common
+
 - hosts: dbservers
   roles:
     - mariadb
@@ -14,9 +20,11 @@
     - ciao-controller
 
 - hosts: ciao_compute
+  strategy: free
   roles:
     - ciao-compute
 
 - hosts: ciao_network
+  strategy: free
   roles:
     - ciao-network
