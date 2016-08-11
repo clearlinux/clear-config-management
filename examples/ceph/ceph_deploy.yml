@@ -7,3 +7,6 @@
   roles:
     - ceph-osd
 
+- hosts: mdss
+  roles:
+    - ceph-mds
