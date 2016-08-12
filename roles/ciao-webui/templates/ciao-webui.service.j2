@@ -1,0 +1,12 @@
+[Unit]
+Description=CIAO WebUI Service
+After=network.target
+
+[Service]
+Type=simple
+Environment="NODE_ENV=production"
+ExecStart=/usr/bin/node /usr/lib/ciao-webui/bin/www config_file=/etc/ciao-webui/ciao_config.json
+User=ciao
+
+[Install]
+WantedBy=multi-user.target

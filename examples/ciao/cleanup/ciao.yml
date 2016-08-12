@@ -11,6 +11,7 @@
         - ciao-compute.service
         - ciao-controller.service
         - ciao-scheduler.service
+        - ciao-webui.service
       ignore_errors: yes
 
     - name: Remove CIAO Service files
@@ -20,11 +21,13 @@
         - /etc/systemd/system/ciao-compute.service
         - /etc/systemd/system/ciao-scheduler.service
         - /etc/systemd/system/ciao-controller.service
+        - /etc/systemd/system/ciao-webui.service
 
     - name: Remove CIAO files
       file: path={{ item }} state=absent
       with_items:
         - /etc/ciao
+        - /etc/ciao-webui
         - /etc/pki/ciao
         - /var/lib/ciao
         - /etc/ssl/certs/cacert.pem

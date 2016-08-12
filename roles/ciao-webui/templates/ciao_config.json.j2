@@ -1,0 +1,24 @@
+{
+    "production": {
+        "controller": {
+            "host": "{{ ciao_controller_fqdn }}",
+            "port": "8774",
+            "protocol": "https"
+        },
+        "keystone": {
+            "host": "{{ keystone_fqdn }}",
+            "port": "35357",
+            "protocol": "https",
+            "uri": "/v3/auth/tokens"
+        },
+        "ui": {
+            "protocol": "https",
+            "certificates": {
+                "key": "/etc/ciao-webui/ssl/server.key",
+                "cert": "/etc/ciao-webui/ssl/server.pem",
+                "passphrase": "",
+                "trusted": []
+            }
+        }
+    }
+}
