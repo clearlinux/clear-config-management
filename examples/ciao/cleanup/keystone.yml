@@ -48,3 +48,13 @@
         - uwsgi
         - uwsgi-plugin-python
       when: ansible_distribution == 'Ubuntu'
+
+    - name: Remove keystone bundles (ClearLinux)
+      command: swupd bundle-remove {{ item }} {{ swupd_args | default('') }}
+      args:
+        removes: /usr/share/clear/bundles/{{ item }}
+      with_items:
+        - openstack-identity
+        - openstack-python-clients
+        - openstack-common
+      when: ansible_os_family == "Clear linux software for intel architecture"

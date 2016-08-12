@@ -21,12 +21,15 @@
         - /etc/systemd/system/ciao-scheduler.service
         - /etc/systemd/system/ciao-controller.service
 
-    - name: Remove CIAO directories
+    - name: Remove CIAO files
       file: path={{ item }} state=absent
       with_items:
         - /etc/ciao
         - /etc/pki/ciao
         - /var/lib/ciao
+        - /etc/ssl/certs/cacert.pem
+        - /etc/ca-certificates/cacert.pem
+        - /usr/local/share/ca-certificates/cacert.crt
 
     - name: Remove CIAO files from github
       file: path={{ item }} state=absent
@@ -60,3 +63,19 @@
         - qemu-kvm
         - xorriso
       when: ansible_distribution == 'Ubuntu'
+
+    - name: Remove ciao bundles (ClearLinux)
+      command: swupd bundle-remove {{ item }} {{ swupd_args | default('') }}
+      args:
+        removes: /usr/share/clear/bundles/{{ item }}
+      with_items:
+        - cloud-dashboard
+        - cloud-control
+        - cloud-network
+        - nodejs-basic
+        - kvm-host
+        - libX11client
+        - net-utils
+        - os-core-dev
+        - go-basic
+      when: ansible_os_family == "Clear linux software for intel architecture"
