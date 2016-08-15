@@ -23,6 +23,7 @@
     synchronize: >
       src=/var/lib/ciao/images/{{ cnci_image }}
       dest=/var/lib/ciao/images/
+      compress=no
     delegate_to: "{{ ciao_controller_fqdn }}"
 
   - name: Link cnci image
