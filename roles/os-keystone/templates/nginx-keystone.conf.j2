@@ -1,5 +1,5 @@
 server {
-       listen {{ keystone_admin_port }} ssl;
+       listen {{ keystone_admin_port }} ssl {% 'http2' if http2 %};
        server_name {{ keystone_fqdn }};
        ssl_certificate /etc/keystone/ssl/server/{{ keystone_hostname }}.cert.pem;
        ssl_certificate_key /etc/keystone/ssl/server/{{ keystone_hostname }}.key.pem;
@@ -36,7 +36,7 @@ server {
 }
 
 server {
-       listen {{ keystone_public_port }} ssl;
+       listen {{ keystone_public_port }} ssl {% 'http2' if http2 %};
        server_name {{ keystone_fqdn }};
        ssl_certificate /etc/keystone/ssl/server/{{ keystone_hostname }}.cert.pem;
        ssl_certificate_key /etc/keystone/ssl/server/{{ keystone_hostname }}.key.pem;

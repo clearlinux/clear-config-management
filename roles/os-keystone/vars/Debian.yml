@@ -8,3 +8,4 @@ packages:
 
 http_user: www-data
 nginx_conf_dir: /etc/nginx/conf.d
+http2: False
