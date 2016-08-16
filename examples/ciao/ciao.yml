@@ -23,6 +23,9 @@
   strategy: free
   roles:
     - ciao-compute
+    # ClearLinux already provides docker in ciao bundles.
+    # Use docker role in Ubuntu.
+    # - docker
 
 - hosts: ciao_network
   strategy: free
