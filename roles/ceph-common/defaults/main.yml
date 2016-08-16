@@ -36,7 +36,7 @@ upgrade_ceph_packages: False
 # is not needed for versions after infernalis.
 use_server_package_split: true
 
-# /!\ EITHER ACTIVE ceph_stable OR ceph_stable_ice OR ceph_stable_uca OR ceph_dev OR ceph_custom /!\
+# /!\ EITHER ACTIVE ceph_stable OR ceph_stable_uca OR ceph_dev OR ceph_custom /!\
 
 debian_package_dependencies:
   - python-pycurl
@@ -76,12 +76,24 @@ ceph_test: False
 
 ## Configure package origin
 #
-ceph_origin: 'distro' # or 'upstream'
+ceph_origin: 'distro' # or 'upstream' or 'local'
 # 'distro' means that no separate repo file will be added
 # you will get whatever version of Ceph is included in your Linux distro.
-#
-ceph_use_distro_backports: false # DEBIAN ONLY
+# 'local' means that the ceph binaries will be copied over from the local machine
 
+# LOCAL CEPH INSTALLATION (ceph_origin==local)
+#
+# Path to DESTDIR of the ceph install
+#ceph_installation_dir: "/path/to/ceph_installation/"
+# Whether or not to use installer script rundep_installer.sh
+# This script takes in rundep and installs the packages line by line onto the machine
+# If this is set to false then it is assumed that the machine ceph is being copied onto will already have
+# all runtime dependencies installed
+#use_installer: false
+# Root directory for ceph-ansible
+#ansible_dir: "/path/to/ceph-ansible"
+
+ceph_use_distro_backports: false # DEBIAN ONLY
 
 # STABLE
 ########
@@ -112,20 +124,6 @@ ceph_stable_releases:
 # # for supported distros, see http://download.ceph.com/rpm-{{ ceph_stable_release }}/
 ceph_stable_redhat_distro: el7
 
-# ENTERPRISE VERSION ICE (old, prior to the 1.3)
-ceph_stable_ice: false # use Inktank Ceph Enterprise
-#ceph_stable_ice_url: https://download.inktank.com/enterprise
-# these two variables are used in `with_items` and starting
-# with ansible 2.0 these need to be defined even if the tasks's
-# `when` clause doesn't evaluate to true
-ceph_stable_ice_temp_path: /opt/ICE/ceph-repo/
-ceph_stable_ice_kmod: 3.10-0.1.20140702gitdc9ac62.el7.x86_64
-#ceph_stable_ice_distro: rhel7 # Please check the download website for the supported versions.
-#ceph_stable_ice_version: 1.2.2
-#ceph_stable_ice_kmod_version: 1.2
-#ceph_stable_ice_user: # htaccess user
-#ceph_stable_ice_password: # htaccess password
-
 # ENTERPRISE VERSION RED HAT STORAGE (from 1.3)
 # This version is only supported on RHEL >= 7.1
 # As of RHEL 7.1, libceph.ko and rbd.ko are now included in Red Hat's kernel
@@ -138,15 +136,15 @@ ceph_stable_ice_kmod: 3.10-0.1.20140702gitdc9ac62.el7.x86_64
 # time. Please use ELRepo's latest upstream 4.x kernels if you want to run CephFS
 # on RHEL 7.
 #
-ceph_stable_rh_storage: false
+ceph_rhcs: false
 # This will affect how/what repositories are enabled depending on the desired
 # version. The next version will use "2" not "2.0" which would not work.
-ceph_stable_rh_storage_version: 1.3 # next version is 2
-ceph_stable_rh_storage_cdn_install: false # assumes all the nodes can connect to cdn.redhat.com
-ceph_stable_rh_storage_iso_install: false # usually used when nodes don't have access to cdn.redhat.com
-#ceph_stable_rh_storage_iso_path:
-ceph_stable_rh_storage_mount_path: /tmp/rh-storage-mount
-ceph_stable_rh_storage_repository_path: /tmp/rh-storage-repo # where to copy iso's content
+ceph_rhcs_version: 1.3 # next version is 2
+ceph_rhcs_cdn_install: false # assumes all the nodes can connect to cdn.redhat.com
+ceph_rhcs_iso_install: false # usually used when nodes don't have access to cdn.redhat.com
+#ceph_rhcs_iso_path:
+ceph_rhcs_mount_path: /tmp/rh-storage-mount
+ceph_rhcs_repository_path: /tmp/rh-storage-repo # where to copy iso's content
 
 
 # UBUNTU CLOUD ARCHIVE
@@ -250,7 +248,7 @@ mon_use_fqdn: false # if set to true, the MON name used will be the fqdn in the 
 
 ## OSD options
 #
-journal_size: 0 # OSD journal size in MB
+journal_size: 5120 # OSD journal size in MB
 public_network: 0.0.0.0/0
 cluster_network: "{{ public_network }}"
 osd_mkfs_type: xfs
@@ -326,7 +324,6 @@ ceph_conf_overrides: {}
 #############
 
 disable_transparent_hugepage: true
-disable_swap: false
 os_tuning_params:
   - { name: kernel.pid_max, value: 4194303 }
   - { name: fs.file-max, value: 26234859 }
@@ -359,5 +356,7 @@ journal_collocation: False
 raw_multi_journal: False
 osd_directory: False
 bluestore: False
+dmcrypt_journal_collocation: False
+dmcrypt_dedicated_journal: False
 
 osd_auto_discovery: False
