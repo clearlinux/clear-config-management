@@ -9,8 +9,10 @@ configure:
     identity_user: {{ ciao_service_user }}
     identity_password: {{ ciao_service_password }}
   launcher:
-    compute_net: {{ ciao_compute_subnet }}
-    mgmt_net: {{ ciao_mgmt_subnet }}
+    compute_net:
+      {{ ciao_compute_subnets | to_nice_yaml }}
+    mgmt_net:
+      {{ ciao_mgmt_subnets | to_nice_yaml }}
     disk_limit: true
     mem_limit: true
   identity_service:

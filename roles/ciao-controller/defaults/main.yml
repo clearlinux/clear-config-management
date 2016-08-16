@@ -19,11 +19,11 @@ ciao_controller_ip: "{{ ansible_default_ipv4['address'] }}"
 # FQDN for CIAO controller node
 ciao_controller_fqdn: "{{ ansible_fqdn }}"
 
-# CIAO management subnet
-ciao_mgmt_subnet: "{{ (ansible_default_ipv4.network + '/' + ansible_default_ipv4.netmask) | ipaddr }}"
+# CIAO management subnets
+ciao_mgmt_subnets: "{{ [(ansible_default_ipv4.network + '/' + ansible_default_ipv4.netmask) | ipaddr] }}"
 
-# CIAO compute subnet
-ciao_compute_subnet: "{{ ciao_mgmt_subnet }}"
+# CIAO compute subnets
+ciao_compute_subnets: "{{ ciao_mgmt_subnets }}"
 
 # OpenStack user for CIAO services
 ciao_service_user: csr
