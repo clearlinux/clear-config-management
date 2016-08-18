@@ -2,8 +2,7 @@
 Ansible role to install the network node for a CIAO cluster
 
 ## Requirements
-- A previously setup of a CIAO controller node.
-  You can setup one with [ciao-controller](https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-controller) role
+* qemu-kvm
 
 ## Role Variables
 The available variables for this roles are the variables from [ciao-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-common)

@@ -14,16 +14,13 @@
 # limitations under the License.
 
   - name: Copy CIAO Binaries
-    synchronize: src={{ item }} dest=/usr/local/bin
-    delegate_to: "{{ ciao_controller_fqdn }}"
+    copy: src=~/go/bin/{{ item }} dest=/usr/bin/{{ item }} mode=755
     with_items:
-      - /usr/local/bin/ciao-cli
-      - /usr/local/bin/ciao-launcher
-    when: ciao_dev
+      - ciao-cli
+      - ciao-launcher
 
   - name: Copy Compute Node Agent Key
-    synchronize: src={{ item }} dest=/etc/pki/ciao
-    delegate_to: "{{ ciao_controller_fqdn }}"
+    copy: src=certificates/ciao/{{ item }} dest=/etc/pki/ciao/{{ item }}
     with_items:
-      - /etc/pki/ciao/CAcert-{{ ciao_controller_fqdn }}.pem
-      - /etc/pki/ciao/cert-CNAgent-localhost.pem
+      - CAcert-{{ ciao_controller_fqdn }}.pem
+      - cert-CNAgent-localhost.pem

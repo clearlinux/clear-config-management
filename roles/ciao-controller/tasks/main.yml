@@ -13,20 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Include OS specific variables
-    include_vars: "{{ ansible_os_family }}.yml"
-
-  - include: installs/install_on_clearlinux.yml
-    when: ansible_os_family == "Clear linux software for intel architecture"
-
-  - include: installs/install_from_source.yml
-    when: ciao_dev or ansible_os_family == "Debian"
-
+  - include: build.yml
+  - include: install.yml
   - include: certificates.yml
   - include: startservices.yml
-
-  - include: create_endpoints.yml
+  - include: endpoints.yml
+  - include: images.yml
   - include: create_cnci_image.yml
 
   - name: Create ciaorc file
-    local_action: template src=ciaorc.j2 dest=~/ciaorc mode=0400
+    local_action: template src=ciaorc.j2 dest=./ciaorc mode=0400

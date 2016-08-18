@@ -13,18 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Download OVMF.fd
-    get_url:
-      url: "{{ ovmf_url }}"
-      dest: /usr/share/qemu/OVMF.fd
-      validate_certs: no
+  - name: Create /usr/share/qemu
+    file: path=/usr/share/qemu state=directory
 
-  - name: Transfer cnci image to network node
-    synchronize: >
-      src=/var/lib/ciao/images/{{ cnci_image }}
-      dest=/var/lib/ciao/images/
-      compress=no
-    delegate_to: "{{ ciao_controller_fqdn }}"
+  - name: Download OVMF.fd
+    copy: src=images/OVMF.fd dest=/usr/share/qemu/OVMF.fd
+    when: ansible_os_family == "Debian"
+
+  - name: Download cnci image
+    copy: src=images/{{ cnci_image }} dest=/var/lib/ciao/images/{{ cnci_image }}
 
   - name: Link cnci image
     file:

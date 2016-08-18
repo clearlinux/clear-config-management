@@ -29,7 +29,7 @@ ciao_compute_subnets: "{{ ciao_mgmt_subnets }}"
 ciao_service_user: csr
 
 # Password for 'ciao_service_user'
-# ciao_service_password: secret
+ciao_service_password: secret
 
 # CIAO administrator email address
 # this address is embedded in ciao certificates
