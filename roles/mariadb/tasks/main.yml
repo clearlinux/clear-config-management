@@ -13,26 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: install.yml
+  - name: Create directory for mariadb database
+    file: path="{{ mysql_data }}" state=directory
 
-  - name: Start mariadb server
-    service: name=mariadb enabled=yes state=started
-
-  - name: Set root user password
-    mysql_user: name=root
-                password={{ database_root_password }}
-                check_implicit_admin=yes
-                login_user=root
-                state=present
-                login_password={{ database_root_password }}
-                host={{ item }}
-    with_items:
-      - localhost
-      - "{{ ansible_hostname }}"
-
-  - name: Remove anonymous accounts
-    mysql_user: name=""
-                host={{ ansible_fqdn }}
-                login_user=root
-                state=absent
-                login_password={{ database_root_password }}
+  - name: Start mariadb container
+    docker_container:
+      name: ciao-mariadb
+      image: clearlinux/mariadb
+      state: started
+      privileged: True
+      etc_hosts: "{{ etc_hosts }}"
+      published_ports:
+        - 3306:3306
+      env:
+        MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+      volumes:
+        "{{ mysql_data }}:/var/lib/mysql:rw"

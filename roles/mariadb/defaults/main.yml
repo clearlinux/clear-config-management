@@ -13,8 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Optional arguments for swupd
-swupd_args: ""
-
 # Password for the root database user
-# database_root_password: <password>
+mysql_root_password: secret
+
+# Path for mysql data
+mysql_data: /var/lib/mysql
+
+# A dictionary of host mappings to ips
+etc_hosts: {}

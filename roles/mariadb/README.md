@@ -1,19 +1,15 @@
 # mariadb
-This role installs the mariadb service
-
-It also secures the installation by setting
-the `root` user password and removing anonymous access.
+This role installs clearlinux/mariadb docker container
 
 ## Requirements
-None
+* docker
 
 ## Role variables
-Note: Mandatory variables are shown in **bold**
 
 Variable  | Default Value | Description
 --------  | ------------- | -----------
-swupd_args |  | Optional arguments for `swupd` program
-**database_root_password** | | Password for the `root` user in the database
+mysql_root_password | secret | Password for the `root` user in the database
+mysql_data | /var/lib/mysql/ | Path for mysql data
 
 ## Dependencies
 None
@@ -29,6 +25,7 @@ file *dbservers.yml*
 file *group_vars/all*
 ```
 database_root_password: secret
+mysql_data: /var/lib/mysql
 ```
 
 ## License
