@@ -13,23 +13,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Include OS specific variables
-    include_vars: "{{ ansible_os_family }}.yml"
-
-  - include: ./installs/install_on_clear.yml
-    when: ansible_distribution == 'Clear linux software for intel architecture'
-
-  - include: ./installs/install_on_ubuntu.yml
-    when: ansible_distribution == 'Ubuntu'
-
-  - include: configure.yml
-  - include: certificates.yml
   - include: dbsetup.yml
-  - include: start_services.yml
+  - include: certificates.yml
 
-  - include: bootstrap.yml
-  - include: keystone_service_entities.yml
-  - include: keystone_project_access.yml
+  - name: Start keystone container
+    docker_container:
+      name: ciao-keystone
+      image: clearlinux/keystone
+      state: started
+      privileged: True
+      etc_hosts: "{{ etc_hosts }}"
+      published_ports:
+        - 35357:35357
+        - 5000:5000
+      env:
+        MARIADB_HOST: "{{ mysql_fqdn }}"
+        IDENTITY_HOST: "{{ keystone_fqdn }}"
+        COMPUTE_HOST: "{{ keystone_fqdn }}"
+        KEYSTONE_DB_USER: keystone
+        KEYSTONE_DB_PASSWORD: "{{ keystone_db_password }}"
+        KEYSTONE_DB_NAME: keystone
+        KEYSTONE_ADMIN_PASSWORD: "{{ keystone_admin_password }}"
+      volumes:
+        - "/etc/keystone/ssl/keystone_key.pem:/etc/nginx/ssl/keystone_key.pem:ro"
+        - "/etc/keystone/ssl/keystone_cert.pem:/etc/nginx/ssl/keystone_cert.pem:ro"
 
   - name: Create openrc file
-    local_action: template src=openrc.j2 dest=~/openrc mode=0600
+    local_action: template src=openrc.j2 dest=./openrc mode=0600
+
+  - name: Create clouds.yaml file
+    local_action: template src=clouds.yaml.j2 dest=./clouds.yaml mode=0600
+
+  - include: access.yml

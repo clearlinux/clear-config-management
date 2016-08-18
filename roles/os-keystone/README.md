@@ -1,20 +1,18 @@
 # os-keystone
-This role setups the OpenStack Identity service.
+This role installs clearlinux/keystone docker container
 
 ## Requirements
-- A previously setup database server.
-  You can setup one with [mariadb](https://github.com/clearlinux/clear-config-management/tree/master/roles/mariadb) role
+* docker
 
 ## Role variables
-The available variables for this roles are the variables from [os-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common) plus the following
-
-Note: Mandatory variables are shown in **bold**
 
 Variable | Default Value | Description
 -------- | ------------- | -----------
-**keystone_database_password** | | Password for the `keystone` user in the database
-**keystone_root_domain** | example.com | Domain to be used on Keystone certificates
-**keystone_p12password** | | Password for Keystone certificates
+mysql_fqdn | `{{ ansible_fqdn }}` | Fully Qualified Domain Name for mysql server
+mysql_root_password | secret | Password for the `root` user in the database
+keystone_fqdn | `{{ ansible_fqdn }}` | Fully Qualified Domain Name for Keystone server
+keystone_db_password | secret | Password for the `keystone` user in the database
+keystone_admin_password | secret | Password for the `admin` user in OpenStack
 
 #### The following variables can be used to specify custom services, projects, users and roles
 
@@ -82,8 +80,7 @@ Variable | Default Value | Description
 </table>
 
 ## Dependencies
-- [os-common](https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common)
-- [OpenSSL](https://github.com/clearlinux/clear-config-management/tree/master/roles/OpenSSL)
+None
 
 ## Example playbook
 file *keystone.yml*
@@ -95,13 +92,11 @@ file *keystone.yml*
 
 file *group_vars/all*
 ```
-database_root_password: secret
+mysql_root_password: secret
+mysql_fqdn: database.example.com
 keystone_fqdn: identity.example.com
 keystone_admin_password: secret
-
-keystone_database_password: secret
-keystone_root_domain: example.com
-keystone_p12password: secret
+keystone_db_password: secret
 
 keystone_projects:
   - project_name: demo

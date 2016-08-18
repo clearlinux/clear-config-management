@@ -13,19 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create projects
+  - name: Wait for keystone to be ready
+    wait_for: host="{{ keystone_fqdn }}" port=5000 state=started
+
+  - name: Create custom services
     keystone:
-      command: ensure_project
-      project_name: "{{ item.name }}"
-      domain_name: Default
-      description: "{{ item.desc }}"
-      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
-      login_user: admin
+      command: "ensure_service"
+      service_name: "{{ item.service_name }}"
+      service_type: "{{ item.service_type }}"
+      description: "{{ item.description | default('') }}"
+      endpoint: "https://{{ keystone_fqdn }}:35357/v3"
+      login_user: "admin"
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
       insecure: yes
-    with_items:
-      - { name: "service", desc: "Service Project" }
+    with_items: "{{ keystone_services | default([]) }}"
+    connection: local
 
   - name: Create custom projects
     keystone:
@@ -33,33 +36,25 @@
       project_name: "{{ item.project_name }}"
       domain_name: Default
       description: "{{ item.description | default('') }}"
-      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:35357/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_projects | default([]) }}"
-
-  - name: Create roles
-    keystone:
-      command: "ensure_role"
-      role_name: "user"
-      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
-      login_user: admin
-      login_password: "{{ keystone_admin_password }}"
-      login_project_name: "admin"
-      insecure: yes
+    connection: local
 
   - name: Create custom roles
     keystone:
       command: "ensure_role"
       role_name: "{{ item }}"
-      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:35357/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_roles | default([]) }}"
+    connection: local
 
   - name: Create custom users
     keystone:
@@ -69,12 +64,13 @@
       password: "{{ item.password }}"
       email: "{{ item.email | default('') }}"
       domain_name: "Default"
-      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:35357/v3"
       login_user: admin
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_users | default([]) }}"
+    connection: local
     no_log: true
 
   - name: Map users and roles
@@ -83,9 +79,10 @@
       user_name: "{{ item.user_name }}"
       project_name: "{{ item.project_name }}"
       role_name: "{{ item.role_name }}"
-      endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+      endpoint: "https://{{ keystone_fqdn }}:35357/v3"
       login_user: "admin"
       login_password: "{{ keystone_admin_password }}"
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_user_roles | default([]) }}"
+    connection: local

@@ -1,9 +1,0 @@
----
-packages:
-  - name: openstack-identity
-    creates: /usr/bin/keystone-manage
-  - name: openstack-python-clients
-    creates: /usr/bin/openstack
-
-http_user: httpd
-nginx_conf_dir: /etc/nginx

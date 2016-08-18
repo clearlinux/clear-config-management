@@ -13,21 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Fully Qualified Domain Name for mysql server
+mysql_fqdn: "{{ ansible_fqdn }}"
+
+# Password for the 'root' user in the database
+mysql_root_password: secret
+
+# Fully Qualified Domain Name for Keystone node
+keystone_fqdn: "{{ ansible_fqdn }}"
+
 # Password for the `keystone` user in the database
-# keystone_database_password: secret
+keystone_db_password: secret
 
-# Domain name to be used on Keystone certificates
-# keystone_root_domain: example.com
+# Password for the 'admin' user in OpenStack
+keystone_admin_password: secret
 
-# Password for Keystone certificates
-# keystone_p12password: secret
-
-# Keystone node hostname (guessed from keystone_fqdn)
-keystone_hostname: "{{ keystone_fqdn.split('.') | first }}"
-
-# Keystone subjects to be used on certificates
-keystone_subject: "/DC={{ keystone_fqdn.split('.')[1:] | reverse | join('/DC=') }}/CN={{ keystone_fqdn }}/"
-keystone_subj: "/DC={{ keystone_root_domain.split('.') | reverse | join('/DC=') }}/CN=CA/"
+# A dictionary of host mappings to ips
+etc_hosts: {}
 
 ### The folllowing variables can be used to specify ###
 ### Custom services, projects, users and roles.     ###
@@ -46,8 +48,8 @@ keystone_subj: "/DC={{ keystone_root_domain.split('.') | reverse | join('/DC=') 
 #     project_name: demo
 #     email: demo@example.com
 
-# keystone_roles:
-#   - demo
+keystone_roles:
+  - user
 
 # keystone_user_roles:
 #   - user_name: demo
