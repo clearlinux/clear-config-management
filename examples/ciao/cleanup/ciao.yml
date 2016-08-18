@@ -26,22 +26,22 @@
       with_items:
         - /etc/ciao
         - /etc/pki/ciao
+        - /etc/pki/keystone
         - /var/lib/ciao
-        - /etc/ssl/certs/cacert.pem
-        - /etc/ca-certificates/cacert.pem
-        - /usr/local/share/ca-certificates/cacert.crt
+        - /etc/ssl/certs/controller_cert.pem
+        - /etc/ca-certificates/controller_cert.pem
+        - /usr/local/share/ca-certificates/controller_cert.crt
 
     - name: Remove CIAO files from github
       file: path={{ item }} state=absent
       with_items:
         - ~/go
-        - /usr/local/bin/ciao-controller
-        - /usr/local/bin/ciao-scheduler
-        - /usr/local/bin/ciao-launcher
-        - /usr/local/bin/ciao-cli
-        - /usr/local/bin/ciao-cert
-        - /usr/local/bin/ciao-cnci-agent
-      when: ciao_dev is defined and ciao_dev
+        - /usr/bin/ciao-controller
+        - /usr/bin/ciao-scheduler
+        - /usr/bin/ciao-launcher
+        - /usr/bin/ciao-cli
+        - /usr/bin/ciao-cert
+        - /usr/bin/ciao-cnci-agent
 
     - name: Remove CIAO user
       user:
@@ -49,33 +49,3 @@
         state: absent
         remove: yes
       when: ansible_distribution == 'Ubuntu'
-
-    - name: Remove Ciao packages (Ubuntu)
-      apt:
-        name: "{{ item }}"
-        state: absent
-        autoremove: yes
-        purge: yes
-      with_items:
-        - golang
-        - git
-        - openssl
-        - qemu-kvm
-        - xorriso
-      when: ansible_distribution == 'Ubuntu'
-
-    - name: Remove ciao bundles (ClearLinux)
-      command: swupd bundle-remove {{ item }} {{ swupd_args | default('') }}
-      args:
-        removes: /usr/share/clear/bundles/{{ item }}
-      with_items:
-        - cloud-dashboard
-        - cloud-control
-        - cloud-network
-        - nodejs-basic
-        - kvm-host
-        - libX11client
-        - net-utils
-        - os-core-dev
-        - go-basic
-      when: ansible_os_family == "Clear linux software for intel architecture"
