@@ -1,0 +1,25 @@
+---
+  - name: Install CA certificates
+    apt: name={{ item }} state=present
+    with_items:
+      - apt-transport-https
+      - ca-certificates
+      - linux-image-extra-{{ ansible_kernel }}
+
+  - name: Install docker repository GPG Key
+    apt_key:
+      keyserver: hkp://p80.pool.sks-keyservers.net:80
+      id: 72C52609D
+      state: present
+
+  - name: Install docker repository
+    apt_repository:
+      repo: "deb https://apt.dockerproject.org/repo ubuntu-xenial experimental"
+      state: present
+      filename: docker
+
+  - name: Install docker
+    apt: name={{ item }} state=present
+    with_items:
+      - docker-engine
+      - python-docker
