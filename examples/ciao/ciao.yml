@@ -5,6 +5,7 @@
     - mariadb
     - os-keystone
     - ciao-controller
+    - ciao-webui
 
 - hosts: networks
   strategy: free
