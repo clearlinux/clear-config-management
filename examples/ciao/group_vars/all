@@ -1,41 +1,19 @@
 ---
-# Vars from geerlingguy.mysql. Use with Ubuntu
-# https://galaxy.ansible.com/geerlingguy/mysql/
-# mysql_user_home: /root
+# mariadb: https://github.com/clearlinux/clear-config-management/tree/master/roles/mariadb
+mysql_root_password: secret
+mysql_data: /var/lib/mysql
+
+# keystone: https://github.com/clearlinux/clear-config-management/tree/master/roles/os-keystone
+mysql_fqdn: controller.example.com
 # mysql_root_password: secret
-# mysql_packages:
-#   - mariadb-client
-#   - mariadb-server
-#   - python-mysqldb
-# mysql_bind_address: '0.0.0.0'
-
-# Vars required for mariadb and os-common
-# https://github.com/clearlinux/clear-config-management/tree/master/roles/mariadb
-# https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common
-database_root_password: secret
-
-# Vars required for os-common
-# https://github.com/clearlinux/clear-config-management/tree/master/roles/os-common
-keystone_fqdn: identity.example.com
+keystone_fqdn: controller.example.com
 keystone_admin_password: secret
+keystone_db_password: secret
 
-# Vars required for os-keystone
-# https://github.com/clearlinux/clear-config-management/tree/master/roles/os-keystone
-keystone_database_password: secret
-keystone_root_domain: example.com
-keystone_p12password: secret
-
-# Vars required for ciao-common
-# https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-common
+# ciao-controller: https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-controller
 ciao_controller_fqdn: controller.example.com
-ciao_dev: False
-
-# Vars required for ciao-controller
-# https://github.com/clearlinux/clear-config-management/tree/master/roles/ciao-controller
 ciao_service_user: csr
 ciao_service_password: secret
-ciao_admin_email: admin@example.com
-ciao_cert_organization: Example, Inc.
 ciao_guest_user: demouser
 ciao_guest_key: ~/.ssh/id_rsa.pub
 

@@ -1,14 +1,8 @@
-[dbservers]
-database.example.com
-
-[openstack_identity]
+[controllers]
 controller.example.com
 
-[ciao_controller]
-controller.example.com
-
-[ciao_network]
+[networks]
 network.example.com
 
-[ciao_compute]
+[computes]
 compute.example.com

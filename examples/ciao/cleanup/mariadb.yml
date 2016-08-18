@@ -1,28 +1,9 @@
 ---
-- hosts: dbservers
+- hosts: controllers
   tasks:
-    - name: Stop MariaDB services
-      service: name={{ item }}.service enabled=no state=stopped
-      with_items:
-        - mariadb
-        - mysql
-      ignore_errors: yes
+
+    - name: Stop mariadb docker container
+      docker_container: name=ciao-mariadb state=absent
 
     - name: Remove MariaDB files
       file: path=/var/lib/mysql state=absent
-      when: ansible_distribution == "Clear linux software for intel architecture"
-
-    - name: Uninstall MariaDB (Ubuntu)
-      apt:
-        name: "{{ item }}"
-        state: absent
-        purge: yes
-        autoremove: yes
-      with_items: "{{ mysql_packages | default([]) }}"
-      when: ansible_distribution == "Ubuntu"
-
-    - name: Remove mariadb bundle (ClearLinux)
-      command: swupd bundle-remove database-mariadb {{ swupd_args | default('') }}
-      args:
-        removes: /usr/share/clear/bundles/database-mariadb
-      when: ansible_os_family == "Clear linux software for intel architecture"
