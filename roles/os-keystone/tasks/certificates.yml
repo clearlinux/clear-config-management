@@ -13,18 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create keystone ssl directory
+  - name: Create a local certificates directory if it does not exist
+    local_action: file path=certificates/keystone state=directory
+
+  - name: Create self-signed SSL cert
+    local_action: >
+      command
+      openssl req -new -nodes -x509 -subj "/CN={{ keystone_fqdn }}" -days 365
+      -keyout certificates/keystone/keystone_key.pem
+      -out certificates/keystone/keystone_cert.pem -extensions v3_ca
+    args:
+      creates: certificates/keystone/keystone_key.pem
+
+  - name: Create /etc/keystone/ssl directory
     file: path=/etc/keystone/ssl state=directory
 
-  - name: Setup a CA
-    ca: certdir="/etc/keystone/ssl" subj="{{ keystone_subj }}"
-
-  - name: Create a Server Cert
-    certificate:
-      cadir: "/etc/keystone/ssl"
-      hostname: "{{ keystone_hostname }}"
-      subj: "{{ keystone_subject }}"
-      p12password: "{{ keystone_p12password }}"
-
-  - name: Copy certificate
-    fetch: src=/etc/keystone/ssl/cacert.pem dest=~/.pki/cacert.pem flat=yes
+  - name: Copy keystone certificates
+    copy: src={{ item.src }} dest={{ item.dest }}
+    with_items:
+      - src: certificates/keystone/keystone_key.pem
+        dest: /etc/keystone/ssl/keystone_key.pem
+      - src: certificates/keystone/keystone_cert.pem
+        dest: /etc/keystone/ssl/keystone_cert.pem

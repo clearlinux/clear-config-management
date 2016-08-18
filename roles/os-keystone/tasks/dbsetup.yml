@@ -13,32 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+  - name: Wait for mariadb to be ready
+    wait_for: host="{{ mysql_fqdn }}" port=3306 state=started
+
   - name: Create mysql keystone database
-    delegate_to: "{{ groups['dbservers'][0] }}"
     mysql_db:
-      login_user: "{{ database_root_user }}"
-      login_password: "{{ database_root_password }}"
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: "{{ mysql_fqdn }}"
       name: keystone
       state: present
       encoding: utf8
 
   - name: Create mysql keystone user
-    delegate_to: "{{ groups['dbservers'][0] }}"
     mysql_user:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: "{{ mysql_fqdn }}"
       name: keystone
-      password: "{{ keystone_database_password }}"
+      password: "{{ keystone_db_password }}"
       priv: keystone.*:ALL
       state: present
-      host: "{{ item }}"
-      login_user: "{{ database_root_user }}"
-      login_password: "{{ database_root_password }}"
-    with_items:
-       - "%"
-       - "localhost"
-
-  - name: Perform a Keystone DB sync
-    command: "keystone-manage db_sync"
-    become: yes
-    become_user: keystone
-    register: result
-    changed_when: result.stderr != "" and result.rc == 0
+      host: "%"
