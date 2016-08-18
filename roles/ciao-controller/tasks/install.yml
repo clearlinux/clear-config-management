@@ -13,22 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Setup GOROOT directory
-    file: path=~/go state=directory
-
-  - name: Build CIAO from sources
-    shell: "GOPATH=~/go go get -v -u github.com/01org/ciao/..."
-    register: result
-    changed_when: "'github.com/01org/ciao/' in result.stderr"
-
   - name: Install CIAO binaries
-    shell: "cp ~/go/bin/{{ item }} /usr/local/bin"
-    args:
-      creates: /usr/local/bin/{{ item }}
+    copy: src=~/go/bin/{{ item }} dest=/usr/bin/{{ item }} mode=755
     with_items:
       - ciao-controller
       - ciao-scheduler
-      - ciao-launcher
       - ciao-cli
-      - ciao-cert
-      - ciao-cnci-agent

@@ -36,7 +36,7 @@ ciao_guest_key | ~/.ssh/id_rsa.pub | A path to an SSH public authentication key 
 ## Example Playbook
 file *ciao_controller.yml*
 ```
-- hosts: ciao_controller
+- hosts: controllers
   roles:
     - ciao-controller
 ```

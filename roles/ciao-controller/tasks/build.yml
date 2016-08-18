@@ -13,14 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Copy CIAO Binaries
-    copy: src=~/go/bin/{{ item }} dest=/usr/bin/{{ item }} mode=755
-    with_items:
-      - ciao-cli
-      - ciao-launcher
+  - name: Setup GOROOT directory
+    local_action: file path=~/go state=directory
 
-  - name: Copy Network Node Agent Key
-    copy: src=certificates/ciao/{{ item }} dest=/etc/pki/ciao/{{ item }}
-    with_items:
-      - CAcert-{{ ciao_controller_fqdn }}.pem
-      - cert-NetworkingAgent-localhost.pem
+  - name: Build CIAO from sources
+    local_action: shell GOPATH=~/go go get -v -u github.com/01org/ciao/...
+    register: result
+    changed_when: "'github.com/01org/ciao/' in result.stderr"

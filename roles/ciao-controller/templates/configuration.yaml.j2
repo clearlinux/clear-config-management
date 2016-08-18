@@ -4,8 +4,8 @@ configure:
     storage_uri: file:///etc/ciao/configuration.yaml
   controller:
     compute_port: 8774
-    compute_ca: /etc/keystone/ssl/server/{{ ansible_hostname }}.cert.pem
-    compute_cert: /etc/keystone/ssl/server/{{ ansible_hostname }}.key.pem
+    compute_ca: /etc/pki/keystone/keystone_cert.pem
+    compute_cert: /etc/pki/keystone/keystone_key.pem
     identity_user: {{ ciao_service_user }}
     identity_password: {{ ciao_service_password }}
   launcher:
@@ -17,4 +17,4 @@ configure:
     mem_limit: true
   identity_service:
     type: keystone
-    url: https://{{ keystone_fqdn }}:{{ keystone_admin_port }}
+    url: https://{{ keystone_fqdn }}:35357

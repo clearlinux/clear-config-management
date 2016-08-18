@@ -1,7 +1,0 @@
----
-packages:
-  - golang
-  - git
-  - openssl
-  - qemu-kvm
-  - xorriso

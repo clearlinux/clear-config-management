@@ -13,7 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Include OS specific variables
-    include_vars: "{{ ansible_os_family }}.yml"
+  - name: Create ciao user
+    user:
+      name: ciao
+      comment: CIAO user
+      createhome: no
+      shell: /usr/sbin/nologin
+      system: yes
+    when: ansible_os_family == "Debian"
 
-  - include: install.yml
+  - name: Create /var/lib/ciao tree
+    file: path={{ item }} state=directory owner=ciao group=ciao
+    with_items:
+      - /var/lib/ciao
+      - /var/lib/ciao/instances
+      - /var/lib/ciao/datastore
+      - /var/lib/ciao/images
+      - /etc/pki
+      - /etc/pki/ciao
+      - /etc/pki/keystone
