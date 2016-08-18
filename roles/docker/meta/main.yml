@@ -13,10 +13,12 @@ galaxy_info:
   - name: Ubuntu
     versions:
       - xenial
+  - name: ClearLinux
 
   galaxy_tags:
     - ubuntu
     - xenial
+    - clearlinux
     - docker
 
 dependencies: []

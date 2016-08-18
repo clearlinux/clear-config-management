@@ -13,8 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include: install_ubuntu.yml
-  when: ansible_os_family == "Debian"
-
-- include: install_clearlinux.yml
-  when: ansible_os_family == "Clear linux software for intel architecture"
+  - name: Install containers-basic bundle
+    command: swupd bundle-add containers-basic {{ swupd_args | default('') }}
+    args:
+      creates: /usr/share/clear/bundles/containers-basic

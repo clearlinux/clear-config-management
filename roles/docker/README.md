@@ -1,7 +1,7 @@
 docker
 =========
 
-This role installs docker 1.12 on Ubuntu
+This role installs docker 1.12 on Ubuntu and ClearLinux
 
 Requirements
 ------------
@@ -11,7 +11,9 @@ None
 Role Variables
 --------------
 
-None
+Variable  | Default Value | Description
+--------  | ------------- | -----------
+swupd_args |  | arguments for `swupd` (clearlinux)
 
 Dependencies
 ------------
