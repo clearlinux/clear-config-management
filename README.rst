@@ -10,17 +10,15 @@ Components supported
 
 At the moment, this installer is able to deploy the following
 components
- - MariaDB
- - Keystone
- - Glance
- - Swift
- - Cinder
- - Ceph
- - CIAO
+ - docker
+ - mariadb
+ - keystone
+ - ciao
+ - ceph
 
 How to use it in Clear Linux*
 =============================
-https://clearlinux.org/documentation/openstack_use_cases.html
+https://clearlinux.org/documentation/ciao-deploy.html
 
 
 BUGS & Features
