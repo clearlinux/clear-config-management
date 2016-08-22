@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - include: dbsetup.yml
+  - name: Create directory for mariadb database
+    file: path="{{ mysql_data }}" state=directory
+
   - include: certificates.yml
 
   - name: Start keystone container
@@ -27,7 +29,6 @@
         - 35357:35357
         - 5000:5000
       env:
-        MARIADB_HOST: "{{ mysql_fqdn }}"
         IDENTITY_HOST: "{{ keystone_fqdn }}"
         COMPUTE_HOST: "{{ keystone_fqdn }}"
         KEYSTONE_DB_USER: keystone
@@ -35,6 +36,7 @@
         KEYSTONE_DB_NAME: keystone
         KEYSTONE_ADMIN_PASSWORD: "{{ keystone_admin_password }}"
       volumes:
+        - "{{ mysql_data }}:/var/lib/mysql:rw"
         - "/etc/keystone/ssl/keystone_key.pem:/etc/nginx/ssl/keystone_key.pem:ro"
         - "/etc/keystone/ssl/keystone_cert.pem:/etc/nginx/ssl/keystone_cert.pem:ro"
 

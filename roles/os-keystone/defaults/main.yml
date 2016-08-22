@@ -28,6 +28,11 @@ keystone_db_password: secret
 # Password for the 'admin' user in OpenStack
 keystone_admin_password: secret
 
+# Password for the root database user
+mysql_root_password: secret
+#
+# # Path for mysql data
+mysql_data: /var/lib/mysql
 # A dictionary of host mappings to ips
 etc_hosts: {}
 

@@ -2,7 +2,6 @@
 - hosts: controllers
   roles:
     - docker
-    - mariadb
     - os-keystone
     - ciao-controller
     - ciao-webui
