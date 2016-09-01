@@ -1,4 +1,0 @@
----
-packages:
-  - name: cloud-control
-    file: /usr/bin/ciao-controller

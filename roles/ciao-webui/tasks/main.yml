@@ -13,15 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Copy CIAO Binaries
-    copy: src=~/go/bin/{{ item }} dest={{ bindir }}/{{ item }} mode=755
-    with_items:
-      - ciao-cli
-      - ciao-launcher
-    when: ciao_dev
+  - include: certificates.yml
 
-  - name: Copy Compute Node Agent Key
-    copy: src=certificates/ciao/{{ item }} dest=/etc/pki/ciao/{{ item }}
-    with_items:
-      - CAcert-{{ ciao_controller_fqdn }}.pem
-      - cert-CNAgent-localhost.pem
+  - name: Start ciao-webui container
+    docker_container:
+      name: ciao-webui
+      image: clearlinux/ciao-webui
+      state: started
+      privileged: True
+      etc_hosts: "{{ etc_hosts }}"
+      published_ports:
+        - 443:443
+      env:
+        CONTROLLER_HOST: "{{ ciao_controller_fqdn }}"
+        IDENTITY_HOST: "{{ keystone_fqdn }}"
+      volumes:
+        - /etc/pki/ciao/ciao-webui-cert.pem:/etc/pki/ciao-webui-cert.pem
+        - /etc/pki/ciao/ciao-webui-key.pem:/etc/pki/ciao-webui-key.pem

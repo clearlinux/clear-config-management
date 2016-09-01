@@ -1,33 +1,6 @@
 ---
-# Prerun ciao-common in parallel on all nodes to speed things up a little bit.
-- hosts: all
-  strategy: free
-  roles:
-    - ciao-common
-
-- hosts: dbservers
-  roles:
-    - mariadb
-    # Use geerlingguy's mysql for Ubuntu
-    # - geerlingguy.mysql
-
-- hosts: openstack_identity
-  roles:
-    - os-keystone
-
-- hosts: ciao_controller
-  roles:
-    - ciao-controller
-
-- hosts: ciao_compute
-  strategy: free
-  roles:
-    - ciao-compute
-    # ClearLinux already provides docker in ciao bundles.
-    # Use docker role in Ubuntu.
-    # - docker
-
-- hosts: ciao_network
-  strategy: free
-  roles:
-    - ciao-network
+- include: ciao_prepare.yml
+- include: ciao_controllers.yml
+- include: ciao_networks.yml
+- include: ciao_computes.yml
+- include: ciao_wait.yml

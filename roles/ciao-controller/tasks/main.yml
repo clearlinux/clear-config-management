@@ -13,20 +13,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Include OS specific variables
-    include_vars: "{{ ansible_os_family }}.yml"
+  - include: build.yml
+    become: no
+    connection: local
 
-  - include: installs/install_on_clearlinux.yml
-    when: ansible_os_family == "Clear linux software for intel architecture"
+  - include: images.yml
+    become: no
+    connection: local
 
-  - include: installs/install_from_source.yml
-    when: ciao_dev or ansible_os_family == "Debian"
+  - include: endpoints.yml
+    become: no
+    connection: local
+
+  - name: Wait for ciao build
+    become: no
+    connection: local
+    async_status:
+      jid: "{{ ciao_build.ansible_job_id }}"
+    register: ciao_build_wait
+    until: ciao_build_wait.finished
+    retries: 30
+    changed_when: " ciao_build_wait.stderr is defined and 'github.com/01org/ciao/' in ciao_build_wait.stderr"
+    when: ciao_dev
+
+  - include: install.yml
 
   - include: certificates.yml
+
+  - include: create_cnci_image.yml
+    become: no
+    connection: local
+
   - include: startservices.yml
 
-  - include: create_endpoints.yml
-  - include: create_cnci_image.yml
-
   - name: Create ciaorc file
-    local_action: template src=ciaorc.j2 dest=~/ciaorc mode=0400
+    become: no
+    connection: local
+    template: src=ciaorc.j2 dest=./ciaorc mode=0400

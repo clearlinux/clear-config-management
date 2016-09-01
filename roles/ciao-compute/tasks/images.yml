@@ -13,17 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+  - name: Create /usr/share/qemu directory
+    file: path=/usr/share/qemu state=directory
+
   - name: Download OVMF.fd
-    get_url:
-      url: "{{ ovmf_url }}"
-      dest: /usr/share/qemu/OVMF.fd
-      validate_certs: no
+    copy: src=images/OVMF.fd dest=/usr/share/qemu/OVMF.fd
+    when: ansible_os_family == "Debian"
 
   - name: Download Fedora Image
-    get_url: >
-      dest=/var/lib/ciao/images/{{ fedora_cloud_image }}
-      url="{{ fedora_cloud_image_url }}"
-      force=no
+    copy: src=images/{{ fedora_cloud_image }} dest=/var/lib/ciao/images/{{ fedora_cloud_image }}
 
   - name: Link fedora image to its reference in the DB
     file:
@@ -32,16 +30,7 @@
       state: link
 
   - name: Download ClearLinux Image
-    get_url:
-      dest: /var/lib/ciao/images
-      url: "{{ clear_cloud_image_url }}"
-      force: no
-
-  - name: Uncompress ClearLinux Image
-    command: unxz -k {{ clear_cloud_image }}.xz
-    args:
-      chdir: /var/lib/ciao/images
-      creates: /var/lib/ciao/images/{{ clear_cloud_image }}
+    copy: src=images/{{ clear_cloud_image }} dest=/var/lib/ciao/images/{{ clear_cloud_image }}
 
   - name: Link clear linux image to its reference in the DB
     file:

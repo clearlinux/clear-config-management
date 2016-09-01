@@ -13,7 +13,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Include OS specific variables
-    include_vars: "{{ ansible_os_family }}.yml"
+  - name: Create ciao user
+    user:
+      name: ciao
+      comment: CIAO user
+      createhome: no
+      shell: /usr/sbin/nologin
+      system: yes
+    when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
 
-  - include: install.yml
+  - name: Create /var/lib/ciao tree
+    file: path={{ item }} state=directory owner=ciao group=ciao
+    with_items:
+      - /var/lib/ciao
+      - /var/lib/ciao/instances
+      - /var/lib/ciao/datastore
+      - /var/lib/ciao/images
+      - /etc/pki
+      - /etc/pki/ciao
+      - /etc/pki/keystone
+
+  - name: Set bindir location
+    set_fact: bindir={{ '/usr/local/bin' if ciao_dev else '/usr/bin' }}
+
+  - name: Ensure {{ bindir }} exists
+    file: path={{ bindir }} state=directory
+
+  - block:
+      - include: install_clearlinux.yml
+        when: ansible_os_family == "Clear linux software for intel architecture"
+
+      - include: install_ubuntu.yml
+        when: ansible_os_family == "Debian"
+
+      - include: install_fedora.yml
+        when: ansible_os_family == "RedHat"
+    when: not ciao_dev

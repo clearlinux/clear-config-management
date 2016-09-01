@@ -14,7 +14,6 @@
 # limitations under the License.
 
 - name: Create CIAO Compute Service for OpenStack
-  delegate_to: "{{ keystone_fqdn }}"
   keystone:
     login_user: admin
     login_password: "{{ keystone_admin_password }}"
@@ -23,11 +22,10 @@
     service_name: "ciao"
     service_type: "compute"
     description: "CIAO Compute Service"
-    endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+    endpoint: "https://{{ keystone_fqdn }}:35357/v3"
     insecure: yes
 
 - name: Create Compute Service Endpoint in OpenStack
-  delegate_to: "{{ keystone_fqdn }}"
   keystone:
     login_user: admin
     login_password: "{{ keystone_admin_password }}"
@@ -43,11 +41,10 @@
         interface: "internal"
       - url: "https://{{ ciao_controller_fqdn }}:8774/v2.1/%(tenant_id)s"
         interface: "admin"
-    endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+    endpoint: "https://{{ keystone_fqdn }}:35357/v3"
     insecure: yes
 
 - name: Create CIAO service user for OpenStack
-  delegate_to: "{{ keystone_fqdn }}"
   keystone:
     login_user: admin
     login_password: "{{ keystone_admin_password }}"
@@ -58,11 +55,10 @@
     password: "{{ ciao_service_password }}"
     domain_name: "Default"
     email: "{{ ciao_admin_email }}"
-    endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+    endpoint: "https://{{ keystone_fqdn }}:35357/v3"
     insecure: yes
 
 - name: Add CIAO service user to admin role
-  delegate_to: "{{ keystone_fqdn }}"
   keystone:
     login_user: admin
     login_password: "{{ keystone_admin_password }}"
@@ -71,5 +67,5 @@
     user_name: "{{ ciao_service_user }}"
     project_name: "service"
     role_name: "admin"
-    endpoint: "https://{{ keystone_fqdn }}:{{ keystone_admin_port }}/v3"
+    endpoint: "https://{{ keystone_fqdn }}:35357/v3"
     insecure: yes

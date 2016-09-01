@@ -13,15 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Copy CIAO Binaries
-    copy: src=~/go/bin/{{ item }} dest={{ bindir }}/{{ item }} mode=755
-    with_items:
-      - ciao-cli
-      - ciao-launcher
-    when: ciao_dev
+# Fully Qualified Domain Name for Keystone node
+keystone_fqdn: "{{ ansible_fqdn }}"
 
-  - name: Copy Compute Node Agent Key
-    copy: src=certificates/ciao/{{ item }} dest=/etc/pki/ciao/{{ item }}
-    with_items:
-      - CAcert-{{ ciao_controller_fqdn }}.pem
-      - cert-CNAgent-localhost.pem
+# Fully Qualified Domain Name for the ciao webui node
+ciao_webui_fqdn: "{{ ansible_fqdn }}"
+
+# A dictionary of host mappings to ips
+etc_hosts: {}

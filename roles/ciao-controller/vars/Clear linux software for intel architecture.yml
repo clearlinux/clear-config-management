@@ -1,8 +1,0 @@
----
-packages:
-  - name: go-basic
-    file: /usr/bin/go
-  - name: os-core-dev
-    file: /usr/bin/gcc
-
-ca_cert_file: /etc/ssl/certs/cacert.pem

@@ -13,15 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Copy CIAO Binaries
-    copy: src=~/go/bin/{{ item }} dest={{ bindir }}/{{ item }} mode=755
-    with_items:
-      - ciao-cli
-      - ciao-launcher
-    when: ciao_dev
+  - name: Create a local certificates directory if it does not exist
+    local_action: file path=certificates/ciao state=directory
 
-  - name: Copy Compute Node Agent Key
+  - name: Create self-signed SSL cert
+    local_action: >
+      command
+      openssl req -new -nodes -x509 -subj "/CN={{ ciao_webui_fqdn }}" -days 365
+      -keyout certificates/ciao/ciao-webui-key.pem
+      -out certificates/ciao/ciao-webui-cert.pem -extensions v3_ca
+    args:
+      creates: certificates/ciao/ciao-webui-key.pem
+
+  - name: Copy certificates
     copy: src=certificates/ciao/{{ item }} dest=/etc/pki/ciao/{{ item }}
     with_items:
-      - CAcert-{{ ciao_controller_fqdn }}.pem
-      - cert-CNAgent-localhost.pem
+      - ciao-webui-key.pem
+      - ciao-webui-cert.pem

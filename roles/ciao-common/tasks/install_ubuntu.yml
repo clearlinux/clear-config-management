@@ -13,15 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Copy CIAO Binaries
-    copy: src=~/go/bin/{{ item }} dest={{ bindir }}/{{ item }} mode=755
-    with_items:
-      - ciao-cli
-      - ciao-launcher
-    when: ciao_dev
+    - name: Install OBS CIAO repository key
+      apt_key:
+        url: http://download.opensuse.org/repositories/home:/clearlinux:/preview:/ciao/xUbuntu_16.04/Release.key
+        state: present
 
-  - name: Copy Compute Node Agent Key
-    copy: src=certificates/ciao/{{ item }} dest=/etc/pki/ciao/{{ item }}
-    with_items:
-      - CAcert-{{ ciao_controller_fqdn }}.pem
-      - cert-CNAgent-localhost.pem
+    - name: Install OBS CIAO repository
+      apt_repository:
+        repo: deb http://download.opensuse.org/repositories/home:/clearlinux:/preview:/ciao/xUbuntu_16.04/ /
+        state: present
+        update_cache: yes
+
+    - name: Install CIAO from OBS repository
+      apt:
+        name: ciao
+        state: present

@@ -1,6 +1,6 @@
 galaxy_info:
   author: Alberto Murillo
-  description: Ansible role to install the compute node for a CIAO cluster
+  description: This role installs clearlinux/ciao-webui docker container
   company: Intel
 
   issue_tracker_url: https://github.com/01org/ciao

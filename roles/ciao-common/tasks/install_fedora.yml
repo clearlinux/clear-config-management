@@ -13,22 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Setup GOROOT directory
-    file: path=~/go state=directory
+    - name: Install OBS CIAO repository
+      yum_repository:
+        name: ciao
+        description: OBS CIAO repository
+        baseurl: http://download.opensuse.org/repositories/home:/clearlinux:/preview:/ciao/Fedora_24/
+        gpgkey: http://download.opensuse.org/repositories/home:/clearlinux:/preview:/ciao/Fedora_24//repodata/repomd.xml.key
+        gpgcheck: yes
+        enabled: yes
+        state: present
 
-  - name: Build CIAO from sources
-    shell: "GOPATH=~/go go get -v -u github.com/01org/ciao/..."
-    register: result
-    changed_when: "'github.com/01org/ciao/' in result.stderr"
-
-  - name: Install CIAO binaries
-    shell: "cp ~/go/bin/{{ item }} /usr/local/bin"
-    args:
-      creates: /usr/local/bin/{{ item }}
-    with_items:
-      - ciao-controller
-      - ciao-scheduler
-      - ciao-launcher
-      - ciao-cli
-      - ciao-cert
-      - ciao-cnci-agent
+    - name: Install CIAO from OBS repository
+      dnf: name=ciao state=present enablerepo=ciao

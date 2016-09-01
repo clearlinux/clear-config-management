@@ -13,42 +13,83 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Create certificate directory
-    file: path=/etc/pki/ciao state=directory
+  - name: Create a local certificates directory if it does not exist
+    become: no
+    connection: local
+    file: path=certificates/ciao state=directory
+
+  - name: Set ciao-cert location
+    set_fact: ciao_cert={{ '~/go/bin/ciao-cert' if ciao_dev else '../../fetch/ciao-cert' }}
 
   - name: Create Scheduler key and CA certificate
+    become: no
+    connection: local
     command: >
-      {{ environment_path }}/ciao-cert -server -role scheduler
+      {{ ciao_cert }} -server -role scheduler
       -email={{ ciao_admin_email }} -organization="{{ ciao_cert_organization }}"
       -ip={{ ciao_controller_ip }} -host={{ ciao_controller_fqdn }} -verify
     args:
-      chdir: /etc/pki/ciao
-      creates: /etc/pki/ciao/CAcert-{{ ciao_controller_fqdn }}.pem
+      chdir: certificates/ciao
+      creates: CAcert-{{ ciao_controller_fqdn }}.pem
 
   - name: Create agent keys
+    become: no
+    connection: local
     command: >
-      {{ environment_path }}/ciao-cert -role {{ item.role }} --server-cert
+      {{ ciao_cert }} -role {{ item.role }} --server-cert
       cert-Scheduler-{{ ciao_controller_fqdn }}.pem -email={{ ciao_admin_email }}
       --organization="{{ ciao_cert_organization }}" -host=localhost -verify
     args:
-      chdir: /etc/pki/ciao
+      chdir: certificates/ciao
       creates: "{{ item.creates }}"
     with_items:
       - role: agent
-        creates: /etc/pki/ciao/cert-CNAgent-localhost.pem
+        creates: cert-CNAgent-localhost.pem
       - role: netagent
-        creates: /etc/pki/ciao/cert-NetworkingAgent-localhost.pem
+        creates: cert-NetworkingAgent-localhost.pem
       - role: cnciagent
-        creates: /etc/pki/ciao/cert-CNCIAgent-localhost.pem
+        creates: cert-CNCIAgent-localhost.pem
       - role: controller
-        creates: /etc/pki/ciao/cert-Controller-localhost.pem
+        creates: cert-Controller-localhost.pem
 
-  - name: Retrieve CA certificate
-    delegate_to: "{{ keystone_fqdn }}"
-    synchronize: "src=/etc/keystone/ssl/cacert.pem dest={{ ca_cert_file }}"
+  - name: Copy certificates
+    copy: src=certificates/{{ item }} dest=/etc/pki/{{ item }}
+    with_items:
+      - ciao/CAcert-{{ ciao_controller_fqdn }}.pem
+      - ciao/cert-Controller-localhost.pem
+      - ciao/cert-Scheduler-{{ ciao_controller_fqdn }}.pem
+      - keystone/keystone_cert.pem
+      - keystone/keystone_key.pem
 
-  - name: Enable CA certificate (Ubuntu)
+  - name: Create /etc/ssl/certs directory
+    command: mkdir -p /etc/ssl/certs
+    args:
+      creates: /etc/ssl/certs
+
+  - name: Install certificate (ClearLinux)
+    copy: src=certificates/keystone/keystone_cert.pem dest=/etc/ssl/certs
+    when: ansible_os_family == "Clear linux software for intel architecture"
+
+  - name: Install certificate (Ubuntu)
+    copy:
+      src: certificates/keystone/keystone_cert.pem
+      dest: /usr/local/share/ca-certificates/keystone_cert.crt
+    when: ansible_os_family == "Debian"
+
+  - name: Update CA certificates (Ubuntu)
     command: update-ca-certificates
     args:
-      creates: /etc/ssl/certs/cacert.pem
-    when: ansible_distribution == 'Ubuntu'
+      creates: /etc/ssl/certs/keystone_cert.pem
+    when: ansible_os_family == "Debian"
+
+  - name: Install certificate (Fedora)
+    copy:
+      src: certificates/keystone/keystone_cert.pem
+      dest: /etc/pki/ca-trust/source/anchors/keystone_cert.pem
+    when: ansible_os_family == "RedHat"
+
+  - name: Update CA trust (Fedora)
+    command: update-ca-trust
+    args:
+      creates: /etc/pki/tls/certs/keystone_cert.pem
+    when: ansible_os_family == "RedHat"
