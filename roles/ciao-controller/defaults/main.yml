@@ -44,3 +44,33 @@ ciao_guest_key: ~/.ssh/id_rsa.pub
 
 # The contents of ciao_guest_key file
 ciao_ssh_public_key: "{{ lookup('file', ciao_guest_key) }}"
+
+# CIAO Services to create in Keystone
+ciao_openstack_services:
+  - service: ciao
+    type: compute
+    description: CIAO Compute Service
+  - service: cinder
+    type: volume
+    description: CIAO Storage Service
+  - service: cinderv2
+    type: volumev2
+    description: CIAO Storage Service v2
+
+# CIAO endpoints to create in Keystone
+ciao_openstack_endpoints:
+  - service: ciao
+    type: compute
+    public_url: https://{{ ciao_controller_fqdn }}:8774/v2.1/%(tenant_id)s
+    internal_url: https://{{ ciao_controller_fqdn }}:8774/v2.1/%(tenant_id)s
+    admin_url: https://{{ ciao_controller_fqdn }}:8774/v2.1/%(tenant_id)s
+  - service: cinder
+    type: volume
+    public_url: https://{{ ciao_controller_fqdn }}:8776/v1/%(tenant_id)s
+    internal_url: https://{{ ciao_controller_fqdn }}:8776/v1/%(tenant_id)s
+    admin_url: https://{{ ciao_controller_fqdn }}:8776/v1/%(tenant_id)s
+  - service: cinderv2
+    type: volumev2
+    public_url: https://{{ ciao_controller_fqdn }}:8776/v2/%(tenant_id)s
+    internal_url: https://{{ ciao_controller_fqdn }}:8776/v2/%(tenant_id)s
+    admin_url: https://{{ ciao_controller_fqdn }}:8776/v2/%(tenant_id)s

@@ -13,36 +13,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Create CIAO Compute Service for OpenStack
+- name: Create CIAO OpenStack Services
   keystone:
     login_user: admin
     login_password: "{{ keystone_admin_password }}"
     login_project_name: "admin"
     command: "ensure_service"
-    service_name: "ciao"
-    service_type: "compute"
-    description: "CIAO Compute Service"
+    service_name: "{{ item.service }}"
+    service_type: "{{ item.type }}"
+    description: "{{ item.description | default('') }}"
     endpoint: "https://{{ keystone_fqdn }}:35357/v3"
     insecure: yes
+  with_items: "{{ ciao_openstack_services }}"
 
-- name: Create Compute Service Endpoint in OpenStack
+- name: Create CIAO OpenStack Endpoints
   keystone:
     login_user: admin
     login_password: "{{ keystone_admin_password }}"
     login_project_name: "admin"
     command: "ensure_endpoint"
     region_name: "RegionOne"
-    service_name: "ciao"
-    service_type: "compute"
+    service_name: "{{ item.service }}"
+    service_type: "{{ item.type }}"
     endpoint_list:
-      - url: "https://{{ ciao_controller_fqdn }}:8774/v2.1/%(tenant_id)s"
+      - url: "{{ item.public_url }}"
         interface: "public"
-      - url: "https://{{ ciao_controller_fqdn }}:8774/v2.1/%(tenant_id)s"
+      - url: "{{ item.internal_url }}"
         interface: "internal"
-      - url: "https://{{ ciao_controller_fqdn }}:8774/v2.1/%(tenant_id)s"
+      - url: "{{ item.admin_url }}"
         interface: "admin"
     endpoint: "https://{{ keystone_fqdn }}:35357/v3"
     insecure: yes
+  with_items: "{{ ciao_openstack_endpoints }}"
 
 - name: Create CIAO service user for OpenStack
   keystone:
