@@ -28,7 +28,6 @@
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_services | default([]) }}"
-    connection: local
 
   - name: Create custom projects
     keystone:
@@ -42,7 +41,6 @@
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_projects | default([]) }}"
-    connection: local
 
   - name: Create custom roles
     keystone:
@@ -54,7 +52,6 @@
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_roles | default([]) }}"
-    connection: local
 
   - name: Create custom users
     keystone:
@@ -70,7 +67,6 @@
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_users | default([]) }}"
-    connection: local
     no_log: true
 
   - name: Map users and roles
@@ -85,4 +81,3 @@
       login_project_name: "admin"
       insecure: yes
     with_items: "{{ keystone_user_roles | default([]) }}"
-    connection: local
