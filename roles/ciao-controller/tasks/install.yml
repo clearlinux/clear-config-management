@@ -20,3 +20,6 @@
       - ciao-scheduler
       - ciao-cli
     when: ciao_dev
+    notify:
+      - restart scheduler
+      - restart controller

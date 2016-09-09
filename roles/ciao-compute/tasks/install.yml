@@ -19,6 +19,7 @@
       - ciao-cli
       - ciao-launcher
     when: ciao_dev
+    notify: restart compute
 
   - name: Copy Compute Node Agent Key
     copy: src=certificates/ciao/{{ item }} dest=/etc/pki/ciao/{{ item }}
