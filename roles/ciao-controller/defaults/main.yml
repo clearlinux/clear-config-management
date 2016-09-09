@@ -74,3 +74,9 @@ ciao_openstack_endpoints:
     public_url: https://{{ ciao_controller_fqdn }}:8776/v2/%(tenant_id)s
     internal_url: https://{{ ciao_controller_fqdn }}:8776/v2/%(tenant_id)s
     admin_url: https://{{ ciao_controller_fqdn }}:8776/v2/%(tenant_id)s
+
+# Cephx user to authenticate
+ceph_id: admin
+
+# Path to ceph user keyring
+secret_path: /etc/ceph/ceph.client.admin.keyring

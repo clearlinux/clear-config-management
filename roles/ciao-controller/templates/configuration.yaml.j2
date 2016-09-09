@@ -8,6 +8,9 @@ configure:
     compute_cert: /etc/pki/keystone/keystone_key.pem
     identity_user: {{ ciao_service_user }}
     identity_password: {{ ciao_service_password }}
+  storage:
+    secret_path: {{ secret_path }}
+    ceph_id: {{ ceph_id }}
   launcher:
     compute_net:
       {{ ciao_compute_subnets | to_nice_yaml }}

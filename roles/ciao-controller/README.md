@@ -25,6 +25,8 @@ ciao_admin_email | admin@example.com | CIAO administrator email address
 ciao_cert_organization | Example Inc. | Name of the organization running the CIAO cluster
 ciao_guest_user | demouser | CIAO virtual machines can be accessed with this username and it's public key
 ciao_guest_key | ~/.ssh/id_rsa.pub | A path to an SSH public authentication key for `ciao_guest_user`
+ceph_id | admin | Cephx user to authenticate
+secret_path | /etc/ceph/ceph.client.admin.keyring| Path to ceph user keyring
 
 **WARNING**: `ciao_guest_user` and `ciao_guest_key` are a temporary development feature. They give the developer running a dev/test ciao cluster superuser ssh access to all compute workload instances and also all cnci instances. In the future this will be removed when cloud-init and user specified workloads are enabled in the webui and cli.
 
