@@ -26,6 +26,7 @@
     get_url:
       url: "{{ fedora_cloud_image_url }}"
       dest: images/{{ fedora_cloud_image }}
+      validate_certs: no
       force: no
 
   - name: Download ClearLinux Image

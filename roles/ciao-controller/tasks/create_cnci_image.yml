@@ -17,6 +17,7 @@
     get_url:
       url: "{{ cnci_image_url }}"
       dest: images/{{ cnci_image }}.xz
+      validate_certs: no
     register: download_cnci
 
   - name: Force uncompress cnci image
