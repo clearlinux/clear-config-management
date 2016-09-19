@@ -19,7 +19,7 @@
     file: path=certificates/ciao state=directory
 
   - name: Set ciao-cert location
-    set_fact: ciao_cert={{ '~/go/bin/ciao-cert' if ciao_dev else '../../fetch/ciao-cert' }}
+    set_fact: ciao_cert={{ (gopath + '/bin/ciao-cert') if ciao_dev else '../../fetch/ciao-cert' }}
 
   - name: Create Scheduler key and CA certificate
     become: no

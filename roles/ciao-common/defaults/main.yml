@@ -17,6 +17,9 @@
 # otherwise it will be installed from the OS packages
 ciao_dev: False
 
+# golang GOPATH
+gopath: ~/go
+
 # Fully Qualified Domain Name for CIAO controller node
 ciao_controller_fqdn: "{{ hostvars[groups['controllers'][0]]['ansible_fqdn'] }}"
 

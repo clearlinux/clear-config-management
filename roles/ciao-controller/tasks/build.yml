@@ -15,13 +15,15 @@
 
   - block:
       - name: Setup GOROOT directory
-        file: path=~/go state=directory
+        file: path={{ gopath }} state=directory
 
       - name: Build CIAO from sources
-        shell: GOPATH=~/go go get -v -u github.com/01org/ciao/...
+        shell: go get -v github.com/01org/ciao/...
         register: ciao_build
         async: 1800
         poll: 0
+        environment:
+          GOPATH: "{{ gopath }}"
     when: ciao_dev
 
   - block:
