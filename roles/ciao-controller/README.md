@@ -52,6 +52,9 @@ ciao_guest_user: demouser
 ciao_guest_key: ~/.ssh/id_rsa.pub
 ```
 
+## Contribution
+**Pull Requests and Issues should be opened at [clearlinux/clear-config-management](https://github.com/clearlinux/clear-config-management).**
+
 ## License
 Apache-2.0
 

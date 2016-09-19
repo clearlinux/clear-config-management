@@ -22,6 +22,9 @@ file *ciao.yml*
     - clearlinux.ciao-webui
 ```
 
+## Contribution
+**Pull Requests and Issues should be opened at [clearlinux/clear-config-management](https://github.com/clearlinux/clear-config-management).**
+
 ## License
 Apache-2.0
 
