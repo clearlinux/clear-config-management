@@ -5,31 +5,39 @@ This is an example of a playbook to deploy CIAO using ansible.
 ## Prework
 
 ### Access
-Ansible requires that the user running the playbook has passwordless ssh access to the managed nodes, sudo privileges and python installed on each node.
+Ansible requires that the user running the playbook has passwordless ssh access 
+from the deployment machine to the managed nodes and passwordless sudo privileges
+on both the managed nodes and deployment machine.
 
 ### Requirements
 
 #### CIAO nodes
-CIAO can be installed in ClearLinux, Fedora 24 and Ubuntu 16.04 and its dependencies will be installed automatically.
+* Ansible requirements for managed nodes can be found
+[here](http://docs.ansible.com/ansible/intro_installation.html#managed-node-requirements)
+
+* CIAO can be installed in ClearLinux, Fedora 24 and Ubuntu 16.04. Its dependencies
+will be installed automatically
 
 #### Deployment machine
 The deployment machine can be any Linux OS as long as it has the following requirements installed.
 
 NOTE: In ClearLinux, all the requirements can be installed with the following bundles:
 
-    swupd bundle-add sysadmin-hostmgmt go-basic kvm-host python-openstack-clients os-core-dev
+    sudo swupd bundle-add sysadmin-hostmgmt go-basic kvm-host python-openstack-clients os-core-dev
 
 ###### Install Ansible
 The required version of ansible is 2.1 or later. Install ansible in your distribution as described in [Installing ansible](http://docs.ansible.com/ansible/intro_installation.html)
 
 ###### Install ansible roles dependencies
-This playbook make use of roles that requires extra dependencies. These dependencies are usually outdated in the OS package manager and is recomended to
-install them from pip.
+This playbook make use of roles that requires extra dependencies. These dependencies
+are usually outdated in the OS package manager and is recommended to install them from pip.
 
-    pip install netaddr docker-py python-keystoneclient
+    sudo pip install netaddr docker-py python-keystoneclient
 
 ###### Install Go
-To build ciao from sources the deployment machine requires golang to be installed. Install the latest release of go for your distribution as described in [Installing Go](https://golang.org/doc/install)
+To build ciao from sources the deployment machine requires golang to be installed.
+Install the latest release of go for your distribution as described in
+[Installing Go](https://golang.org/doc/install)
 
 ###### Install qemu
 qemu is required to create the cnci image. Use your distribution package manager
@@ -42,7 +50,7 @@ to install the `qemu` package
 ### ansible-galaxy
 Install the required roles from ansible-galaxy
 
-    ansible-galaxy install -r requirements.yml
+    sudo ansible-galaxy install -r requirements.yml
 
 ### Edit the [hosts](hosts) file according to your cluster setup
 ```ini
