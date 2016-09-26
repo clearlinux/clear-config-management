@@ -9,6 +9,9 @@ Ansible requires that the user running the playbook has passwordless ssh access
 from the deployment machine to the managed nodes and passwordless sudo privileges
 on both the managed nodes and deployment machine.
 
+Note: If you are running behind a proxy, please follow the instructions provided
+in [this section](proxy.md)
+
 ### Requirements
 
 #### CIAO nodes
