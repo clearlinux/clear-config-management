@@ -6,7 +6,8 @@
       local_action: file path={{ item }} state=absent
       with_items:
         - ./openrc
-        - ./ciaorc
+        - ./admin-ciaorc
+        - ./demo-ciaorc
         - ./clouds.yaml
         - ./certificates
         - ./images/clear-8260-ciao-networking.img
