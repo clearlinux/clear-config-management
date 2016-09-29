@@ -5,7 +5,7 @@ This is an example of a playbook to deploy CIAO using ansible.
 ## Prework
 
 ### Access
-Ansible requires that the user running the playbook has passwordless ssh access 
+Ansible requires that the user running the playbook has passwordless ssh access
 from the deployment machine to the managed nodes and passwordless sudo privileges
 on both the managed nodes and deployment machine.
 
@@ -75,3 +75,21 @@ Optionally edit [group_vars/all](group_vars/all) file to change default password
     ansible-playbook -i hosts ciao.yml
 
 Note: In order to deploy ciao from the latest development branch set `ciao_dev = True` in [group_vars/all](group_vars/all) file or pass the command line argument `--extra-vars "ciao_dev=true"`
+
+---
+
+## NOTES:
+### A note on docker hostname resolution
+This playbook uses docker containers to start the [identity service](https://hub.docker.com/r/clearlinux/keystone/) and [ciao-webui](https://hub.docker.com/r/clearlinux/ciao-webui/).
+
+Docker containers uses /etc/resolv.conf on the host machine filtering any localhost
+address since 'localhost' is not accesible from the container. If after this filtering
+there is no nameserver entries in the containers /etc/resolv.conf the daemon adds
+public Google DNS Servers (8.8.8.8 and 8.8.4.4) to the containers DNS configuration.
+
+This situation can be caused by NetworkManager which automatically populates /etc/resolv.conf
+and has an option to configure a local caching nameserver. If this is your case you can comment
+the line "dns=dnsmasq" from /etc/NetworkManager/NetworkManager.conf
+
+Make sure the hosts running docker (controller and compute nodes) have a correctly
+configured dns server that can resolve the cluster nodes names.
