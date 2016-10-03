@@ -18,7 +18,7 @@
 ciao_dev: False
 
 # golang GOPATH
-gopath: ~/go
+gopath: /tmp/go
 
 # Fully Qualified Domain Name for CIAO controller node
 ciao_controller_fqdn: "{{ hostvars[groups['controllers'][0]]['ansible_fqdn'] }}"

@@ -11,8 +11,8 @@
         - ./clouds.yaml
         - ./certificates
         - ./images/clear-8260-ciao-networking.img
-        - ~/go
         - ./fetch
+        - /tmp/go
 
 - hosts: controllers
   become: yes
