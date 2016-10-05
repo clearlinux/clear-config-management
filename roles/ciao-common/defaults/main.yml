@@ -39,7 +39,7 @@ fedora_cloud_image_url: https://dl.fedoraproject.org/pub/fedora/linux/releases/2
 fedora_cloud_image: "{{ fedora_cloud_image_url.split('/') | last }}"
 
 # URL for the latest clearlinux cloud image
-clear_cloud_image_url: https://download.clearlinux.org/image/clear-8970-cloud.img.xz
+clear_cloud_image_url: https://download.clearlinux.org/releases/10820/clear/clear-10820-cloud.img.xz
 
 # Clearlinux cloud image file name
 clear_cloud_image: "{{ clear_cloud_image_url.split('/') | last | regex_replace('(.*).xz', '\\1') }}"
