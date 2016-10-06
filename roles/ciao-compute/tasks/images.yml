@@ -18,7 +18,7 @@
 
   - name: Download OVMF.fd
     copy: src=images/OVMF.fd dest=/usr/share/qemu/OVMF.fd
-    when: ansible_os_family == "Debian"
+    when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
 
   - name: Download Fedora Image
     copy: src=images/{{ fedora_cloud_image }} dest=/var/lib/ciao/images/{{ fedora_cloud_image }}
