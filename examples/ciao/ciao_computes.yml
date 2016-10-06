@@ -1,6 +1,5 @@
 ---
   - hosts: computes
     become: yes
-    strategy: free
     roles:
       - clearlinux.ciao-compute
