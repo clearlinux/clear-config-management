@@ -23,7 +23,7 @@ The deployment machine can be any Linux OS as long as it has the following requi
 
 NOTE: In ClearLinux, all the requirements can be installed with the following bundles:
 
-    sudo swupd bundle-add sysadmin-hostmgmt go-basic kvm-host python-openstack-clients os-core-dev
+    sudo swupd bundle-add sysadmin-hostmgmt go-basic python-openstack-clients os-core-dev
 
 ###### Install Ansible
 The required version of ansible is 2.1 or later. Install ansible in your distribution as described in [Installing ansible](http://docs.ansible.com/ansible/intro_installation.html)
@@ -38,10 +38,6 @@ are usually outdated in the OS package manager and is recommended to install the
 To build ciao from sources the deployment machine requires golang to be installed.
 Install the latest release of go for your distribution as described in
 [Installing Go](https://golang.org/doc/install)
-
-###### Install qemu
-qemu is required to create the cnci image. Use your distribution package manager
-to install the `qemu` package
 
 ---
 

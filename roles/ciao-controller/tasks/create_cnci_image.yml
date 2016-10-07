@@ -41,29 +41,21 @@
     changed_when: False
 
   - block:
-    - name: Loading nbd module
-      become: yes
-      modprobe: name=nbd state=present params="max_part=63"
 
-    - name: Check /dev/nbd0 size
-      command: cat /sys/block/nbd0/size
-      register: nbd0_size
-      changed_when: False
-
-    - name: Attaching cnci image to /dev/ndb0
+    - name: Find available loop device
       become: yes
-      command: qemu-nbd -c /dev/nbd0 images/{{ cnci_image }} -f raw
-      when: nbd0_size.stdout == '0'
+      command: "losetup -f"
+      register: loop_device
 
-    - name: Run partprobe
+    - name: Mount cnci image on loop
       become: yes
-      command: partprobe /dev/nbd0
+      command: "losetup {{ loop_device.stdout }} -P images/{{ cnci_image }}"
 
     - name: Mounting cnci image in /mnt/tmp
       become: yes
       mount:
         name: /mnt/tmp
-        src: /dev/nbd0p2
+        src: "{{ loop_device.stdout }}p2"
         fstype: ext4
         state: mounted
 
@@ -102,12 +94,12 @@
       become: yes
       mount:
         name: /mnt/tmp
-        src: /dev/nbd0p2
+        src: {{ loop_device.stdout }}p2
         fstype: ext4
         state: absent
 
-    - name: Detach cnci image from /dev/ndb0
-      command: sudo qemu-nbd -d /dev/nbd0
+    - name: Detach cnci image from loop device
+      command: "losetup -d {{ loop_device.stdout }}"
 
     - name: Creating images/.cnci_ready
       file: path=images/.cnci_ready state=touch
