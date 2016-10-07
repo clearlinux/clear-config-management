@@ -94,7 +94,7 @@
       become: yes
       mount:
         name: /mnt/tmp
-        src: {{ loop_device.stdout }}p2
+        src: "{{ loop_device.stdout }}p2"
         fstype: ext4
         state: absent
 
