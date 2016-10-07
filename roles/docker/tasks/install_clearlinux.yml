@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Install containers-basic bundle
+  - name: Install containers-basic bundle (ClearLinux)
     command: swupd bundle-add containers-basic {{ swupd_args | default('') }}
     args:
       creates: /usr/share/clear/bundles/containers-basic

@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-  - name: Install docker repository
+  - name: Install docker repository (Fedora)
     yum_repository:
       name: docker
       description: Docker Repository
@@ -23,8 +23,8 @@
       gpgkey: https://yum.dockerproject.org/gpg
       gpgcheck: yes
 
-  - name: Install docker
+  - name: Install docker (Fedora)
     dnf: name=docker-engine state=present
 
-  - name: Start docker daemon
+  - name: Start docker daemon (Fedora)
     service: name=docker enabled=yes state=started
