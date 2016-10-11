@@ -99,6 +99,7 @@
         state: absent
 
     - name: Detach cnci image from loop device
+      become: yes
       command: "losetup -d {{ loop_device.stdout }}"
 
     - name: Creating images/.cnci_ready
