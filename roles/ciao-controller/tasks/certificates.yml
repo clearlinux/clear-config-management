@@ -61,11 +61,6 @@
       - keystone/keystone_cert.pem
       - keystone/keystone_key.pem
 
-  - name: Create /etc/ssl/certs directory
-    command: mkdir -p /etc/ssl/certs
-    args:
-      creates: /etc/ssl/certs
-
   - name: Install certificate (ClearLinux)
     copy: src=certificates/keystone/keystone_cert.pem dest=/etc/ssl/certs
     when: ansible_os_family == "Clear linux software for intel architecture"
