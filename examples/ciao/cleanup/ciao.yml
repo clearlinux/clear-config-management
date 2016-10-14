@@ -128,14 +128,12 @@
           command: swupd bundle-remove {{ item }} {{ swupd_args | default('') }}
           with_items:
             - cloud-control
-            - cloud-network
             - kvm-host
-            - libX11client
-            - net-utils
             - containers-basic
             - kernel-container
-            - network-advanced
+            - storage-cluster
             - storage-utils
+
           args:
             removes: /usr/share/clear/bundles/{{ item }}
       when: ansible_os_family == "Clear linux software for intel architecture"
