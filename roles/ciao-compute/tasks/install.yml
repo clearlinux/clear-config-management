@@ -16,6 +16,7 @@
   - name: Copy CIAO Binaries
     copy: src={{ gopath }}/bin/{{ item }} dest={{ bindir }}/{{ item }} mode=755
     with_items:
+      - ciao-cert
       - ciao-cli
       - ciao-launcher
     when: ciao_dev
