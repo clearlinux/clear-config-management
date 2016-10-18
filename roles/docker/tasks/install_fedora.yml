@@ -25,6 +25,3 @@
 
   - name: Install docker (Fedora)
     dnf: name=docker-engine state=present
-
-  - name: Start docker daemon (Fedora)
-    service: name=docker enabled=yes state=started

@@ -37,6 +37,3 @@
     with_items:
       - docker-engine
       - python-docker
-
-  - name: Start docker daemon (Ubuntu)
-    service: name=docker enabled=yes state=started
