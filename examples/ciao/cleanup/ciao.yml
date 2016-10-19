@@ -17,20 +17,31 @@
 - hosts: controllers
   become: yes
   tasks:
-    - name: Stop ciao-webui docker container
-      docker_container: name=ciao-webui state=absent
+    - name: Stop docker containers
+      docker_container: name={{ item }} state=absent
       ignore_errors: yes
+      with_items:
+        - ciao-webui
+        - ciao-keystone
 
-    - name: Stop keystone docker container
-      docker_container: name=ciao-keystone state=absent
-      ignore_errors: yes
+    - name: Stop and disable services
+      service: name={{ item }} state=stopped enabled=no
+      with_items:
+        - docker-keystone.service
+        - docker-ciao-webui.service
+        - ciao-controller.service
+        - ciao-scheduler.service
 
-    - name: Remove Keystone files
+    - name: Remove Files
       file: name={{ item }} state=absent
       with_items:
         - /etc/keystone/ssl
         - /etc/keystone/keystone.conf
         - /var/lib/mysql/
+        - /etc/systemd/system/docker-keystone.service
+        - /etc/systemd/system/docker-ciao-webui.service
+        - /etc/systemd/system/ciao-controller.service
+        - /etc/systemd/system/ciao-scheduler.service
 
 - hosts: controllers:computes:networks
   become: yes
@@ -42,8 +53,6 @@
       with_items:
         - ciao-network.service
         - ciao-compute.service
-        - ciao-controller.service
-        - ciao-scheduler.service
         - docker.service
         - docker-cor.service
       ignore_errors: yes
@@ -53,8 +62,6 @@
       with_items:
         - /etc/systemd/system/ciao-network.service
         - /etc/systemd/system/ciao-compute.service
-        - /etc/systemd/system/ciao-scheduler.service
-        - /etc/systemd/system/ciao-controller.service
 
     - name: Remove CIAO files
       file: path={{ item }} state=absent
@@ -133,7 +140,6 @@
             - kernel-container
             - storage-cluster
             - storage-utils
-
           args:
             removes: /usr/share/clear/bundles/{{ item }}
       when: ansible_os_family == "Clear linux software for intel architecture"
