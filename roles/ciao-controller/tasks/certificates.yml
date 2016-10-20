@@ -65,26 +65,26 @@
     copy: src=certificates/keystone/keystone_cert.pem dest=/etc/ssl/certs
     when: ansible_os_family == "Clear linux software for intel architecture"
 
-  - name: Install certificate (Ubuntu)
-    copy:
-      src: certificates/keystone/keystone_cert.pem
-      dest: /usr/local/share/ca-certificates/keystone_cert.crt
+  - block:
+      - name: Install certificate (Ubuntu)
+        copy:
+          src: certificates/keystone/keystone_cert.pem
+          dest: /usr/local/share/ca-certificates/keystone_cert.crt
+
+      - name: Update CA certificates (Ubuntu)
+        command: update-ca-certificates
+        args:
+          creates: /etc/ssl/certs/keystone_cert.pem
     when: ansible_os_family == "Debian"
 
-  - name: Update CA certificates (Ubuntu)
-    command: update-ca-certificates
-    args:
-      creates: /etc/ssl/certs/keystone_cert.pem
-    when: ansible_os_family == "Debian"
+  - block:
+      - name: Install certificate (Fedora)
+        copy:
+          src: certificates/keystone/keystone_cert.pem
+          dest: /etc/pki/ca-trust/source/anchors/keystone_cert.pem
 
-  - name: Install certificate (Fedora)
-    copy:
-      src: certificates/keystone/keystone_cert.pem
-      dest: /etc/pki/ca-trust/source/anchors/keystone_cert.pem
-    when: ansible_os_family == "RedHat"
-
-  - name: Update CA trust (Fedora)
-    command: update-ca-trust
-    args:
-      creates: /etc/pki/tls/certs/keystone_cert.pem
+      - name: Update CA trust (Fedora)
+        command: update-ca-trust
+        args:
+          creates: /etc/pki/tls/certs/keystone_cert.pem
     when: ansible_os_family == "RedHat"
