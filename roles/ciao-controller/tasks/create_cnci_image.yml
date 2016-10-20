@@ -14,6 +14,7 @@
 # limitations under the License.
 
   - name: Download cnci image
+    become: no
     get_url:
       url: "{{ cnci_image_url }}"
       dest: images/{{ cnci_image }}.xz
@@ -21,10 +22,12 @@
     register: download_cnci
 
   - name: Force uncompress cnci image
+    become: no
     file: path=images/{{ cnci_image }} state=absent
     when: download_cnci.changed
 
   - name: Decompressing cnci image
+    become: no
     command: unxz -k {{ cnci_image }}.xz
     args:
       chdir: images
@@ -32,27 +35,25 @@
     register: decompress_cnci
 
   - name: Force setup of cnci image
+    become: no
     file: path=images/.cnci_ready state=absent
     when: download_cnci.changed or decompress_cnci.changed
 
   - name: Check if cnci image is already setup
+    become: no
     stat: path=images/.cnci_ready
     register: st
     changed_when: False
 
   - block:
-
     - name: Find available loop device
-      become: yes
       command: "losetup -f"
       register: loop_device
 
     - name: Mount cnci image on loop
-      become: yes
       command: "losetup {{ loop_device.stdout }} -P images/{{ cnci_image }}"
 
     - name: Mounting cnci image in /mnt/tmp
-      become: yes
       mount:
         name: /mnt/tmp
         src: "{{ loop_device.stdout }}p2"
@@ -63,35 +64,32 @@
       set_fact: ciao_cnci_agent={{ (gopath + '/bin/ciao-cnci-agent') if ciao_dev else 'fetch/ciao-cnci-agent' }}
 
     - name: Copy ciao_cnci_agent to cnci image
-      shell: sudo cp {{ ciao_cnci_agent }} /mnt/tmp/usr/bin/
+      shell: cp {{ ciao_cnci_agent }} /mnt/tmp/usr/bin/
       args:
         creates: /mnt/tmp/usr/bin/ciao-cnci-agent
 
     - name: Copy ciao-cnci-agent.service to cnci image
-      become: yes
       template: src=ciao-cnci-agent.service.j2 dest=/mnt/tmp/usr/lib/systemd/system/ciao-cnci-agent.service
 
     - name: Enable ciao-cnci-agent.service in cnci image
-      command: sudo chroot /mnt/tmp /bin/bash -c "systemctl enable ciao-cnci-agent"
+      command: chroot /mnt/tmp /bin/bash -c "systemctl enable ciao-cnci-agent"
       args:
         creates: /mnt/tmp/etc/systemd/system/default.target.wants/ciao-cnci-agent.service
 
     - name: Create /var/lib/ciao in cnci image
-      become: yes
       file: path=/mnt/tmp/var/lib/ciao state=directory
 
     - name: Copy CA certificates to cnci image
-      shell: sudo cp certificates/ciao/CAcert-* /mnt/tmp/var/lib/ciao/CAcert-server-localhost.pem
+      shell: cp certificates/ciao/CAcert-* /mnt/tmp/var/lib/ciao/CAcert-server-localhost.pem
       args:
         creates: /mnt/tmp/var/lib/ciao/CAcert-server-localhost.pem
 
     - name: Copy CNCI Agent certificate
-      shell: sudo cp certificates/ciao/cert-CNCIAgent-* /mnt/tmp/var/lib/ciao/cert-client-localhost.pem
+      shell: cp certificates/ciao/cert-CNCIAgent-* /mnt/tmp/var/lib/ciao/cert-client-localhost.pem
       args:
         creates: /mnt/tmp/var/lib/ciao/cert-client-localhost.pem
 
     - name: Unmounting cnci image
-      become: yes
       mount:
         name: /mnt/tmp
         src: "{{ loop_device.stdout }}p2"
@@ -99,9 +97,9 @@
         state: absent
 
     - name: Detach cnci image from loop device
-      become: yes
       command: "losetup -d {{ loop_device.stdout }}"
 
     - name: Creating images/.cnci_ready
+      become: no
       file: path=images/.cnci_ready state=touch
     when: not st.stat.exists
