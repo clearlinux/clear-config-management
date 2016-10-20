@@ -45,12 +45,13 @@
 
   - name: Create openrc file
     become: no
-    local_action: template src=openrc.j2 dest=./openrc mode=0600
+    connection: local
+    template: src=openrc.j2 dest=./openrc mode=0600
 
   - name: Create clouds.yaml file
     become: no
-    local_action: template src=clouds.yaml.j2 dest=./clouds.yaml mode=0600
+    connection: local
+    template: src=clouds.yaml.j2 dest=./clouds.yaml mode=0600
 
   - include: access.yml
-    become: no
     connection: local
