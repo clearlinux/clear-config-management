@@ -14,11 +14,12 @@
 # limitations under the License.
 
   - name: Create a local certificates directory if it does not exist
-    local_action: file path=certificates/ciao state=directory
+    connection: local
+    file: path=certificates/ciao state=directory
 
   - name: Create self-signed SSL cert
-    local_action: >
-      command
+    connection: local
+    command: >
       openssl req -new -nodes -x509 -subj "/CN={{ ciao_webui_fqdn }}" -days 365
       -keyout certificates/ciao/ciao-webui-key.pem
       -out certificates/ciao/ciao-webui-cert.pem -extensions v3_ca
