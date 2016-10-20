@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+  - name: Check if cnci image is already setup
+    become: no
+    stat: path=images/.cnci_ready
+    register: st
+    changed_when: False
+
   - name: Download cnci image
     become: no
     get_url:
@@ -21,29 +27,18 @@
       validate_certs: no
     register: download_cnci
 
-  - name: Force uncompress cnci image
+  - name: Remove old cnci image
     become: no
     file: path=images/{{ cnci_image }} state=absent
-    when: download_cnci.changed
+    when: download_cnci.changed or not st.stat.exists
 
-  - name: Decompressing cnci image
+  - name: Decompress cnci image
     become: no
     command: unxz -k {{ cnci_image }}.xz
     args:
       chdir: images
       creates: "{{ cnci_image }}"
     register: decompress_cnci
-
-  - name: Force setup of cnci image
-    become: no
-    file: path=images/.cnci_ready state=absent
-    when: download_cnci.changed or decompress_cnci.changed
-
-  - name: Check if cnci image is already setup
-    become: no
-    stat: path=images/.cnci_ready
-    register: st
-    changed_when: False
 
   - block:
     - name: Find available loop device
@@ -102,4 +97,4 @@
     - name: Creating images/.cnci_ready
       become: no
       file: path=images/.cnci_ready state=touch
-    when: not st.stat.exists
+    when: decompress_cnci.changed

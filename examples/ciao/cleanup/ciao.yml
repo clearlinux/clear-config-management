@@ -10,7 +10,7 @@
         - ./demo-ciaorc
         - ./clouds.yaml
         - ./certificates
-        - ./images/clear-8260-ciao-networking.img
+        - ./images/.cnci_ready
         - ./fetch
         - /tmp/go
 
