@@ -15,15 +15,15 @@
 
   - block:
       - name: Setup GOROOT directory
-        file: path={{ gopath }} state=directory
         connection: local
+        file: path={{ gopath }} state=directory
 
       - name: Build CIAO from sources
+        connection: local
         shell: go get -v github.com/01org/ciao/...
         register: ciao_build
         async: 1800
         poll: 0
-        connection: local
         environment:
           GOPATH: "{{ gopath }}"
     when: ciao_dev
@@ -35,7 +35,7 @@
 
       - name: Fetch ciao files
         fetch:
-          dest: ./fetch/{{ item }}
+          dest: fetch/{{ item }}
           fail_on_missing: yes
           flat: yes
           src: /usr/bin/{{ item }}
@@ -44,8 +44,8 @@
           - ciao-cnci-agent
 
       - name: Make ciao files runnable
-        file: path=./fetch/{{ item }} mode=0755
         connection: local
+        file: path=fetch/{{ item }} mode=0755
         with_items:
           - ciao-cert
           - ciao-cnci-agent
