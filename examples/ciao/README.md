@@ -14,10 +14,10 @@ on both the managed nodes and deployment machine.
 #### CIAO nodes
 * Ansible requirements can be found
 [here](http://docs.ansible.com/ansible/intro_installation.html#managed-node-requirements),
-also check requirements for [fedora](https://github.com/clearlinux/clear-config-management/blob/master/examples/ciao/doc/requirements.md#fedora).
+also check requirements for [fedora](doc/requirements.md#fedora).
 * CIAO can be installed in ClearLinux, Fedora 24 and Ubuntu 16.04.
 CIAO dependencies will be installed automatically
-* If running behind a proxy server read [this](https://github.com/clearlinux/clear-config-management/blob/master/examples/ciao/doc/requirements.md#proxies)
+* If running behind a proxy server read [this](doc/requirements.md#proxies)
 
 #### Deployment machine
 The deployment machine can be any Linux OS as long as it has the following requirements installed.
