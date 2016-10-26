@@ -71,8 +71,6 @@ Optionally edit [group_vars/all](group_vars/all) file to change default password
 
     ansible-playbook -i hosts ciao.yml
 
-Note: In order to deploy ciao from the latest development branch set `ciao_dev = True` in [group_vars/all](group_vars/all) file or pass the command line argument `--extra-vars "ciao_dev=true"`
-
 ---
 
 ## NOTES:
@@ -90,3 +88,6 @@ the line "dns=dnsmasq" from /etc/NetworkManager/NetworkManager.conf
 
 Make sure the hosts running docker (controller and compute nodes) have a correctly
 configured dns server that can resolve the cluster nodes names.
+
+## Installing ciao from sources
+If you are interested in deploying ciao from the master branch, read [this](doc/development.md)
