@@ -9,6 +9,14 @@ You can install them with the following command
 ```
 sudo dnf install python-dnf netaddr libselinux-python
 ```
+## Firewalld
+firewalld may cause cluster interoperability issues as rules need to be modified dinamically.
+We encourage the user to stop and disable the firewall.
+
+```
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+```
 
 # Proxies
 A Proxy server needs to be configured in different parts of the system when deploying
