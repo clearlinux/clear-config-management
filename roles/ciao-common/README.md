@@ -9,6 +9,7 @@ The following variables are available for all ciao roles
 
 Variable  | Default Value | Description
 --------  | ------------- | -----------
+cephx_user | admin | cephx user to login into the ceph cluster
 ciao_dev | False | Set to True to install from source, otherwise install form OS packages
 gopath | /tmp/go | golang GOPATH
 ciao_controller_fqdn | `{{ ansible_fqdn }}` | FQDN for CIAO controller node

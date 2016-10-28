@@ -50,3 +50,5 @@
       - include: install_fedora.yml
         when: ansible_os_family == "RedHat"
     when: not ciao_dev
+
+  - include: ceph.yml

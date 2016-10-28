@@ -65,6 +65,14 @@ compute3.example.com
 
 Optionally edit [group_vars/all](group_vars/all) file to change default passwords and other settings
 
+### Gather ceph config files
+Ciao storage is implemented to use ceph as its storage backend. For this reason all ciao nodes
+require a copy of the ceph configuration file and authentication token which can be found on
+/etc/ceph/ceph.conf and /etc/ceph/ceph.client.admin.keyring files in the ceph monitor node.
+
+In the working directoy, create a `ceph` folder and copy the ceph files mentioned above
+before proceeding to the next step.
+
 ---
 
 ### Run the playbook
