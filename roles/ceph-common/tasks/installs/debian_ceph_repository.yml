@@ -44,3 +44,13 @@
   changed_when: false
   when: ceph_custom
 
+- name: add gluster nfs ganesha repo
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+  with_items:
+    - ppa:gluster/libntirpc
+    - ppa:gluster/nfs-ganesha
+  changed_when: false
+  when: nfs_obj_gw or nfs_file_gw
+

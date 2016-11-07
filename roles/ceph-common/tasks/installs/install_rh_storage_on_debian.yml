@@ -37,7 +37,7 @@
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  with_items: debian_package_dependencies
+  with_items: "{{ debian_package_dependencies }}"
 
 - name: install red hat storage ceph mon
   apt:
@@ -68,6 +68,12 @@
     pkg: ceph-mds
     state: "{{ (upgrade_ceph_packages|bool) | ternary('latest','present') }}"
   when: mds_group_name in group_names
+
+- name: install red hat storage ceph-fuse client
+  apt:
+    pkg: ceph-fuse
+    state: "{{ (upgrade_ceph_packages|bool) | ternary('latest','present') }}"
+  when: client_group_name in group_names
 
 - name: install red hat storage ceph-common
   apt:
