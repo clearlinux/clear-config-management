@@ -23,6 +23,9 @@ gopath: /tmp/go
 # Fully Qualified Domain Name for CIAO controller node
 ciao_controller_fqdn: "{{ hostvars[groups['controllers'][0]]['ansible_fqdn'] }}"
 
+# Fully Qualified Domain Name for CIAO Image node
+ciao_image_fqdn: "{{ ansible_fqdn }}"
+
 # URL for the latest ciao networking image
 cnci_image_url: https://download.clearlinux.org/demos/ciao/clear-8260-ciao-networking.img.xz
 

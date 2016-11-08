@@ -1,0 +1,12 @@
+[Unit]
+Description=CIAO Image Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart={{ bindir }}/ciao-image -identity=https://{{ keystone_fqdn }}:35357 \
+                                  -logtostderr -v=3
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

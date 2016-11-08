@@ -32,6 +32,36 @@
       chdir: certificates/ciao
       creates: CAcert-{{ ciao_controller_fqdn }}.pem
 
+  - name: Create a local keystone certificates directory if it does not exist
+    become: no
+    local_action: file path=certificates/keystone state=directory
+
+  - name: Create keystone self-signed certificate and key
+    become: no
+    local_action: >
+      command
+      openssl req -new -nodes -x509 -subj "/CN={{ keystone_fqdn }}" -days 365
+      -keyout certificates/keystone/keystone_key.pem
+      -out certificates/keystone/keystone_cert.pem -extensions v3_ca
+    args:
+      creates: certificates/keystone/keystone_cert.pem
+
+  - name: Create ciao image self-signed SSL cert
+    become: no
+    local_action: >
+      command
+      openssl req -new -nodes -x509 -subj "/CN={{ ciao_image_fqdn }}" -days 365
+      -keyout certificates/ciao/ciao-image-key.pem
+      -out certificates/ciao/ciao-image-cacert.pem -extensions v3_ca
+    args:
+      creates: certificates/ciao/ciao-image-cacert.pem
+
+  - set_fact:
+      keystone_cert: "{{ lookup('file', 'certificates/keystone/keystone_cert.pem') }}"
+
+  - name: Append keystone cert to ciao_image.cert.pem
+    lineinfile: dest={{ playbook_dir }}/certificates/ciao/ciao-image-cacert.pem line="{{ keystone_cert }}"
+
   - name: Create agent keys
     become: no
     connection: local

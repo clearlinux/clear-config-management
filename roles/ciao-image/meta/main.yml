@@ -1,0 +1,25 @@
+galaxy_info:
+  author: Erick Cardona
+  description: Ansible role to install the image service for a CIAO cluster
+  company: Intel
+
+  issue_tracker_url: https://github.com/clearlinux/clear-config-management
+
+  license: Apache
+
+  min_ansible_version: 2.1
+
+  platforms:
+  - name: Ubuntu
+    versions:
+      - xenial
+  - name: ClearLinux
+
+  galaxy_tags:
+    - ubuntu
+    - xenial
+    - clearlinux
+    - ciao
+
+dependencies:
+  - clearlinux.ciao-common
