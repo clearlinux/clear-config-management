@@ -8,9 +8,9 @@
 - name: wait for ceph.conf and keys
   local_action: >
     wait_for
-    path="{{ playbook_dir }}/{{ fetch_directory }}/docker_mon_files/{{ item.0 }}"
+    path="{{ fetch_directory }}/docker_mon_files/{{ item.0 }}"
   become: false
-  with_together: "{{ ceph_config_keys }}"
+  with_items: "{{ ceph_config_keys }}"
 
 - name: stat for ceph config and keys
   local_action: stat path={{ fetch_directory }}/docker_mon_files/{{ item }}
@@ -18,14 +18,15 @@
   changed_when: false
   become: false
   failed_when: false
+  always_run: true
   register: statconfig
 
 - name: try to copy ceph config and keys
   copy:
-    src: "{{ playbook_dir }}/{{ fetch_directory }}/docker_mon_files/{{ item.0 }}"
+    src: "{{ fetch_directory }}/docker_mon_files/{{ item.0 }}"
     dest: "{{ item.0 }}"
     owner: root
     group: root
     mode: 0644
   changed_when: false
-  with_together: "{{ ceph_config_keys }}"
+  with_items: "{{ ceph_config_keys }}"

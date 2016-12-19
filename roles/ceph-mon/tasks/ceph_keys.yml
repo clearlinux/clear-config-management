@@ -1,10 +1,25 @@
 ---
 # NOTE (leseb): wait for mon discovery and quorum resolution
 # the admin key is not instantaneously created so we have to wait a bit
-- name: wait for client.admin key exists
+- name: "wait for {{ cluster }}.client.admin.keyring exists"
   wait_for:
     path: /etc/ceph/{{ cluster }}.client.admin.keyring
   when: cephx
+
+- name: test if initial mon keyring is in mon kv store
+  command: ceph --cluster {{ cluster }} config-key get initial_mon_keyring
+  changed_when: false
+  failed_when: false
+  always_run: true
+  run_once: true
+  register: is_initial_mon_keyring_in_kv
+
+- name: put initial mon keyring in mon kv store
+  command: ceph --cluster {{ cluster }} config-key put initial_mon_keyring {{ monitor_keyring.stdout }}
+  changed_when: false
+  always_run: true
+  run_once: true
+  when: is_initial_mon_keyring_in_kv.rc != 0
 
 - name: create ceph rest api keyring when mon is not containerized
   command: ceph --cluster {{ cluster }} auth get-or-create client.restapi osd 'allow *' mon 'allow *' -o /etc/ceph/{{ cluster }}.client.restapi.keyring
@@ -25,6 +40,7 @@
   shell: ls -1 /etc/ceph/*.keyring
   changed_when: false
   register: ceph_keys
+  always_run: true
   when: cephx
 
 - name: set keys permissions
@@ -34,7 +50,7 @@
     owner: "{{ key_owner }}"
     group: "{{ key_group }}"
   with_items:
-    - "{{ ceph_keys.stdout_lines }}"
+    - "{{ ceph_keys.get('stdout_lines') | default([]) }}"
   when: cephx
 
 - name: copy keys to the ansible server
@@ -44,7 +60,7 @@
     flat: yes
   run_once: true
   with_items:
-    - "{{ ceph_keys.stdout_lines }}"
+    - "{{ ceph_keys.get('stdout_lines') | default([]) }}"
     - /var/lib/ceph/bootstrap-osd/{{ cluster }}.keyring
     - /var/lib/ceph/bootstrap-rgw/{{ cluster }}.keyring
     - /var/lib/ceph/bootstrap-mds/{{ cluster }}.keyring

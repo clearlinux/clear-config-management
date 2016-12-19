@@ -12,49 +12,63 @@ auth supported = none
 fsid = {{ fsid }}
 {% endif %}
 max open files = {{ max_open_files }}
-{% if common_single_host_mode is defined %}
+{% if common_single_host_mode is defined and common_single_host_mode %}
 osd crush chooseleaf type = 0
 {% endif %}
 {# NOTE (leseb): the blank lines in-between are needed otherwise we won't get any line break #}
 {% if groups[mon_group_name] is defined %}
-mon_initial_members = {% if groups[mon_group_name] is defined %}{% for host in groups[mon_group_name] %}{% if hostvars[host]['ansible_fqdn'] is defined and mon_use_fqdn %}{{ hostvars[host]['ansible_fqdn'] }}{% if not loop.last %},{% endif %}{% elif hostvars[host]['ansible_hostname'] is defined %}{{ hostvars[host]['ansible_hostname'] }}{% if not loop.last %},{% endif %}{% endif %}{% endfor %}{% endif %}
+mon initial members = {% for host in groups[mon_group_name] %}
+      {% if hostvars[host]['ansible_fqdn'] is defined and mon_use_fqdn -%}
+        {{ hostvars[host]['ansible_fqdn'] }}
+      {%- elif hostvars[host]['ansible_hostname'] is defined -%}
+        {{ hostvars[host]['ansible_hostname'] }}
+      {%- endif %}
+      {%- if not loop.last %},{% endif %}
+    {% endfor %}
 {% endif %}
 
 {% if not mon_containerized_deployment and not mon_containerized_deployment_with_kv %}
-{% if monitor_address_block is defined %}
+{% if monitor_address_block %}
 mon host = {% for host in groups[mon_group_name] %}{{ hostvars[host]['ansible_all_ipv4_addresses'] | ipaddr(monitor_address_block) | first }}{% if not loop.last %},{% endif %}{% endfor %}
 {% elif groups[mon_group_name] is defined %}
-mon host = {% for host in groups[mon_group_name] %}{% for key in hostvars[host].iterkeys() %}{% if hostvars[host][key]['macaddress'] is defined and hostvars[host][key]['device'] is defined and hostvars[host][key]['device'] == monitor_interface %}{{ hostvars[host][key]['ipv4']['address'] }}{% endif %}{% endfor %}{% if not loop.last %},{% endif %}{% endfor %}
-{% elif (hostvars[host]['monitor_interface'] is defined and hostvars[host]['monitor_interface'] != "interface") or monitor_interface != "interface" %}
-{% include 'mon_addr_interface.j2' %}
-{% else %}
-{% include 'mon_addr_address.j2' %}
+mon host = {% for host in groups[mon_group_name] %}
+             {% set address = hostvars[host]['monitor_address'] if hostvars[host]['monitor_address'] is defined else monitor_address %}
+             {% set interface = hostvars[host]['monitor_interface'] if hostvars[host]['monitor_interface'] is defined else monitor_interface %}
+             {% if interface != "interface" %}
+               {% for key in hostvars[host].keys() %}
+                 {% if hostvars[host][key]['macaddress'] is defined and hostvars[host][key]['device'] is defined and hostvars[host][key]['device'] == interface -%}
+                    {{ hostvars[host][key]['ipv4']['address'] }}
+                 {%- endif %}
+               {% endfor %}
+             {% elif address != "0.0.0.0" -%}
+               {{ address }}
+             {%- endif %}
+             {%- if not loop.last %},{% endif %}
+           {% endfor %}
 {% endif %}
 {% endif %}
 {% if mon_containerized_deployment %}
 fsid = {{ fsid }}
 {% if groups[mon_group_name] is defined %}
-mon host = {% for host in groups[mon_group_name] -%}
-{% if mon_containerized_deployment %}
-{% set interface = ["ansible_",ceph_mon_docker_interface]|join %}
-{{ hostvars[host][interface]['ipv4']['address'] }}
-{%- if not loop.last %},{% endif %}
-{% elif hostvars[host]['monitor_address'] is defined %}
-{{ hostvars[host]['monitor_address'] }}
-{%- if not loop.last %},{% endif %}
-{% elif monitor_address != "0.0.0.0" %}
-monitor_address
-{%- if not loop.last %},{% endif %}
-{% endif %}
-{%- endfor %}
+mon host = {% for host in groups[mon_group_name] %}
+             {% set interface = ["ansible_",ceph_mon_docker_interface]|join %}
+             {% if mon_containerized_deployment -%}
+                {{ hostvars[host][interface]['ipv4']['address'] }}
+             {%- elif hostvars[host]['monitor_address'] is defined -%}
+                {{ hostvars[host]['monitor_address'] }}
+             {%- elif monitor_address != "0.0.0.0" -%}
+                {{ monitor_address }}
+             {%- endif %}
+             {%- if not loop.last %},{% endif %}
+           {% endfor %}
 {% endif %}
 {% endif %}
 
 {% if public_network is defined %}
-public_network = {{ public_network }}
+public network = {{ public_network }}
 {% endif %}
 {% if cluster_network is defined %}
-cluster_network = {{ cluster_network }}
+cluster network = {{ cluster_network }}
 {% endif %}
 
 [client.libvirt]
@@ -97,17 +111,25 @@ keyring = /var/lib/ceph/radosgw/{{ cluster }}-rgw.{{ hostvars[host]['ansible_hos
 rgw socket path = /tmp/radosgw-{{ hostvars[host]['ansible_hostname'] }}.sock
 log file = /var/log/ceph/{{ cluster }}-rgw-{{ hostvars[host]['ansible_hostname'] }}.log
 rgw data = /var/lib/ceph/radosgw/{{ cluster }}-rgw.{{ hostvars[host]['ansible_hostname'] }}
-{% if radosgw_frontend  == 'civetweb' %}
 rgw frontends = civetweb port={{ radosgw_civetweb_bind_ip }}:{{ radosgw_civetweb_port }} num_threads={{ radosgw_civetweb_num_threads }}
-{% endif %}
 {% if radosgw_keystone %}
 rgw keystone url = {{ radosgw_keystone_url }}
+rgw keystone api version = {{ radosgw_keystone_api_version }}
+{% if radosgw_keystone_auth_method == 'admin_token' %}
 rgw keystone admin token = {{ radosgw_keystone_admin_token }}
+{% elif radosgw_keystone_auth_method == 'auth_token' %}
+rgw keystone admin user = {{ radosgw_keystone_admin_user }}
+rgw keystone admin password = {{ radosgw_keystone_admin_password }}
+rgw keystone admin tenant = {{ radosgw_keystone_admin_tenant }}
+rgw keystone admin domain = {{ radosgw_keystone_admin_domain }}
+{% endif %}
 rgw keystone accepted roles = {{ radosgw_keystone_accepted_roles }}
 rgw keystone token cache size = {{ radosgw_keystone_token_cache_size }}
 rgw keystone revocation interval = {{ radosgw_keystone_revocation_internal }}
 rgw s3 auth use keystone = {{ radosgw_s3_auth_use_keystone }}
+{% if radosgw_keystone_ssl | bool %}
 nss db path = {{ radosgw_nss_db_path }}
+{% endif %}
 {% endif %}
 {% endif %}
 {% endfor %}
