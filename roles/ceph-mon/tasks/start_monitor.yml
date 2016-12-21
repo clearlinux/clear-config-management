@@ -25,15 +25,15 @@
 - name: add mon section into ceph.conf for systemv init scripts
   ini_file:
     dest: /etc/ceph/{{ cluster }}.conf
-    section: mon.{{ ansible_host }}
+    section: mon.{{ monitor_name }}
     option: host
-    value: "{{ ansible_host }}"
+    value: "{{ monitor_name }}"
     state: present
   when:
     - ansible_os_family != "Ubuntu"
     - ceph_release_num.{{ ceph_stable_release }} < ceph_release_num.infernalis
- 
-# NOTE (jsaintrocc): can't use service module because we need to use the 
+
+# NOTE (jsaintrocc): can't use service module because we need to use the
 # legacy systemv init for older ceph releases.  Even when the os supports systemd
 # Not Ubuntu so we can catch old debian systems that don't use systemd or upstart
 - name: start and add that the monitor service to the init sequence
@@ -60,3 +60,7 @@
   when:
     - use_systemd
     - ceph_release_num.{{ ceph_release }} > ceph_release_num.hammer
+
+- name: Enable ceph-mon.target
+  service: name=ceph-mon.target enabled=yes
+  when: ansible_os_family == 'Clear linux software for intel architecture'
