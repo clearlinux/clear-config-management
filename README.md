@@ -4,7 +4,7 @@ as Configuration Management Engine running on Clear Linux*.
 
 ## Components supported
 At the moment, this installer is able to deploy the following components
- - Ceph
+ - [Ceph](https://github.com/clearlinux/clear-config-management/tree/master/examples/ceph)
 
 ## How to use it in Clear Linux*
 - https://clearlinux.org/documentation/ceph-deploy.html
