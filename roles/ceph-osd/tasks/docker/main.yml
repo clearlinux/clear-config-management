@@ -1,6 +1,6 @@
 ---
 - name: check if a cluster is already running
-  shell: "docker ps | grep -sq '{{ceph_osd_docker_username}}/{{ceph_osd_docker_imagename}}:{{ceph_osd_docker_image_tag}}'"
+  command: "docker ps -q -a --filter='ancestor={{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'"
   register: ceph_health
   changed_when: false
   failed_when: false
@@ -11,18 +11,6 @@
     - ceph_health.rc != 0
     - not osd_containerized_deployment_with_kv
     - not "{{ rolling_update | default(false) }}"
-
-- name: check if it is Atomic host
-  stat: path=/run/ostree-booted
-  register: stat_ostree
-  always_run: true
-
-- name: set fact for using Atomic host
-  set_fact:
-    is_atomic: '{{ stat_ostree.stat.exists }}'
-
-- include: pre_requisite.yml
-  when: not is_atomic
 
 - include: "{{ playbook_dir }}/roles/ceph-common/tasks/misc/ntp_atomic.yml"
   when:
@@ -42,10 +30,6 @@
     - ntp_service_enabled
 
 - include: "{{ playbook_dir }}/roles/ceph-common/tasks/docker/fetch_image.yml"
-  vars:
-    ceph_docker_username: '{{ ceph_osd_docker_username }}'
-    ceph_docker_imagename: '{{ ceph_osd_docker_imagename }}'
-    ceph_docker_image_tag: '{{ ceph_osd_docker_image_tag }}'
 
 # NOTE (jimcurtis): dirs_permissions.yml must precede fetch_configs.yml
 # because it creates the directories needed by the latter.

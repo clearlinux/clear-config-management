@@ -6,7 +6,17 @@
 ###########
 
 fetch_directory: fetch/
-cluster: ceph # cluster name
+
+# The 'cluster' variable determines the name of the cluster.
+# Changing the default value to something else means that you will
+# need to change all the command line calls as well, for example if
+# your cluster name is 'foo':
+# "ceph health" will become "ceph --cluster foo health"
+#
+# An easier way to handle this is to use the environment variable CEPH_ARGS
+# So run: "export CEPH_ARGS="--cluster foo"
+# With that you will be able to run "ceph health" normally
+cluster: ceph
 
 ###########
 # INSTALL #
@@ -63,10 +73,9 @@ ntp_service_enabled: true
 # install source or architecture.
 debian_ceph_packages:
   - ceph
-  - ceph-common    #|
-  - ceph-fs-common #|--> yes, they are already all dependencies from 'ceph'
-  - ceph-fuse      #|--> however while proceding to rolling upgrades and the 'ceph' package upgrade
-  - libcephfs1     #|--> they don't get update so we need to force them
+  - ceph-common    #|--> yes, they are already all dependencies from 'ceph'
+  - ceph-fs-common #|--> however while proceding to rolling upgrades and the 'ceph' package upgrade
+  - ceph-fuse      #|--> they don't get update so we need to force them
 
 # Whether or not to install the ceph-test package.
 ceph_test: False
@@ -97,9 +106,10 @@ ceph_use_distro_backports: false # DEBIAN ONLY
 
 # COMMUNITY VERSION
 ceph_stable: false # use ceph stable branch
+ceph_mirror: http://download.ceph.com
 ceph_stable_key: https://download.ceph.com/keys/release.asc
-ceph_stable_release: jewel # ceph stable release
-ceph_stable_repo: "http://download.ceph.com/debian-{{ ceph_stable_release }}"
+ceph_stable_release: kraken # ceph stable release
+ceph_stable_repo: "{{ ceph_mirror }}/debian-{{ ceph_stable_release }}"
 
 ######################################
 # Releases name to number dictionary #
@@ -243,6 +253,8 @@ rbd_client_admin_socket_path: /var/run/ceph # must be writable by QEMU and allow
 # will go to monitor_interface if both are defined.
 monitor_interface: interface
 monitor_address: 0.0.0.0
+# set to either ipv4 or ipv6, whichever your network is using
+ip_version: ipv4
 mon_use_fqdn: false # if set to true, the MON name used will be the fqdn in the ceph.conf
 monitor_address_block: false
 
@@ -272,9 +284,14 @@ mds_max_mds: 3
 ## Rados Gateway options
 #
 #radosgw_dns_name: your.subdomain.tld # subdomains used by radosgw. See http://ceph.com/docs/master/radosgw/config/#enabling-subdomain-s3-calls
-radosgw_civetweb_port: 8080 # on Infernalis we get: "set_ports_option: cannot bind to 80: 13 (Permission denied)"
-radosgw_civetweb_bind_ip: "{{ ansible_default_ipv4.address }}"
+radosgw_resolve_cname: false # enable for radosgw to resolve DNS CNAME based bucket names
+radosgw_civetweb_port: 8080
+radosgw_civetweb_bind_ip: "{{ ansible_default_ipv4.address }}" # when using ipv6 enclose with brackets: "[{{ ansible_default_ipv6.address }}]"
 radosgw_civetweb_num_threads: 50
+# For additional civetweb configuration options available such as SSL, logging,
+# keepalive, and timeout settings, please see the civetweb docs at
+# https://github.com/civetweb/civetweb/blob/master/docs/UserManual.md
+radosgw_civetweb_options: "port={{ radosgw_civetweb_bind_ip }}:{{ radosgw_civetweb_port }} num_threads={{ radosgw_civetweb_num_threads }}"
 radosgw_keystone: false # activate OpenStack Keystone options full detail here: http://ceph.com/docs/master/radosgw/keystone/
 #radosgw_keystone_url: # url:admin_port ie: http://192.168.0.1:35357
 radosgw_keystone_api_version: 2 # API versions 2 and 3 are supported
@@ -292,6 +309,15 @@ radosgw_keystone_token_cache_size: 10000
 radosgw_keystone_revocation_internal: 900
 radosgw_s3_auth_use_keystone: "true"
 radosgw_nss_db_path: /var/lib/ceph/radosgw/ceph-radosgw.{{ ansible_hostname }}/nss
+# Settings for the RGW usage logging described at http://docs.ceph.com/docs/jewel/man/8/radosgw/#usage-logging
+radosgw_usage_log: false
+radosgw_usage_log_tick_interval: 30
+radosgw_usage_log_flush_threshold: 1024
+radosgw_usage_max_shards: 32
+radosgw_usage_max_user_shards: 1
+# Settings for static website hosting
+radosgw_static_website: false
+radosgw_dns_s3website_name: your.subdomain.tld # subdomain used by radosgw for website bucket hosting.
 # Rados Gateway options
 email_address: foo@bar.com
 
@@ -306,6 +332,21 @@ restapi_port: 5000
 # if you don't want it keep the option commented
 #common_single_host_mode: true
 
+## Handlers - restarting daemons after a config change
+# if for whatever reasons the content of your ceph configuration changes
+# ceph daemons will be restarted as well. At the moment, we can not detect
+# which config option changed so all the daemons will be restarted. Although
+# this restart will be serialized for each node, in between a health check
+# will be performed so we make sure we don't move to the next node until
+# ceph is not healthy
+# Obviously between the checks (for monitors to be in quorum and for osd's pgs
+# to be clean) we have to wait. These retries and delays can be configurable
+# for both monitors and osds.
+handler_health_mon_check_retries: 5
+handler_health_mon_check_delay: 10
+handler_health_osd_check_retries: 40
+handler_health_osd_check_delay: 30
+handler_health_osd_check: true
 
 ###################
 # CONFIG OVERRIDE #
@@ -334,7 +375,6 @@ os_tuning_params:
   - { name: kernel.pid_max, value: 4194303 }
   - { name: fs.file-max, value: 26234859 }
   - { name: vm.zone_reclaim_mode, value: 0 }
-  - { name: vm.vfs_cache_pressure, value: 50 }
   - { name: vm.swappiness, value: 10 }
   - { name: vm.min_free_kbytes, value: "{{ vm_min_free_kbytes }}" }
 
@@ -344,6 +384,8 @@ os_tuning_params:
 ##########
 
 docker: false
+ceph_docker_image: "ceph/daemon"
+ceph_docker_image_tag: latest
 
 # Do not comment the following variables mon_containerized_deployment_* here. These variables are being used
 # by ceph.conf.j2 template. so it should always be defined
@@ -358,3 +400,7 @@ mon_containerized_default_ceph_conf_with_kv: false
 nfs_file_gw: true
 # Set this to true to enable Object access via NFS. Requires an RGW role.
 nfs_obj_gw: false
+
+# this is only here for usage with the rolling_update.yml playbook
+# do not ever change this here
+rolling_update: false

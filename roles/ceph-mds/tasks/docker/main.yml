@@ -1,27 +1,15 @@
 ---
 - name: check if a cluster is already running
-  shell: "docker ps | grep -sq '{{ceph_mds_docker_username}}/{{ceph_mds_docker_imagename}}:{{ceph_mds_docker_image_tag}}'"
+  command: "docker ps -q -a --filter='ancestor={{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'"
   register: ceph_health
   changed_when: false
   failed_when: false
   always_run: true
 
-- name: check if it is Atomic host
-  stat: path=/run/ostree-booted
-  register: stat_ostree
-  always_run: true
-
-- name: set fact for using Atomic host
-  set_fact:
-    is_atomic: '{{ stat_ostree.stat.exists }}'
-
 - include: checks.yml
   when:
     - ceph_health.rc != 0
     - not "{{ rolling_update | default(false) }}"
-
-- include: pre_requisite.yml
-  when: not is_atomic
 
 - include: "{{ playbook_dir }}/roles/ceph-common/tasks/misc/ntp_atomic.yml"
   when:
@@ -41,10 +29,6 @@
     - ntp_service_enabled
 
 - include: "{{ playbook_dir }}/roles/ceph-common/tasks/docker/fetch_image.yml"
-  vars:
-    ceph_docker_username: "{{ ceph_mds_docker_username }}"
-    ceph_docker_imagename: "{{ ceph_mds_docker_imagename }}"
-    ceph_docker_image_tag: "{{ ceph_mds_docker_image_tag }}"
 - include: dirs_permissions.yml
 - include: fetch_configs.yml
 

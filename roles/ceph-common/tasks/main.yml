@@ -4,6 +4,8 @@
 
 # Set ceph_release
 - include: ./release.yml
+  tags:
+    - always
 
 - include: ./checks/check_firewall.yml
   when: check_firewall
@@ -61,15 +63,17 @@
   # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
   static: False
 
-- include: ./installs/install_on_clear.yml
-  when: ansible_os_family == 'Clear linux software for intel architecture'
-  tags:
-    - package-install
-
 - include: ./installs/install_rh_storage_on_debian.yml
   when:
     - ansible_os_family == 'Debian'
     - ceph_rhcs
+  tags:
+    - package-install
+  # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
+  static: False
+
+- include: ./installs/install_on_clear.yml
+  when: ansible_os_family == 'Clear linux software for intel architecture'
   tags:
     - package-install
   # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
@@ -91,6 +95,7 @@
 
 - include: facts.yml
 - include: ./checks/check_socket.yml
+- include: create_ceph_initial_dirs.yml
 - include: generate_cluster_fsid.yml
 - include: generate_ceph_conf.yml
 - include: create_rbd_client_dir.yml
