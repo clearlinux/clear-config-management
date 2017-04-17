@@ -8,4 +8,4 @@
 
 - name: Enable ceph-mon.target
   service: name=ceph-mon.target enabled=yes
-  when: ansible_os_family == 'Clear linux software for intel architecture'
+  when: ansible_os_family == 'ClearLinux'

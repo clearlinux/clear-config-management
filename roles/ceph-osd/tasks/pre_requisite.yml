@@ -11,7 +11,7 @@
   package:
     name: parted
     state: present
-  when: ansible_os_family != 'Clear linux software for intel architecture'
+  when: ansible_os_family != 'ClearLinux'
 
 - name: create bootstrap-osd and osd directories
   file:

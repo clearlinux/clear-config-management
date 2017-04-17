@@ -1,10 +1,3 @@
 ---
 - name: Install ceph bundle
-  command: "swupd bundle-add storage-cluster {{ swupd_args | default('')}}"
-  args:
-    creates: /usr/share/clear/bundles/storage-cluster
-
-- name: Run swupd verify
-  command: "swupd verify -f {{ swupd_args | default('')}}"
-  args:
-    creates: /usr/bin/ceph
+  package: name=storage-cluster state=present

@@ -73,7 +73,7 @@
   static: False
 
 - include: ./installs/install_on_clear.yml
-  when: ansible_os_family == 'Clear linux software for intel architecture'
+  when: ansible_os_family == 'ClearLinux'
   tags:
     - package-install
   # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
